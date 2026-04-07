@@ -1,0 +1,108 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Arc {
+  // We use String for the id instead of the default Int or UUID.
+  // This is our NanoID — short, URL-safe, human-shareable.
+  // @id tells Prisma this is the primary key.
+  // @default(cuid()) is a fallback — we'll override this in code
+  // with our own nanoid generation before inserting.
+  id String @id
+
+  // The raw answers the user typed. We store this as a Json type
+  // rather than 8 separate columns because the answer structure
+  // might evolve — maybe we add a 9th question later. Storing
+  // as JSON means no migration needed for that change.
+  answers Json
+
+  // Claude's full generated response. Also Json because the
+  // structure is defined by our prompt, not by the DB. If we
+  // change the prompt and add a new field to the output,
+  // the database doesn't care — it's just JSON.
+  arcData Json @map("arc_data")
+
+  // For rate limiting. We store the IP that generated this arc
+  // so we can cross-reference against the rate_limits table.
+  ipAddress String @map("ip_address")
+
+  // The browser fingerprint from FingerprintJS.
+  // Optional because in rare cases (private browsing, strict
+  // browser settings) fingerprinting may fail. We gracefully
+  // degrade to IP-only rate limiting in that case.
+  fingerprint String?
+
+  // userId is nullable — this is the Phase 1 → Phase 2 bridge.
+  // In MVP, every arc is anonymous so this is always null.
+  // In Phase 2, when a user signs up and claims their arc,
+  // we populate this field. The column exists now so we never
+  // need to run a schema migration just to add it later.
+  userId String? @map("user_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // The @map decorator tells Prisma that in TypeScript you
+  // write arc.arcData, but the actual Postgres column is
+  // named arc_data. This bridges camelCase (TypeScript
+  // convention) and snake_case (Postgres convention).
+  // @@map at the model level means the TypeScript model is
+  // called Arc but the Postgres table is called arcs.
+
+  @@map("arcs")
+}
+
+model RateLimit {
+  // Composite primary key — the combination of IP + fingerprint
+  // is what uniquely identifies a "session" for rate limiting.
+  // This is more expressive than a separate auto-increment id
+  // and also enforces uniqueness at the DB level for free.
+  id String @id @default(cuid())
+
+  ipAddress   String   @map("ip_address")
+  fingerprint String?
+  arcCount    Int      @default(0) @map("arc_count")
+  windowStart DateTime @map("window_start")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  // @updatedAt is a Prisma magic field — it automatically
+  // sets this to the current timestamp whenever the row
+  // is updated. Useful for debugging stale windows.
+
+  // This index tells Postgres to build a fast lookup structure
+  // on ip_address. Without this, every rate limit check would
+  // do a full table scan — fine at 100 rows, terrible at 100,000.
+  @@index([ipAddress])
+  @@index([fingerprint])
+  @@map("rate_limits")
+}
+
+model ApiUsageLog {
+  id String @id @default(cuid())
+
+  // We store arcId so we can always answer "how much did
+  // generating this specific arc cost?" — useful for debugging
+  // and for understanding which types of answers are most
+  // expensive to process.
+  arcId String @map("arc_id")
+
+  tokensInput  Int @map("tokens_input")
+  tokensOutput Int @map("tokens_output")
+
+  // Storing cost in a Float lets us query total spend easily:
+  // SELECT SUM(cost_usd) FROM api_usage_logs WHERE ...
+  costUsd Float @map("cost_usd")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([arcId])
+  @@map("api_usage_logs")
+}

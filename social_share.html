@@ -1,0 +1,732 @@
+<!doctype html>
+<html lang="en" style="height: auto; min-height: 100%">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0" />
+    <title>Arc - Social Share Card</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      id="heading-font-link"
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet" />
+    <link
+      id="body-font-link"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet" />
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              heading: ["var(--font-heading-name)", "sans-serif"],
+              body: ["var(--font-body-name)", "sans-serif"],
+            },
+            spacing: {
+              base: "var(--space-base)",
+            },
+            borderRadius: {
+              small: "var(--radius-small)",
+              large: "var(--radius-large)",
+            },
+            boxShadow: {
+              custom: "var(--shadow-custom)",
+              "custom-hover": "var(--shadow-custom-hover)",
+            },
+            colors: {
+              primary: {
+                50: "var(--color-primary-50)",
+                100: "var(--color-primary-100)",
+                200: "var(--color-primary-200)",
+                300: "var(--color-primary-300)",
+                400: "var(--color-primary-400)",
+                500: "var(--color-primary-500)",
+                600: "var(--color-primary-600)",
+                700: "var(--color-primary-700)",
+                800: "var(--color-primary-800)",
+                900: "var(--color-primary-900)",
+              },
+              secondary: {
+                50: "var(--color-secondary-50)",
+                100: "var(--color-secondary-100)",
+                200: "var(--color-secondary-200)",
+                300: "var(--color-secondary-300)",
+                400: "var(--color-secondary-400)",
+                500: "var(--color-secondary-500)",
+                600: "var(--color-secondary-600)",
+                700: "var(--color-secondary-700)",
+                800: "var(--color-secondary-800)",
+                900: "var(--color-secondary-900)",
+              },
+              tertiary: {
+                50: "var(--color-tertiary-50)",
+                100: "var(--color-tertiary-100)",
+                200: "var(--color-tertiary-200)",
+                300: "var(--color-tertiary-300)",
+                400: "var(--color-tertiary-400)",
+                500: "var(--color-tertiary-500)",
+                600: "var(--color-tertiary-600)",
+                700: "var(--color-tertiary-700)",
+                800: "var(--color-tertiary-800)",
+                900: "var(--color-tertiary-900)",
+              },
+              background: {
+                50: "var(--color-background-50)",
+                100: "var(--color-background-100)",
+                200: "var(--color-background-200)",
+                300: "var(--color-background-300)",
+                400: "var(--color-background-400)",
+                500: "var(--color-background-500)",
+                600: "var(--color-background-600)",
+                700: "var(--color-background-700)",
+                800: "var(--color-background-800)",
+                900: "var(--color-background-900)",
+              },
+              neutral: {
+                50: "var(--color-neutral-50)",
+                100: "var(--color-neutral-100)",
+                200: "var(--color-neutral-200)",
+                300: "var(--color-neutral-300)",
+                400: "var(--color-neutral-400)",
+                500: "var(--color-neutral-500)",
+                600: "var(--color-neutral-600)",
+                700: "var(--color-neutral-700)",
+                800: "var(--color-neutral-800)",
+                900: "var(--color-neutral-900)",
+              },
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      :root {
+        /* Colors */
+        --color-primary-50: #f5f3ff;
+        --color-primary-100: #ede9fe;
+        --color-primary-200: #ddd6fe;
+        --color-primary-300: #c4b5fd;
+        --color-primary-400: #c084fc;
+        --color-primary-500: #8b5cf6;
+        --color-primary-600: #7c3aed;
+        --color-primary-700: #6d28d9;
+        --color-primary-800: #5b21b6;
+        --color-primary-900: #4c1d95;
+
+        --color-secondary-50: #fdf4ff;
+        --color-secondary-100: #fae8ff;
+        --color-secondary-200: #f5d0fe;
+        --color-secondary-300: #f0abfc;
+        --color-secondary-400: #e879f9;
+        --color-secondary-500: #d946ef;
+        --color-secondary-600: #c026d3;
+        --color-secondary-700: #a21caf;
+        --color-secondary-800: #86198f;
+        --color-secondary-900: #701a75;
+
+        --color-tertiary-50: #f0fdfa;
+        --color-tertiary-100: #ccfbf1;
+        --color-tertiary-200: #99f6e4;
+        --color-tertiary-300: #5eead4;
+        --color-tertiary-400: #2dd4bf;
+        --color-tertiary-500: #14b8a6;
+        --color-tertiary-600: #0d9488;
+        --color-tertiary-700: #0f766e;
+        --color-tertiary-800: #115e59;
+        --color-tertiary-900: #134e4a;
+
+        --color-background-50: #0f0a19;
+        --color-background-100: #1a1129;
+        --color-background-200: #26193b;
+        --color-background-300: #33214f;
+        --color-background-400: #412a64;
+        --color-background-500: #4f337a;
+        --color-background-600: #5e3d91;
+        --color-background-700: #6d47a8;
+        --color-background-800: #7c52bf;
+        --color-background-900: #8c5cd7;
+
+        --color-neutral-50: #f8fafc;
+        --color-neutral-100: #f1f5f9;
+        --color-neutral-200: #e2e8f0;
+        --color-neutral-300: #cbd5e1;
+        --color-neutral-400: #94a3b8;
+        --color-neutral-500: #64748b;
+        --color-neutral-600: #475569;
+        --color-neutral-700: #334155;
+        --color-neutral-800: #1e293b;
+        --color-neutral-900: #0f172a;
+
+        /* Typography */
+        --font-heading-name: "Outfit";
+        --font-body-name: "Inter";
+        --font-heading: "Outfit", sans-serif;
+        --font-body: "Inter", sans-serif;
+        --letter-spacing-heading: -0.02em;
+        --letter-spacing-body: 0px;
+
+        /* Spacing */
+        --space-base: 1rem;
+
+        /* Borders */
+        --radius-small: 0.5rem;
+        --radius-large: 1.5rem;
+        --border-width: 1px;
+
+        /* Shadows */
+        --shadow-color: 139 92 246;
+        --shadow-offset-x: 0px;
+        --shadow-offset-y: 10px;
+        --shadow-blur: 30px;
+        --shadow-spread: -5px;
+        --shadow-opacity: 0.3;
+        --shadow-custom: 0px 10px 30px -5px
+          rgba(var(--shadow-color), 0.3);
+        --shadow-custom-hover: 0px 20px 40px -5px
+          rgba(var(--shadow-color), 0.5);
+      }
+
+      .glass-panel {
+        background: rgba(26, 17, 41, 0.6);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .gradient-text {
+        background: linear-gradient(135deg, #c4b5fd 0%, #d946ef 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .float-animation {
+        animation: float 6s ease-in-out infinite;
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(0px) rotate(0deg);
+        }
+        50% {
+          transform: translateY(-20px) rotate(2deg);
+        }
+        100% {
+          transform: translateY(0px) rotate(0deg);
+        }
+      }
+
+      .reveal-animation {
+        animation: reveal 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        opacity: 0;
+        transform: translateY(40px) scale(0.95);
+      }
+
+      @keyframes reveal {
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      /* Specific styles for the share card */
+      .share-card-container {
+        aspect-ratio: 1080 / 1350;
+        width: 100%;
+        max-width: 540px; /* Half size for display, scales up for export */
+        margin: 0 auto;
+        position: relative;
+        overflow: hidden;
+        background: #0f0a19;
+        border-radius: var(--radius-large);
+        box-shadow: var(--shadow-custom);
+      }
+
+      .holographic-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          125deg,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(255, 255, 255, 0.1) 40%,
+          rgba(255, 255, 255, 0.4) 50%,
+          rgba(255, 255, 255, 0.1) 60%,
+          rgba(255, 255, 255, 0) 100%
+        );
+        background-size: 200% 200%;
+        animation: holo 5s ease infinite;
+        pointer-events: none;
+        z-index: 20;
+        mix-blend-mode: overlay;
+      }
+
+      @keyframes holo {
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
+        }
+      }
+
+      .card-border-glow {
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        padding: 2px;
+        background: linear-gradient(
+          135deg,
+          var(--color-primary-500),
+          var(--color-secondary-500),
+          var(--color-tertiary-500)
+        );
+        -webkit-mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+        z-index: 15;
+      }
+    </style>
+  </head>
+  <body
+    class="font-body bg-background-50 text-neutral-100 antialiased selection:bg-primary-500 selection:text-white"
+    style="height: auto; min-height: 100%">
+    <!-- Navigation -->
+    <nav
+      class="fixed w-full z-50 glass-panel border-b border-white/10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-20">
+          <a
+            href="/api/copilot/prototype/6139463b-34ab-4129-aa68-2ef552ef3f36/landing-page"
+            class="flex-shrink-0 flex items-center gap-3">
+            <div
+              class="w-10 h-10 rounded-small bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center shadow-custom">
+              <svg
+                class="w-6 h-6 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <span
+              class="font-heading font-bold text-2xl tracking-tight"
+              >Arc</span
+            >
+          </a>
+          <div class="hidden md:block">
+            <div class="ml-10 flex items-baseline space-x-8">
+              <a
+                href="/api/copilot/prototype/6139463b-34ab-4129-aa68-2ef552ef3f36/landing-page"
+                class="text-neutral-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                >Home</a
+              >
+              <a
+                href="/api/copilot/prototype/6139463b-34ab-4129-aa68-2ef552ef3f36/arc-reveal-screen"
+                class="text-neutral-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                >Reveal</a
+              >
+              <a
+                href="/api/copilot/prototype/6139463b-34ab-4129-aa68-2ef552ef3f36/social-share-card"
+                class="text-white px-3 py-2 rounded-md text-sm font-medium transition-colors bg-white/10"
+                >Share</a
+              >
+            </div>
+          </div>
+          <div>
+            <a
+              href="/api/copilot/prototype/6139463b-34ab-4129-aa68-2ef552ef3f36/landing-page"
+              class="inline-flex items-center justify-center px-4 py-2 border border-white/20 text-sm font-medium rounded-small text-white hover:bg-white/10 transition-all duration-300">
+              Dashboard
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main
+      class="relative pt-32 pb-16 sm:pt-40 sm:pb-24 min-h-screen flex flex-col items-center justify-center overflow-hidden">
+      <!-- Background Effects -->
+      <div
+        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] opacity-20 pointer-events-none">
+        <div
+          class="absolute inset-0 bg-gradient-to-tr from-primary-600/30 via-secondary-600/20 to-tertiary-600/30 blur-3xl rounded-full animate-pulse"
+          style="animation-duration: 6s"></div>
+      </div>
+
+      <div
+        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full flex flex-col lg:flex-row items-center gap-12">
+        <!-- Left Side: The Share Card -->
+        <div
+          class="w-full lg:w-1/2 flex justify-center reveal-animation"
+          style="animation-delay: 0.1s">
+          <!-- 1080x1350 Aspect Ratio Container -->
+          <div class="share-card-container group">
+            <div class="holographic-overlay"></div>
+            <div class="card-border-glow"></div>
+
+            <!-- Card Background -->
+            <div class="absolute inset-0 bg-background-100">
+              <!-- Abstract Background Shapes -->
+              <div
+                class="absolute top-[-10%] right-[-20%] w-[80%] h-[60%] bg-primary-600/30 rounded-full blur-[80px]"></div>
+              <div
+                class="absolute bottom-[-10%] left-[-20%] w-[80%] h-[60%] bg-secondary-600/30 rounded-full blur-[80px]"></div>
+
+              <!-- Grid Pattern -->
+              <div
+                class="absolute inset-0 opacity-10"
+                style="
+                  background-image:
+                    linear-gradient(
+                      rgba(255, 255, 255, 0.1) 1px,
+                      transparent 1px
+                    ),
+                    linear-gradient(
+                      90deg,
+                      rgba(255, 255, 255, 0.1) 1px,
+                      transparent 1px
+                    );
+                  background-size: 40px 40px;
+                "></div>
+            </div>
+
+            <!-- Card Content -->
+            <div
+              class="relative z-10 h-full flex flex-col p-8 sm:p-10">
+              <!-- Top Header -->
+              <div class="flex justify-between items-start mb-auto">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-10 h-10 rounded-small bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center shadow-custom">
+                    <svg
+                      class="w-6 h-6 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                  </div>
+                  <span
+                    class="font-heading font-bold text-2xl tracking-tight text-white"
+                    >Arc</span
+                  >
+                </div>
+                <div
+                  class="px-4 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-md">
+                  <span
+                    class="text-sm font-bold text-white tracking-widest uppercase"
+                    >Season 1</span
+                  >
+                </div>
+              </div>
+
+              <!-- Center Profile & Stats -->
+              <div
+                class="flex flex-col items-center text-center my-8">
+                <!-- Avatar with Level Ring -->
+                <div class="relative mb-6">
+                  <div
+                    class="absolute inset-[-10px] rounded-full bg-gradient-to-tr from-primary-500 via-secondary-500 to-tertiary-500 animate-spin"
+                    style="animation-duration: 10s"></div>
+                  <div
+                    class="absolute inset-[-6px] rounded-full bg-background-100"></div>
+                  <img
+                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80"
+                    alt="Elena Rostova"
+                    class="relative w-40 h-40 sm:w-48 sm:h-48 rounded-full object-cover border-4 border-background-100 z-10" />
+
+                  <!-- Level Badge -->
+                  <div
+                    class="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-secondary-600 to-primary-600 text-white font-heading font-bold text-xl px-6 py-1.5 rounded-full border-2 border-background-100 shadow-xl z-20">
+                    LVL 12
+                  </div>
+                </div>
+
+                <h2
+                  class="font-heading text-4xl sm:text-5xl font-extrabold text-white mb-2 mt-4">
+                  Elena Rostova
+                </h2>
+                <h3
+                  class="font-heading text-2xl sm:text-3xl font-medium gradient-text mb-6">
+                  The Visionary
+                </h3>
+
+                <!-- Tags -->
+                <div class="flex flex-wrap justify-center gap-3 mb-8">
+                  <span
+                    class="px-4 py-2 rounded-full bg-primary-500/20 border border-primary-500/30 text-primary-200 text-sm sm:text-base font-medium backdrop-blur-sm"
+                    >Design</span
+                  >
+                  <span
+                    class="px-4 py-2 rounded-full bg-secondary-500/20 border border-secondary-500/30 text-secondary-200 text-sm sm:text-base font-medium backdrop-blur-sm"
+                    >Innovation</span
+                  >
+                  <span
+                    class="px-4 py-2 rounded-full bg-tertiary-500/20 border border-tertiary-500/30 text-tertiary-200 text-sm sm:text-base font-medium backdrop-blur-sm"
+                    >Strategy</span
+                  >
+                </div>
+
+                <!-- Stats Grid -->
+                <div
+                  class="grid grid-cols-3 gap-4 w-full max-w-sm mx-auto">
+                  <div
+                    class="bg-white/5 border border-white/10 rounded-large p-4 backdrop-blur-md">
+                    <div
+                      class="text-3xl font-heading font-bold text-white mb-1">
+                      8.4k
+                    </div>
+                    <div
+                      class="text-xs text-neutral-400 uppercase tracking-wider">
+                      Views
+                    </div>
+                  </div>
+                  <div
+                    class="bg-white/5 border border-white/10 rounded-large p-4 backdrop-blur-md">
+                    <div
+                      class="text-3xl font-heading font-bold text-secondary-400 mb-1">
+                      92
+                    </div>
+                    <div
+                      class="text-xs text-neutral-400 uppercase tracking-wider">
+                      Links
+                    </div>
+                  </div>
+                  <div
+                    class="bg-white/5 border border-white/10 rounded-large p-4 backdrop-blur-md">
+                    <div
+                      class="text-3xl font-heading font-bold text-tertiary-400 mb-1">
+                      Top 5%
+                    </div>
+                    <div
+                      class="text-xs text-neutral-400 uppercase tracking-wider">
+                      Rank
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bottom Lore / Locked Form -->
+              <div
+                class="mt-auto bg-background-200/80 border border-white/10 rounded-large p-6 backdrop-blur-xl relative overflow-hidden">
+                <div
+                  class="absolute top-0 right-0 w-32 h-32 bg-secondary-500/20 rounded-full blur-2xl -mr-10 -mt-10"></div>
+
+                <div
+                  class="flex items-center justify-between mb-3 relative z-10">
+                  <h4
+                    class="font-heading text-lg font-semibold text-white flex items-center gap-2">
+                    <svg
+                      class="w-5 h-5 text-secondary-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                    </svg>
+                    Final Form Locked
+                  </h4>
+                  <span
+                    class="text-xs font-bold px-2 py-1 rounded bg-white/10 text-neutral-300"
+                    >Requires LVL 20</span
+                  >
+                </div>
+
+                <p
+                  class="text-neutral-400 text-sm leading-relaxed relative z-10">
+                  "A pioneer of digital realms, weaving aesthetics
+                  with function. The Visionary sees what others miss,
+                  crafting experiences that transcend the ordinary."
+                </p>
+
+                <!-- Progress Bar -->
+                <div class="mt-4 relative z-10">
+                  <div
+                    class="flex justify-between text-xs text-neutral-400 mb-1">
+                    <span>LVL 12</span>
+                    <span>LVL 20</span>
+                  </div>
+                  <div
+                    class="w-full bg-background-300 rounded-full h-2 overflow-hidden">
+                    <div
+                      class="bg-gradient-to-r from-primary-500 to-secondary-500 h-2 rounded-full"
+                      style="width: 60%"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Footer URL -->
+              <div class="text-center mt-6">
+                <span
+                  class="font-mono text-neutral-400 text-sm tracking-widest"
+                  >arc.id/elena-visionary</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side: Controls & Export -->
+        <div
+          class="w-full lg:w-1/2 flex flex-col gap-8 reveal-animation"
+          style="animation-delay: 0.3s">
+          <div class="text-center lg:text-left">
+            <h1
+              class="font-heading text-4xl sm:text-5xl font-extrabold tracking-tight mb-4">
+              Share your <span class="gradient-text">Legend</span>
+            </h1>
+            <p
+              class="text-lg text-neutral-400 font-body max-w-xl mx-auto lg:mx-0">
+              Export your Arc as a premium collectible card. Perfect
+              for Instagram Stories, TikTok, or Twitter.
+            </p>
+          </div>
+
+          <!-- Export Options -->
+          <div
+            class="glass-panel p-6 sm:p-8 rounded-large border border-white/10">
+            <h3
+              class="font-heading text-xl font-semibold text-white mb-6">
+              Export Format
+            </h3>
+
+            <div class="grid grid-cols-2 gap-4 mb-8">
+              <button
+                class="flex flex-col items-center justify-center gap-3 p-4 rounded-large bg-primary-600/20 border-2 border-primary-500 text-white transition-all">
+                <svg
+                  class="w-8 h-8 text-primary-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+                <span class="font-medium">Static Image</span>
+                <span class="text-xs text-primary-300"
+                  >High-res PNG</span
+                >
+              </button>
+
+              <button
+                class="flex flex-col items-center justify-center gap-3 p-4 rounded-large bg-white/5 border-2 border-transparent hover:border-white/20 text-neutral-300 hover:text-white transition-all">
+                <svg
+                  class="w-8 h-8 text-neutral-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                </svg>
+                <span class="font-medium">Animated Video</span>
+                <span class="text-xs text-neutral-500"
+                  >MP4 with effects</span
+                >
+              </button>
+            </div>
+
+            <div class="space-y-4">
+              <button
+                class="w-full py-4 rounded-small bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-500 hover:to-secondary-500 text-white font-bold text-lg shadow-custom hover:shadow-custom-hover transition-all duration-300 flex items-center justify-center gap-2">
+                <svg
+                  class="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                </svg>
+                Download Card
+              </button>
+
+              <div class="grid grid-cols-2 gap-4">
+                <button
+                  class="flex items-center justify-center gap-2 py-3 rounded-small bg-[#E1306C]/20 hover:bg-[#E1306C]/30 text-white font-medium border border-[#E1306C]/50 transition-colors">
+                  <svg
+                    class="w-5 h-5 text-[#E1306C]"
+                    fill="currentColor"
+                    viewBox="0 0 24 24">
+                    <path
+                      d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+                  </svg>
+                  Story
+                </button>
+                <button
+                  class="flex items-center justify-center gap-2 py-3 rounded-small bg-[#1DA1F2]/20 hover:bg-[#1DA1F2]/30 text-white font-medium border border-[#1DA1F2]/50 transition-colors">
+                  <svg
+                    class="w-5 h-5 text-[#1DA1F2]"
+                    fill="currentColor"
+                    viewBox="0 0 24 24">
+                    <path
+                      d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
+                  </svg>
+                  Tweet
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Customization Hint -->
+          <div
+            class="glass-panel p-4 rounded-large border border-white/5 flex items-start gap-4">
+            <div
+              class="w-10 h-10 rounded-full bg-tertiary-500/20 flex items-center justify-center text-tertiary-400 flex-shrink-0 mt-1">
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+            <div>
+              <h4 class="font-medium text-white mb-1">
+                Want to change your stats?
+              </h4>
+              <p class="text-sm text-neutral-400">
+                Your card updates automatically as your Arc grows.
+                Connect more accounts to unlock new tiers and visual
+                effects.
+              </p>
+              <a
+                href="/api/copilot/prototype/6139463b-34ab-4129-aa68-2ef552ef3f36/landing-page"
+                class="inline-block mt-2 text-sm text-tertiary-400 hover:text-tertiary-300 font-medium"
+                >Go to Dashboard &rarr;</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
