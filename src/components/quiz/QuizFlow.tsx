@@ -68,12 +68,14 @@ const QuizFlow = () => {
   // appears for about 3 seconds while Claude is thinking.
   // The messages themselves are part of the product experience.
   const LOADING_MESSAGES = [
-    "Reading between your lines...",
-    "Locating your wound...",
-    "Forging your weapon...",
-    "Naming your rival...",
-    "Your arc is taking shape...",
-    "Almost. This one runs deep...",
+    "Something in your answers is louder than the rest...",
+    "The wound is clearer than you made it sound...",
+    "Finding the name for what you already know...",
+    "The weapon was always there. It just needed the light...",
+    "Your rival is closer than you admitted...",
+    "This arc has been in motion longer than today...",
+    "The pattern is becoming visible...",
+    "Almost. The hardest part to say is coming last...",
   ];
 
   const [loadingMessageIndex, setLoadingMessageIndex] = useState(0);
@@ -147,10 +149,33 @@ const QuizFlow = () => {
 
   if (phase === "loading") {
     return (
-      <div className="min-h-screen bg-black flex flex-col items-center justify-center px-24">
+      <div className="min-h-[90vh] bg-black flex flex-col items-center justify-center px-24">
         <div className="flex flex-col items-center gap-8">
-          {/* Animated pulsing orb - gives the loading screen a sense of something alive happening, not just a spinner */}
-          <div className="w-16 h-16 rounded-full bg-purple-600 animated-pulse" />
+          {/* <div className="w-16 h-16 border-4 border-dashed rounded-full animate-spin border-purple-500 mx-auto" /> */}
+          <div className="w-32 h-32 relative flex items-center justify-center">
+            <div className="absolute inset-0 rounded-xl bg-blue-500/20 blur-xl animate-pulse"></div>
+
+            <div className="w-full h-full relative flex items-center justify-center">
+              <div className="absolute inset-0 rounded-xl bg-linear-to-r from-cyan-500 via-blue-500 to-purple-500 animate-spin blur-sm"></div>
+
+              <div className="absolute inset-1 bg-gray-900 rounded-lg flex items-center justify-center overflow-hidden">
+                <div className="flex gap-1 items-center">
+                  <div className="w-1.5 h-12 bg-cyan-500 rounded-full animate-[bounce_1s_ease-in-out_infinite]"></div>
+                  <div className="w-1.5 h-12 bg-blue-500 rounded-full animate-[bounce_1s_ease-in-out_infinite_0.1s]"></div>
+                  <div className="w-1.5 h-12 bg-indigo-500 rounded-full animate-[bounce_1s_ease-in-out_infinite_0.2s]"></div>
+                  <div className="w-1.5 h-12 bg-purple-500 rounded-full animate-[bounce_1s_ease-in-out_infinite_0.3s]"></div>
+                </div>
+
+                <div className="absolute inset-0 bg-linear-to-t from-transparent via-blue-500/10 to-transparent animate-pulse"></div>
+              </div>
+            </div>
+
+            <div className="absolute -top-1 -left-1 w-2 h-2 bg-blue-500 rounded-full animate-ping"></div>
+            <div className="absolute -top-1 -right-1 w-2 h-2 bg-purple-500 rounded-full animate-ping delay-100"></div>
+            <div className="absolute -bottom-1 -left-1 w-2 h-2 bg-cyan-500 rounded-full animate-ping delay-200"></div>
+            <div className="absolute -bottom-1 -right-1 w-2 h-2 bg-blue-500 rounded-full animate-ping delay-300"></div>
+          </div>
+
           <p className="text-purple-300 text-lg tracking-wide text-center transition-all duration-500">
             {LOADING_MESSAGES[loadingMessageIndex]}
           </p>
