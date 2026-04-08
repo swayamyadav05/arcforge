@@ -188,7 +188,7 @@ export default function ArcCard({
           lineHeight: "1.6",
           marginBottom: "24px",
         }}>
-        &quot;{arc.opening_episode_quote?.substring(0, 100)}...&quot;
+        &quot;{arc.episode_one_scenario?.substring(0, 100)}...&quot;
       </div>
 
       {/* Locked final form */}
