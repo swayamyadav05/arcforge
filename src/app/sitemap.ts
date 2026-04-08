@@ -20,7 +20,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
-      url: `${baseUrl}/quiz`,
+      url: `${baseUrl}/awakening`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       // Slightly lower priority than the homepage —

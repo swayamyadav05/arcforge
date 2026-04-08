@@ -130,7 +130,7 @@ export default function Hero() {
             wrapping Link inside a button (which would be invalid HTML). */}
         <div className="flex flex-col sm:flex-row gap-4 pt-4">
           <Button variant="default" size="lg" asChild>
-            <Link href="/quiz">Forge my arc →</Link>
+            <Link href="/awakening">Forge my arc →</Link>
           </Button>
 
           {/* Secondary button — outline variant, links to the sample arc

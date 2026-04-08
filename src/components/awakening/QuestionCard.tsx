@@ -1,4 +1,4 @@
-// src/components/quiz/QuestionCard.tsx
+// src/components/awakening/QuestionCard.tsx
 "use client";
 
 import { useState, useEffect, useRef } from "react";

@@ -9,10 +9,10 @@ import { usePathname, useSearchParams } from "next/navigation";
 export default function Navbar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  // We check if the current path starts with "/quiz" rather than
+  // We check if the current path starts with "/awakening" rather than
   // strict equality so this also catches future subroutes like
-  // /quiz/generating or /quiz/error if we add them later.
-  const isQuizRoute = pathname?.startsWith("/quiz");
+  // /awakening/generating or /awakening/error if we add them later.
+  const isQuizRoute = pathname?.startsWith("/awakening");
   const isPublicArcPage =
     pathname?.startsWith("/arc") && !searchParams.get("new");
 
@@ -49,7 +49,7 @@ export default function Navbar() {
               See a sample arc
             </Link>
             <Button size="sm" asChild>
-              <Link href="/quiz">Forge my arc</Link>
+              <Link href="/awakening">Forge my arc</Link>
             </Button>
           </div>
         )}

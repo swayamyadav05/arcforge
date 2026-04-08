@@ -145,7 +145,7 @@ export default async function ArcPage({
             What does yours look like?
           </p>
           <Link
-            href="/quiz"
+            href="/awakening"
             className="inline-block bg-linear-to-r from-[#534AB7] to-[#6B5FD8] hover:from-[#6B5FD8] hover:to-[#7F73E8] text-[#EEEDFE] px-10 py-4 rounded-xl text-base font-medium transition-all duration-300 no-underline">
             Forge my arc
           </Link>

@@ -1,4 +1,4 @@
-import QuizFlow from "../../components/quiz/QuizFlow";
+import QuizFlow from "@/components/awakening/QuizFlow";
 
 const Quiz = () => {
   return <QuizFlow />;

@@ -26,7 +26,7 @@ export default function CTA() {
         </p>
 
         <Button size="lg" asChild>
-          <Link href="/quiz">Forge my arc →</Link>
+          <Link href="/awakening">Forge my arc →</Link>
         </Button>
       </div>
     </section>
