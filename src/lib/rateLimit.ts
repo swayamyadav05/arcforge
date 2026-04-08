@@ -2,7 +2,7 @@ import prisma from "./prisma";
 
 const WINDOW_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours
 // Todo: Change LIMIT to 1 when deploying
-const LIMIT = 100; // Free tier: 1 arc per day
+const LIMIT = 1; // Free tier: 1 arc per day
 
 export async function checkRateLimit(
   ip: string,
