@@ -48,7 +48,7 @@ OUTPUT FORMAT: Return ONLY a valid JSON object matching this exact structure. No
 {
   "character_name": "A poetic codename for who they are right now. Not who they want to be.",
   "archetype": "2-3 words. Their role in the story of the world.",
-  "opening_episode_quote": "2-3 sentences max. First person narrator voice. Must feel written specifically for this person. This is what gets screenshotted.",
+  "opening_episode_quote": "2-3 sentences max. First person narrator voice. Capture the emotional pattern at the core of this person's arc — the way they relate to themselves, to risk, to love, to time — without naming any specific circumstance, person, place, or situation from their answers. The quote should feel true to anyone who shares this wound, while feeling written specifically for this protagonist. It is what gets shared publicly. A stranger should feel it without being able to decode it. This is what gets screenshotted.",
   "character_arc": {
     "the_wound": "The real thing holding them back. Say it plainly. Should sting a little.",
     "the_weapon": "How that exact wound is also their greatest strength. The reframe.",
@@ -134,6 +134,7 @@ export async function generateArc(
   arc: GeneratedArc;
   usage: { input_tokens: number; output_tokens: number };
 }> {
+  // ANTHROPIC
   const response = await anthropic.messages.create({
     model: "claude-sonnet-4-6",
     max_tokens: 2000,
@@ -146,6 +147,24 @@ export async function generateArc(
     ],
   });
 
+  console.log("Token usage:", {
+    input_tokens: response.usage?.input_tokens ?? 0,
+    output_tokens: response.usage?.output_tokens ?? 0,
+  });
+
+  // ANTHROPIC
+  const textBlock = response.content.find(
+    (block) => block.type === "text",
+  );
+  if (!textBlock || textBlock.type !== "text") {
+    throw new Error("Claude returned no text content");
+  }
+  const cleaned = textBlock.text
+    .replace(/```json\n?/g, "")
+    .replace(/```\n?/g, "")
+    .trim();
+
+  // // OPENAI
   // const response = await openai.chat.completions.create({
   //   model: "gpt-4o-mini",
   //   max_tokens: 2000,
@@ -156,27 +175,21 @@ export async function generateArc(
   //   response_format: { type: "json_object" },
   // });
 
-  console.log("Token usage:", {
-    input_tokens: response.usage?.input_tokens ?? 0,
-    output_tokens: response.usage?.output_tokens ?? 0,
-  });
+  // console.log("Token usage:", {
+  //   input_tokens: response.usage?.prompt_tokens ?? 0,
+  //   output_tokens: response.usage?.completion_tokens ?? 0,
+  // });
 
   // const content = response.choices[0].message.content;
   // if (!content) {
   //   throw new Error("OpenAI returned no content");
   // }
 
-  const textBlock = response.content.find(
-    (block) => block.type === "text",
-  );
-  if (!textBlock || textBlock.type !== "text") {
-    throw new Error("Claude returned no text content");
-  }
-
-  const cleaned = textBlock.text
-    .replace(/```json\n?/g, "")
-    .replace(/```\n?/g, "")
-    .trim();
+  // OPENAI
+  // const cleaned = content
+  //   .replace(/```json\n?/g, "")
+  //   .replace(/```\n?/g, "")
+  //   .trim();
 
   const arc = JSON.parse(cleaned) as GeneratedArc;
 
@@ -185,6 +198,9 @@ export async function generateArc(
     usage: {
       input_tokens: response.usage?.input_tokens ?? 0,
       output_tokens: response.usage?.output_tokens ?? 0,
+
+      // input_tokens: response.usage?.prompt_tokens ?? 0,
+      // output_tokens: response.usage?.completion_tokens ?? 0,
     },
   };
 }
