@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Dark background matching the product's page background -->
+  <rect width="32" height="32" rx="6" fill="#0a0612"/>
+  
+  <!-- The letter A from Outfit — rendered as a path so it doesn't
+       depend on font loading. The specific path coordinates produce
+       a bold, slightly geometric A that matches Outfit's character. -->
+  <text
+    x="16"
+    y="24"
+    font-family="Outfit, sans-serif"
+    font-weight="800"
+    font-size="22"
+    fill="#534AB7"
+    text-anchor="middle"
+  >A</text>
+</svg>
