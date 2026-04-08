@@ -1,8 +1,19 @@
 import { generateArc } from "@/lib/claude";
+import {
+  appendOwnerArc,
+  OWNER_SESSION_COOKIE,
+  OWNER_SESSION_MAX_AGE_SECONDS,
+  readOwnerArcIds,
+} from "@/lib/ownerSession";
 import prisma from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/rateLimit";
 import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
+
+type GenerateArcErrorCode =
+  | "INVALID_ANSWERS"
+  | "DAILY_LIMIT_REACHED"
+  | "ARC_GENERATION_FAILED";
 
 // This tells Next.js to run this route as a standard
 // Node.js serverless function rather than the Edge runtime.
@@ -41,7 +52,11 @@ export async function POST(req: NextRequest) {
     // We check the count rather than individual keys so the validation stays resilient if we rename questions later.
     if (!answers || Object.keys(answers).length !== 8) {
       return NextResponse.json(
-        { error: "All 8 questions must be answered." },
+        {
+          code: "INVALID_ANSWERS" as GenerateArcErrorCode,
+          error:
+            "Please answer all 8 questions before forging your arc.",
+        },
         { status: 400 },
       );
     }
@@ -50,16 +65,28 @@ export async function POST(req: NextRequest) {
     const allowed = await checkRateLimit(ip, fingerprint ?? null);
 
     if (!allowed) {
+      const latestOwnedArcId =
+        readOwnerArcIds(
+          req.cookies.get(OWNER_SESSION_COOKIE)?.value,
+        )[0] ?? null;
+
       return NextResponse.json(
         {
-          error:
-            "You've already forged your arc today. Come back tomorrow.",
+          code: "DAILY_LIMIT_REACHED" as GenerateArcErrorCode,
+          error: "Arc creation is limited to once per day.",
+          retryAfterSeconds: 24 * 60 * 60,
+          latestArcId: latestOwnedArcId,
           // We send a retry-friendly message rather than a
           // generic "rate limited" error because this text
           // might actually appear in the UI. It should feel
           // like part of the product, not an error page.
         },
-        { status: 429 },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": String(24 * 60 * 60),
+          },
+        },
       );
     }
 
@@ -147,7 +174,7 @@ export async function POST(req: NextRequest) {
     // We return both the generated arc data AND the arcId.
     // The frontend needs arcId immediately to construct the
     // shareable URL without making a second network request.
-    return NextResponse.json(
+    const response = NextResponse.json(
       {
         arcId: arc_record.id,
         arc: arc,
@@ -155,14 +182,32 @@ export async function POST(req: NextRequest) {
       },
       { status: 201 },
     );
+
+    const ownerSessionValue = appendOwnerArc(
+      req.cookies.get(OWNER_SESSION_COOKIE)?.value,
+      arc_record.id,
+    );
+
+    response.cookies.set({
+      name: OWNER_SESSION_COOKIE,
+      value: ownerSessionValue,
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: OWNER_SESSION_MAX_AGE_SECONDS,
+    });
+
+    return response;
   } catch (error) {
     // -- Global error handler--
     console.error("[arc/generate] Unhandled error:", error);
 
     return NextResponse.json(
       {
+        code: "ARC_GENERATION_FAILED" as GenerateArcErrorCode,
         error:
-          "Something went wrong forgin your arc. Please try again.",
+          "Something went wrong while forging your Arc. Please try again in a moment.",
       },
       { status: 500 },
     );

@@ -37,7 +37,7 @@ const SAMPLE_ARC: GeneratedArc = {
     the_destiny: "Lead from the front. Let your work have a voice.",
   },
   episode_one_scenario:
-    "You're standing at the edge of a room full of people who need exactly what you've built.",
+    "You've built a tool that solves a problem 10,000 developers have. It's been sitting in a private repo for eight months, 80% complete. Today, someone you respect casually mentions they're trying to solve that exact problem manually. You have two choices: send them the link, or stay silent and offer vague advice. The episode ends on your hand hovering over the 'send' button. Cut to black. Preview: 'Next time: The Hermit learns that shipping isn't the same as surrendering.'",
   rivals_and_mentors: {
     the_rival: {
       name: "The Performance Artist",

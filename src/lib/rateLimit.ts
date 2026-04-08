@@ -1,8 +1,102 @@
 import prisma from "./prisma";
 
 const WINDOW_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours
-// Todo: Change LIMIT to 1 when deploying
-const LIMIT = 1; // Free tier: 1 arc per day
+const DEFAULT_LIMIT = process.env.NODE_ENV === "production" ? 1 : 1;
+
+type RateLimitStatus = {
+  canForge: boolean;
+  retryAfterSeconds: number;
+  windowResetAt: string | null;
+};
+
+function getDailyLimit(): number {
+  const rawLimit = process.env.ARC_DAILY_LIMIT;
+
+  if (!rawLimit) {
+    return DEFAULT_LIMIT;
+  }
+
+  const parsedLimit = Number(rawLimit);
+
+  if (!Number.isInteger(parsedLimit) || parsedLimit < 1) {
+    return DEFAULT_LIMIT;
+  }
+
+  return parsedLimit;
+}
+
+const LIMIT = getDailyLimit(); // Free tier: 1 arc per day in production
+
+function buildRateLimitWhere(ip: string, fingerprint: string | null) {
+  return {
+    OR: [
+      { ipAddress: ip },
+      ...(fingerprint ? [{ fingerprint }] : []),
+    ],
+  };
+}
+
+async function findRateLimitRecord(
+  ip: string,
+  fingerprint: string | null,
+) {
+  return prisma.rateLimit.findFirst({
+    where: buildRateLimitWhere(ip, fingerprint),
+  });
+}
+
+function getWindowAgeMs(windowStart: Date, now: Date): number {
+  return now.getTime() - windowStart.getTime();
+}
+
+function getRetryAfterSeconds(windowStart: Date, now: Date): number {
+  const elapsedMs = getWindowAgeMs(windowStart, now);
+  const remainingMs = Math.max(0, WINDOW_DURATION_MS - elapsedMs);
+
+  return Math.ceil(remainingMs / 1000);
+}
+
+export async function getRateLimitStatus(
+  ip: string,
+  fingerprint: string | null,
+): Promise<RateLimitStatus> {
+  const record = await findRateLimitRecord(ip, fingerprint);
+  const now = new Date();
+
+  if (!record) {
+    return {
+      canForge: true,
+      retryAfterSeconds: 0,
+      windowResetAt: null,
+    };
+  }
+
+  const windowAge = getWindowAgeMs(record.windowStart, now);
+
+  if (windowAge > WINDOW_DURATION_MS) {
+    return {
+      canForge: true,
+      retryAfterSeconds: 0,
+      windowResetAt: null,
+    };
+  }
+
+  if (record.arcCount < LIMIT) {
+    return {
+      canForge: true,
+      retryAfterSeconds: 0,
+      windowResetAt: null,
+    };
+  }
+
+  return {
+    canForge: false,
+    retryAfterSeconds: getRetryAfterSeconds(record.windowStart, now),
+    windowResetAt: new Date(
+      record.windowStart.getTime() + WINDOW_DURATION_MS,
+    ).toISOString(),
+  };
+}
 
 export async function checkRateLimit(
   ip: string,
@@ -12,18 +106,7 @@ export async function checkRateLimit(
   // either one matching is enough to identity the session.
   // And OR condition here means bypassing one indentifier
   // (switching networks) doesn't helpl if the other matches.
-  const record = await prisma.rateLimit.findFirst({
-    where: {
-      OR: [
-        { ipAddress: ip },
-        // We only include fingerprint in the OR if it exists.
-        // If fingerprint is null, we don't want to match all
-        // rows that also have null fingerprints — that would
-        // accidentally block everyone.
-        ...(fingerprint ? [{ fingerprint }] : []),
-      ],
-    },
-  });
+  const record = await findRateLimitRecord(ip, fingerprint);
 
   const now = new Date();
 
@@ -40,7 +123,7 @@ export async function checkRateLimit(
     return true; // allowed
   }
 
-  const windowAge = now.getTime() - record.windowStart.getTime();
+  const windowAge = getWindowAgeMs(record.windowStart, now);
 
   // Situation 2 - record exists but window has expired.
   // We reset the window rather than creating a new record -

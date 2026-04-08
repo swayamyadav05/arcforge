@@ -1,7 +1,7 @@
 "use client";
 
 import { GeneratedArc } from "@/types/arc";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import QuestionCard from "./QuestionCard";
 import { useRouter } from "next/navigation";
 
@@ -10,7 +10,26 @@ import { useRouter } from "next/navigation";
 // makes it impossible to accidentally be in two phases at once —
 // you can't be both "questioning" and "loading" simultaneously,
 // which is a real bug that multiple boolean flags can produce.
-type QuizePhase = "questioning" | "loading" | "revealing";
+type QuizePhase =
+  | "questioning"
+  | "loading"
+  | "revealing"
+  | "rateLimited";
+
+type GenerateArcResponse = {
+  arc?: GeneratedArc;
+  arcId?: string;
+  error?: string;
+  code?: string;
+  latestArcId?: string | null;
+};
+
+type ArcStatusResponse = {
+  canForge?: boolean;
+  error?: string;
+  code?: string;
+  latestArcId?: string | null;
+};
 
 const QUESTIONS = [
   {
@@ -61,8 +80,101 @@ const QuizFlow = () => {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [arc, setArc] = useState<GeneratedArc | null>(null);
   const [arcId, setArcId] = useState<string | null>(null);
+  const [latestArcId, setLatestArcId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [rateLimitMessage, setRateLimitMessage] = useState<
+    string | null
+  >(null);
+  const [showErrorToast, setShowErrorToast] = useState(false);
+  const [isStatusChecking, setIsStatusChecking] = useState(true);
+  const toastTimeoutRef = useRef<number | null>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    return () => {
+      if (toastTimeoutRef.current !== null) {
+        window.clearTimeout(toastTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const triggerErrorToast = (message: string) => {
+    setError(message);
+    setShowErrorToast(true);
+
+    if (toastTimeoutRef.current !== null) {
+      window.clearTimeout(toastTimeoutRef.current);
+    }
+
+    toastTimeoutRef.current = window.setTimeout(() => {
+      setShowErrorToast(false);
+    }, 3200);
+  };
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    const checkForgeStatus = async () => {
+      try {
+        const localArcId = localStorage.getItem(
+          "arcforge_latest_arc_id",
+        );
+
+        if (localArcId && !isCancelled) {
+          setLatestArcId(localArcId);
+        }
+
+        const fingerprint = localStorage.getItem(
+          "arcforge_fingerprint",
+        );
+
+        const response = await fetch("/api/arc/status", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ fingerprint }),
+        });
+
+        if (!response.ok) {
+          return;
+        }
+
+        const data = (await response.json()) as ArcStatusResponse;
+
+        if (isCancelled) {
+          return;
+        }
+
+        if (data.latestArcId) {
+          setLatestArcId(data.latestArcId);
+          localStorage.setItem(
+            "arcforge_latest_arc_id",
+            data.latestArcId,
+          );
+        }
+
+        if (data.canForge === false) {
+          setRateLimitMessage(
+            data.error ?? "Arc creation is limited to once per day.",
+          );
+          triggerErrorToast("You forged your Arc today.");
+          setPhase("rateLimited");
+        }
+      } catch {
+        // If status pre-check fails we avoid blocking the user and
+        // continue with the normal forge flow.
+      } finally {
+        if (!isCancelled) {
+          setIsStatusChecking(false);
+        }
+      }
+    };
+
+    checkForgeStatus();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
 
   // This is the dramatic loading messages array — each message
   // appears for about 3 seconds while Claude is thinking.
@@ -100,7 +212,7 @@ const QuizFlow = () => {
     // Start cycling through loading messages every 3 seconds.
     // We store the interval ID so we can clear it when the
     // API call completes — otherwise it keeps cycling forever.
-    const messageInterval = setInterval(() => {
+    const messageInterval = window.setInterval(() => {
       setLoadingMessageIndex((prev) =>
         prev < LOADING_MESSAGES.length - 1 ? prev + 1 : prev,
       );
@@ -122,30 +234,80 @@ const QuizFlow = () => {
         }),
       });
 
-      const data = await response.json();
+      const data = (await response.json()) as GenerateArcResponse;
 
       if (!response.ok) {
-        throw new Error(data.error ?? "Something went wrong.");
+        const apiErrorMessage =
+          data.error ??
+          "Something went wrong while forging your Arc.";
+
+        const isDailyLimitError =
+          response.status === 429 ||
+          data.code === "DAILY_LIMIT_REACHED";
+
+        if (isDailyLimitError) {
+          if (data.latestArcId) {
+            setLatestArcId(data.latestArcId);
+            localStorage.setItem(
+              "arcforge_latest_arc_id",
+              data.latestArcId,
+            );
+          }
+
+          setRateLimitMessage(apiErrorMessage);
+          triggerErrorToast("You forged your Arc today.");
+          setPhase("rateLimited");
+          return;
+        }
+
+        triggerErrorToast(apiErrorMessage);
+        setPhase("questioning");
+        return;
       }
 
-      clearInterval(messageInterval);
+      if (!data.arc || !data.arcId) {
+        throw new Error("Arc response was incomplete.");
+      }
+
+      localStorage.setItem("arcforge_latest_arc_id", data.arcId);
+      setLatestArcId(data.arcId);
+
       setArc(data.arc);
       setArcId(data.arcId);
       router.push(`/arc/${data.arcId}?new=true`);
     } catch (err) {
-      clearInterval(messageInterval);
-      setError(
-        err instanceof Error ? err.message : "Something went wrong.",
-      );
+      const fallbackMessage =
+        err instanceof Error
+          ? err.message
+          : "Something went wrong while forging your Arc.";
+
+      triggerErrorToast(fallbackMessage);
       // We go back to questioning phase on error so the user
       // isn't stuck on a loading screen with no way forward.
       setPhase("questioning");
+    } finally {
+      window.clearInterval(messageInterval);
     }
   };
 
   // Phase rendering — each phase returns completely different UI.
   // This is cleaner than a single JSX tree with many conditionals
   // because each phase's UI is visually isolated and easy to reason about.
+
+  if (isStatusChecking && phase === "questioning") {
+    return (
+      <div className="min-h-[90vh] bg-forge-bg-deepest flex items-center justify-center px-6 py-12">
+        <div className="w-full max-w-xl rounded-2xl border border-[#6E5FE0]/25 bg-[#120d25] p-8 text-center">
+          <p className="text-xs uppercase tracking-[0.2em] text-[#9B8FF1] mb-4">
+            Awakening Gate
+          </p>
+          <p className="text-base text-[#CBC5F7]">
+            Checking your forge status...
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   if (phase === "loading") {
     return (
@@ -199,12 +361,62 @@ const QuizFlow = () => {
     );
   }
 
+  if (phase === "rateLimited") {
+    return (
+      <div className="min-h-[90vh] bg-forge-bg-deepest flex items-center justify-center px-6 py-12">
+        <div className="w-full max-w-2xl rounded-2xl border border-[#6E5FE0]/35 bg-[#120d25] p-8 md:p-10 shadow-[0_0_80px_-30px_rgba(111,94,224,0.75)]">
+          <p className="text-xs uppercase tracking-[0.2em] text-[#9B8FF1] mb-4">
+            Episode 01 Complete
+          </p>
+
+          <h2 className="text-3xl md:text-4xl font-semibold text-[#EEEDFE] leading-tight mb-4">
+            You forged your Arc today.
+          </h2>
+
+          <p className="text-base md:text-lg text-[#CBC5F7] leading-relaxed mb-3">
+            {rateLimitMessage ??
+              "Arc creation is limited to once per day."}
+          </p>
+
+          <p className="text-sm md:text-base text-[#AFA9EC] leading-relaxed mb-8">
+            Phase 2 coming soon with more features...
+          </p>
+
+          <div className="flex flex-wrap gap-3">
+            {latestArcId && (
+              <button
+                type="button"
+                onClick={() => router.push(`/arc/${latestArcId}`)}
+                className="px-5 py-2.5 rounded-lg bg-[#6E5FE0] text-[#EEEDFE] hover:bg-[#7F73E8] transition-colors cursor-pointer">
+                Open Today&apos;s Arc
+              </button>
+            )}
+
+            <button
+              type="button"
+              onClick={() => router.push("/")}
+              className="px-5 py-2.5 rounded-lg border border-[#6E5FE0]/50 text-[#CBC5F7] hover:border-[#7F73E8] hover:text-[#EEEDFE] transition-colors cursor-pointer">
+              Back to Home
+            </button>
+          </div>
+
+          {!latestArcId && (
+            <p className="text-xs text-[#8E87C8] mt-5">
+              Your previous arc link is not available on this device
+              yet.
+            </p>
+          )}
+        </div>
+      </div>
+    );
+  }
+
   // Default — questioning phase
   // In the questioning phase return in QuizFlow.tsx
   return (
     <div className="flex flex-col flex-1 bg-forge-bg-deepest">
       {/* Error toast — only renders when there's an error message */}
-      {error && (
+      {showErrorToast && error && (
         <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-red-900/90 text-[#EEEDFE] px-6 py-3 rounded-lg text-sm">
           {error}
         </div>

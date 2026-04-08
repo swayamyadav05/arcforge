@@ -1,23 +1,25 @@
 // src/app/arc/[id]/page.tsx
 // This is a server component that acts as a router between two experiences.
-// The ?new=true query param distinguishes the owner seeing their arc
-// for the first time from a visitor arriving via a shared link.
+// Owner view now depends on a signed server cookie rather than a
+// query parameter so private content is not exposed by URL tampering.
 // This distinction is made server-side before any JavaScript runs —
 // faster, better for SEO, and the correct architecture for Next.js.
 
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import Link from "next/link";
+import { cookies } from "next/headers";
 import prisma from "@/lib/prisma";
 import { GeneratedArc } from "@/types/arc";
 import ArcCard from "@/components/arc/ArcCard";
 import ArcReveal from "@/components/arc/ArcReveal";
+import {
+  hasOwnerAccess,
+  OWNER_SESSION_COOKIE,
+} from "@/lib/ownerSession";
 
 interface ArcPageProps {
   params: Promise<{ id: string }>;
-  // searchParams gives us access to query parameters like ?new=true.
-  // Next.js passes these as a Promise in the App Router — always await them.
-  searchParams: Promise<{ new?: string }>;
 }
 
 async function getArc(id: string) {
@@ -53,15 +55,17 @@ export async function generateMetadata({
   };
 }
 
-export default async function ArcPage({
-  params,
-  searchParams,
-}: ArcPageProps) {
+export default async function ArcPage({ params }: ArcPageProps) {
   const { id } = await params;
-  const { new: isNew } = await searchParams;
 
   const arc = await getArc(id);
   if (!arc) notFound();
+
+  const cookieStore = await cookies();
+  const ownerSessionCookie = cookieStore.get(
+    OWNER_SESSION_COOKIE,
+  )?.value;
+  const isOwner = hasOwnerAccess(ownerSessionCookie, id);
 
   const arcData = arc.arcData as unknown as GeneratedArc;
   // The share URL is the canonical public URL — no query params.
@@ -69,10 +73,7 @@ export default async function ArcPage({
   const shareUrl = `https://arcforge.me/arc/${id}`;
 
   // ── Owner reveal experience ──────────────────────────────────────
-  // isNew is "true" (a string, not a boolean) when present in the URL.
-  // We check for truthiness rather than strict equality because
-  // Next.js searchParams values are always strings or undefined.
-  if (isNew) {
+  if (isOwner) {
     return (
       // ArcReveal is a client component that handles animations
       // and browser APIs like clipboard. We pass all arc data as
