@@ -160,6 +160,14 @@ export default function ArcReveal({
             <div className="space-y-4 text-sm">
               <div>
                 <div className="text-purple-400 font-medium mb-1">
+                  Ability
+                </div>
+                <div className="text-purple-100/80">
+                  {arc.signature_move}
+                </div>
+              </div>
+              <div>
+                <div className="text-purple-400 font-medium mb-1">
                   Conviction
                 </div>
                 <div className="text-purple-100/80">

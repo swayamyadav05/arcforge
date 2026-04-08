@@ -1,5 +1,6 @@
 // src/components/arc/ArcCard.tsx
 import { GeneratedArc, ArcRarity } from "@/types/arc";
+import Link from "next/link";
 
 interface ArcCardProps {
   arc: GeneratedArc;
@@ -78,7 +79,6 @@ export default function ArcCard({
           {rarity.toUpperCase()}
         </div>
       </div>
-
       {/* Character name */}
       <h2
         style={{
@@ -91,7 +91,6 @@ export default function ArcCard({
         }}>
         {arc.character_name}
       </h2>
-
       {/* Archetype */}
       <div
         style={{
@@ -101,61 +100,60 @@ export default function ArcCard({
         }}>
         {arc.archetype}
       </div>
-
-      {/* Ability — signature move framed as a superpower */}
+      {/* Opening quote — truncated to 100 chars for card context.
+          The full quote appears in the page header above the card. */}
       <div
         style={{
           fontSize: "14px",
           color: "rgba(255, 255, 255, 0.9)",
           marginBottom: "24px",
+          textAlign: "justify",
           lineHeight: "1.6",
         }}>
-        <span
-          style={{
-            color: "rgba(209, 196, 255, 1)",
-            fontWeight: "500",
-          }}>
-          Ability:
-        </span>{" "}
-        {arc.signature_move}
+        {arc.episode_one_scenario}
+      </div>
+      {/* Numeric stats — 2x2 grid, label left value right */}
+      <div
+        style={{
+          paddingTop: "16px",
+          borderTop: "1px solid rgba(147, 129, 255, 0.2)",
+        }}>
+        {arc.numeric_stats && (
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "12px",
+              marginBottom: "24px",
+              fontSize: "14px",
+            }}>
+            {(
+              [
+                ["Resolve", arc.numeric_stats.resolve],
+                ["Chaos", arc.numeric_stats.chaos],
+                ["Empathy", arc.numeric_stats.empathy],
+                ["Focus", arc.numeric_stats.focus],
+              ] as [string, number][]
+            ).map(([label, value]) => (
+              <div
+                key={label}
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}>
+                <span style={{ color: "rgba(209, 196, 255, 1)" }}>
+                  {label}
+                </span>
+                <span style={{ color: "#ffffff", fontWeight: "500" }}>
+                  {value}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* Numeric stats — 2x2 grid, label left value right */}
-      {arc.numeric_stats && (
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "12px",
-            marginBottom: "24px",
-            fontSize: "14px",
-          }}>
-          {(
-            [
-              ["Resolve", arc.numeric_stats.resolve],
-              ["Chaos", arc.numeric_stats.chaos],
-              ["Empathy", arc.numeric_stats.empathy],
-              ["Focus", arc.numeric_stats.focus],
-            ] as [string, number][]
-          ).map(([label, value]) => (
-            <div
-              key={label}
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-              }}>
-              <span style={{ color: "rgba(209, 196, 255, 1)" }}>
-                {label}
-              </span>
-              <span style={{ color: "#ffffff", fontWeight: "500" }}>
-                {value}
-              </span>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Rival and mentor */}
+      {/* Rival and mentor
       <div style={{ marginBottom: "24px", fontSize: "12px" }}>
         {[
           ["Rival", arc.rivals_and_mentors.the_rival.name],
@@ -176,11 +174,10 @@ export default function ArcCard({
             </span>
           </div>
         ))}
-      </div>
+      </div> */}
 
-      {/* Opening quote — truncated to 100 chars for card context.
-          The full quote appears in the page header above the card. */}
-      <div
+      {/* Ability — signature move framed as a superpower */}
+      {/* <div
         style={{
           fontStyle: "italic",
           fontSize: "14px",
@@ -188,8 +185,15 @@ export default function ArcCard({
           lineHeight: "1.6",
           marginBottom: "24px",
         }}>
-        &quot;{arc.episode_one_scenario?.substring(0, 100)}...&quot;
-      </div>
+        <span
+          style={{
+            color: "rgba(209, 196, 255, 1)",
+            fontWeight: "500",
+          }}>
+          Ability:
+        </span>{" "}
+        {arc.signature_move}
+      </div> */}
 
       {/* Locked final form */}
       <div
@@ -197,14 +201,14 @@ export default function ArcCard({
           paddingTop: "16px",
           borderTop: "1px solid rgba(147, 129, 255, 0.2)",
         }}>
-        <div
+        {/* <div
           style={{
             fontSize: "11px",
             color: "rgba(209, 196, 255, 0.6)",
             marginBottom: "8px",
           }}>
           FINAL FORM // LOCKED
-        </div>
+        </div> */}
         <div
           style={{
             display: "flex",
@@ -228,7 +232,10 @@ export default function ArcCard({
             fontSize: "11px",
             color: "rgba(209, 196, 255, 0.6)",
           }}>
-          unlock on arcforge.me
+          <span>
+            unlock more on{" "}
+            <Link href={"arcforge.me"}>arcforge.me</Link>
+          </span>
         </div>
       </div>
     </div>
