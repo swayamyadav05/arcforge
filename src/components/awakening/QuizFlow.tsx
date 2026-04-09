@@ -1,5 +1,6 @@
 "use client";
 
+import { getOrCreateFingerprint } from "@/lib/fingerprint";
 import { GeneratedArc } from "@/types/arc";
 import { useEffect, useRef, useState } from "react";
 import QuestionCard from "./QuestionCard";
@@ -124,9 +125,7 @@ const QuizFlow = () => {
           setLatestArcId(localArcId);
         }
 
-        const fingerprint = localStorage.getItem(
-          "arcforge_fingerprint",
-        );
+        const fingerprint = await getOrCreateFingerprint();
 
         const response = await fetch("/api/arc/status", {
           method: "POST",
@@ -219,11 +218,7 @@ const QuizFlow = () => {
     }, 3000);
 
     try {
-      // Get the fingerprint from localStorage where
-      // FingerprintJS stored it on page load.
-      const fingerprint = localStorage.getItem(
-        "arcforge_fingerprint",
-      );
+      const fingerprint = await getOrCreateFingerprint();
 
       const response = await fetch("/api/arc/generate", {
         method: "POST",

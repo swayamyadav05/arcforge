@@ -8,6 +8,8 @@
 import { motion } from "motion/react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { getOrCreateFingerprint } from "@/lib/fingerprint";
+import { useEffect, useState } from "react";
 // Point to your existing ArcCard, not the Vite version.
 // Note: ArcCard uses inline styles throughout (required for @vercel/og
 // compatibility), so it works fine inside a client component.
@@ -74,12 +76,63 @@ const SAMPLE_ARC: GeneratedArc = {
   },
 };
 
+type ArcStatusResponse = {
+  latestArcId?: string | null;
+};
+
 export default function Hero() {
+  const [latestArcId, setLatestArcId] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    const hydrateLatestArc = async () => {
+      try {
+        const localArcId = localStorage.getItem(
+          "arcforge_latest_arc_id",
+        );
+
+        if (localArcId && !isCancelled) {
+          setLatestArcId(localArcId);
+        }
+
+        const fingerprint = await getOrCreateFingerprint();
+
+        const response = await fetch("/api/arc/status", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ fingerprint }),
+        });
+
+        if (!response.ok) {
+          return;
+        }
+
+        const data = (await response.json()) as ArcStatusResponse;
+
+        if (isCancelled || !data.latestArcId) {
+          return;
+        }
+
+        setLatestArcId(data.latestArcId);
+        localStorage.setItem(
+          "arcforge_latest_arc_id",
+          data.latestArcId,
+        );
+      } catch {
+        // If status lookup fails, we keep the default hero CTAs.
+      }
+    };
+
+    hydrateLatestArc();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
+
   return (
-    // Using the same grid structure as the Figma export.
-    // max-w-screen-2xl keeps the content from getting too wide on large monitors.
-    // pt-32 creates space below the fixed navbar (which is 80px tall).
-    <section className="max-w-screen-2xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center px-8 pt-10 pb-16">
+    <section className="max-w-screen-2xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center px-4 sm:px-6 lg:px-8 pt-10 pb-16 overflow-x-clip">
       {/* Left column — animated slide-in from the left on page load.
           The animation values match what Figma AI Studio generated exactly.
           duration defaults to 0.6s which feels right for a landing page. */}
@@ -129,6 +182,14 @@ export default function Hero() {
             Button's visual treatment on the Link element rather than
             wrapping Link inside a button (which would be invalid HTML). */}
         <div className="flex flex-col sm:flex-row gap-4 pt-4">
+          {latestArcId && (
+            <Button variant="secondary" size="lg" asChild>
+              <Link href={`/arc/${latestArcId}`}>
+                Continue my arc
+              </Link>
+            </Button>
+          )}
+
           <Button variant="default" size="lg" asChild>
             <Link href="/awakening">Forge my arc →</Link>
           </Button>
@@ -171,57 +232,51 @@ export default function Hero() {
         initial={{ opacity: 0, x: 50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="relative flex justify-center lg:justify-end">
-        <div className="relative flex justify-center lg:justify-end pt-10">
-          {/* Atmospheric glow behind everything */}
-          <div className="absolute -top-15 -right-15 w-100 h-100 bg-[rgba(83,74,183,0.18)] blur-[100px] rounded-full pointer-events-none z-0" />
+        className="relative flex justify-center lg:justify-end overflow-x-clip">
+        {/* Atmospheric glow behind the desktop card stack */}
+        <div className="absolute -top-15 -right-15 w-100 h-100 blur-[100px] rounded-full pointer-events-none z-0 hidden lg:block" />
 
-          {/* Stack container — wide enough to show left-peeking cards
-      without clipping them. The extra left padding (60px) creates
-      space for the rotated background cards to extend into without
-      being cut off by the container boundary. */}
-          <div className="relative w-125 h-150 pl-15">
-            {/* Background card — furthest back, most tilted counter-clockwise.
-        Positioned slightly left and down relative to the front card.
-        translateX(-40px) pushes it 40px to the left so it peeks out
-        on that side. The negative rotation fans it leftward naturally. */}
-            <div className="absolute top-5 left-0 z-1 -rotate-[5deg] -translate-x-7.5 opacity-[0.45] pointer-events-none">
-              <ArcCard
-                arc={SAMPLE_ARC}
-                arcId="i38CqFEH"
-                compact={true}
-              />
-            </div>
+        {/* Mobile/tablet card — single centered card to avoid horizontal overflow */}
+        <div className="lg:hidden w-full max-w-85 mx-auto">
+          <ArcCardInteractive
+            arc={SAMPLE_ARC}
+            arcId="i38CqFEH"
+            shareUrl="https://arcforge.me/arc/i38CqFEH"
+            compact={true}
+          />
+        </div>
 
-            {/* Middle card — moderately tilted, sits between front and back.
-        Less offset than the background card so the peek is subtler.
-        The opacity is higher than the back card — it's closer to the
-        viewer conceptually, so it appears more present. */}
-            <div className="absolute top-2.5 left-5 z-2 -rotate-[2.5deg] -translate-x-3.75 opacity-[0.65] pointer-events-none">
-              <ArcCard
-                arc={SAMPLE_ARC}
-                arcId="i38CqFEH"
-                compact={true}
-              />
-            </div>
+        {/* Desktop card stack */}
+        <div className="hidden lg:block relative w-125 h-150 pl-15 pt-10">
+          <div className="absolute top-5 left-0 z-1 -rotate-[5deg] -translate-x-7.5 opacity-[0.45] pointer-events-none">
+            <ArcCard
+              arc={SAMPLE_ARC}
+              arcId="i38CqFEH"
+              compact={true}
+            />
+          </div>
 
-            {/* Front card — no rotation, full opacity, sits on top.
-        Positioned at the right side of the container so the
-        background cards extend visibly to its left. */}
-            <div
-              style={{
-                position: "absolute",
-                top: "0px",
-                left: "60px",
-                zIndex: 3,
-              }}>
-              <ArcCardInteractive
-                arc={SAMPLE_ARC}
-                arcId="i38CqFEH"
-                shareUrl="https://arcforge.me/arc/i38CqFEH"
-                compact={true}
-              />
-            </div>
+          <div className="absolute top-2.5 left-5 z-2 -rotate-[2.5deg] -translate-x-3.75 opacity-[0.65] pointer-events-none">
+            <ArcCard
+              arc={SAMPLE_ARC}
+              arcId="i38CqFEH"
+              compact={true}
+            />
+          </div>
+
+          <div
+            style={{
+              position: "absolute",
+              top: "0px",
+              left: "60px",
+              zIndex: 3,
+            }}>
+            <ArcCardInteractive
+              arc={SAMPLE_ARC}
+              arcId="i38CqFEH"
+              shareUrl="https://arcforge.me/arc/i38CqFEH"
+              compact={true}
+            />
           </div>
         </div>
       </motion.div>
