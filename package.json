@@ -16,6 +16,7 @@
     "@fingerprintjs/fingerprintjs": "^5.2.0",
     "@prisma/adapter-pg": "^7.6.0",
     "@prisma/client": "^7.6.0",
+    "@sentry/nextjs": "10",
     "@vercel/og": "^0.11.1",
     "ai": "^6.0.142",
     "class-variance-authority": "^0.7.1",
