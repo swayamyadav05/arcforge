@@ -8,11 +8,9 @@ import { PostHog } from "posthog-node";
 // on every API call.
 const posthog = new PostHog(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
   host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
-  // flushAt 1 means events are sent immediately rather than
-  // batched — important for serverless functions which may
-  // not stay alive long enough to flush a batch.
   flushAt: 1,
   flushInterval: 0,
+  disabled: process.env.NODE_ENV === "development",
 });
 
 export default posthog;
