@@ -119,7 +119,7 @@ npx prisma migrate deploy
 npm run dev
 ```
 
-The application runs at `http://localhost:3000`. Navigate to `/awakening` to go through the full arc generation flow, or visit `/arc/YH6WyMMS` to see a sample arc's public share page.
+The application runs at `http://localhost:3000`. Navigate to `/awakening` to go through the full arc generation flow, or visit `/arc/-eTpPVSp` to see a sample arc's public share page.
 
 ---
 

@@ -44,7 +44,7 @@ export default function Navbar() {
         {!isQuizRoute && (
           <div className="hidden md:flex items-center gap-6">
             <Link
-              href="/arc/YH6WyMMS"
+              href="/arc/-eTpPVSp"
               className="text-sm font-medium text-[#D8B4FE] no-underline hover:text-[#EEEDFE] transition-colors duration-200">
               See a sample arc
             </Link>

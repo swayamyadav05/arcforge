@@ -197,7 +197,7 @@ export default function Hero() {
           {/* Secondary button — outline variant, links to the sample arc
               we generated during testing so visitors can see a real output. */}
           <Button variant="outline" size="lg" asChild>
-            <Link href="/arc/YH6WyMMS">See a sample arc</Link>
+            <Link href="/arc/-eTpPVSp">See a sample arc</Link>
           </Button>
         </div>
 
@@ -240,8 +240,8 @@ export default function Hero() {
         <div className="lg:hidden w-full max-w-85 mx-auto">
           <ArcCardInteractive
             arc={SAMPLE_ARC}
-            arcId="YH6WyMMS"
-            shareUrl="https://arcforge.me/arc/YH6WyMMS"
+            arcId="-eTpPVSp"
+            shareUrl="https://arcforge.me/arc/-eTpPVSp"
             compact={true}
           />
         </div>
@@ -251,7 +251,7 @@ export default function Hero() {
           <div className="absolute top-5 left-0 z-1 -rotate-[5deg] -translate-x-7.5 opacity-[0.45] pointer-events-none">
             <ArcCard
               arc={SAMPLE_ARC}
-              arcId="YH6WyMMS"
+              arcId="-eTpPVSp"
               compact={true}
             />
           </div>
@@ -259,7 +259,7 @@ export default function Hero() {
           <div className="absolute top-2.5 left-5 z-2 -rotate-[2.5deg] -translate-x-3.75 opacity-[0.65] pointer-events-none">
             <ArcCard
               arc={SAMPLE_ARC}
-              arcId="YH6WyMMS"
+              arcId="-eTpPVSp"
               compact={true}
             />
           </div>
@@ -273,8 +273,8 @@ export default function Hero() {
             }}>
             <ArcCardInteractive
               arc={SAMPLE_ARC}
-              arcId="YH6WyMMS"
-              shareUrl="https://arcforge.me/arc/YH6WyMMS"
+              arcId="-eTpPVSp"
+              shareUrl="https://arcforge.me/arc/-eTpPVSp"
               compact={true}
             />
           </div>
