@@ -7,6 +7,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import ArcCard from "./ArcCard";
 import { GeneratedArc } from "@/types/arc";
+import { usePostHog } from "posthog-js/react";
 
 interface ArcRevealProps {
   arc: GeneratedArc;
@@ -24,6 +25,8 @@ export default function ArcReveal({
   // since we don't have sonner installed and it's cleaner anyway.
   const [copied, setCopied] = useState(false);
 
+  const posthog = usePostHog();
+
   useEffect(() => {
     // Emergent uses 100ms — matches their exact fade-in timing
     const timer = setTimeout(() => setIsVisible(true), 100);
@@ -31,7 +34,11 @@ export default function ArcReveal({
   }, []);
 
   async function handleShare() {
-    if (navigator.share) {
+    posthog.capture("share_clicked", {
+      arcId,
+      method: "native_share",
+    });
+    if (typeof navigator.share === "function") {
       await navigator.share({
         title: `My Arc: ${arc.character_name}`,
         text: arc.opening_episode_quote,
@@ -43,6 +50,10 @@ export default function ArcReveal({
   }
 
   async function handleCopyLink() {
+    posthog.capture("share_clicked", {
+      arcId,
+      method: "copy_link",
+    });
     await navigator.clipboard.writeText(shareUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);

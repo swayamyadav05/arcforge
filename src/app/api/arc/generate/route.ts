@@ -5,6 +5,7 @@ import {
   OWNER_SESSION_MAX_AGE_SECONDS,
   readOwnerArcIds,
 } from "@/lib/ownerSession";
+import posthog from "@/lib/posthog";
 import prisma from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/rateLimit";
 import { nanoid } from "nanoid";
@@ -65,6 +66,13 @@ export async function POST(req: NextRequest) {
     const allowed = await checkRateLimit(ip, fingerprint ?? null);
 
     if (!allowed) {
+      posthog.capture({
+        distinctId: ip,
+        event: "rate_limit_hit",
+        properties: {
+          fingerprint: fingerprint ?? null,
+        },
+      });
       const latestOwnedArcId =
         readOwnerArcIds(
           req.cookies.get(OWNER_SESSION_COOKIE)?.value,
@@ -89,6 +97,14 @@ export async function POST(req: NextRequest) {
         },
       );
     }
+
+    posthog.capture({
+      distinctId: ip,
+      event: "arc_generation_started",
+      properties: {
+        fingerprint: fingerprint ?? null,
+      },
+    });
 
     // -- Step 4: Call Claude --
     const { arc, usage } = await generateArc(answers);
@@ -170,6 +186,19 @@ export async function POST(req: NextRequest) {
         );
       });
 
+    posthog.capture({
+      distinctId: ip,
+      event: "arc_generation_completed",
+      properties: {
+        arcId,
+        rarity: arc.rarity,
+        character_name: arc.character_name,
+        tokens_input: usage.input_tokens,
+        tokens_output: usage.output_tokens,
+        cost_usd: costUsd,
+      },
+    });
+
     // -- Step 7: Return the response --
     // We return both the generated arc data AND the arcId.
     // The frontend needs arcId immediately to construct the
@@ -202,6 +231,14 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     // -- Global error handler--
     console.error("[arc/generate] Unhandled error:", error);
+
+    posthog.capture({
+      distinctId: "unknown",
+      event: "arc_generation_failed",
+      properties: {
+        error: error instanceof Error ? error.message : "unknown",
+      },
+    });
 
     return NextResponse.json(
       {

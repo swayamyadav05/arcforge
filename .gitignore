@@ -45,3 +45,4 @@ next-env.d.ts
 # IDE
 /AGENTS.md
 /CLAUDE.md
+.env.local
