@@ -1,13 +1,10 @@
-// This route runs on Node.js runtime because we read font files
-// from disk with fs/promises before rendering the image.
-// @vercel/og can run in multiple runtimes, but this implementation
-// intentionally uses Node APIs for font loading.
+// This route runs on Node.js runtime.
+// Fonts are loaded through public asset URLs so rendering works
+// consistently across local dev and deployed environments.
 
 import { ImageResponse } from "@vercel/og";
 import { GeneratedArc } from "@/types/arc";
 import { NextRequest } from "next/server";
-import { readFile } from "fs/promises";
-import { join } from "path";
 
 export const runtime = "nodejs";
 
@@ -50,11 +47,28 @@ export async function GET(
 
     const arcData = (await arcResponse.json()) as GeneratedArc;
 
-    const fontsDir = join(process.cwd(), "src", "fonts");
+    const interRegularUrl = new URL(
+      "/fonts/Inter-Regular.ttf",
+      req.nextUrl.origin,
+    );
+    const interItalicUrl = new URL(
+      "/fonts/Inter-Italic.ttf",
+      req.nextUrl.origin,
+    );
+
+    const [interRegularResponse, interItalicResponse] =
+      await Promise.all([
+        fetch(interRegularUrl, { cache: "force-cache" }),
+        fetch(interItalicUrl, { cache: "force-cache" }),
+      ]);
+
+    if (!interRegularResponse.ok || !interItalicResponse.ok) {
+      throw new Error("Failed to load OG font assets");
+    }
 
     const [interRegular, interItalic] = await Promise.all([
-      readFile(join(fontsDir, "Inter-Regular.ttf")),
-      readFile(join(fontsDir, "Inter-Italic.ttf")),
+      interRegularResponse.arrayBuffer(),
+      interItalicResponse.arrayBuffer(),
     ]);
 
     // ImageResponse takes a JSX element and it as a PNG.
