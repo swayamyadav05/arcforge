@@ -232,10 +232,7 @@ export default function ArcCard({
             fontSize: "11px",
             color: "rgba(209, 196, 255, 0.6)",
           }}>
-          <span>
-            unlock more on{" "}
-            <Link href={"arcforge.me"}>arcforge.me</Link>
-          </span>
+          <span>unlock more on arcforge.me</span>
         </div>
       </div>
     </div>
