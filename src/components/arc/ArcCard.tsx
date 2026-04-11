@@ -1,6 +1,5 @@
 // src/components/arc/ArcCard.tsx
 import { GeneratedArc, ArcRarity } from "@/types/arc";
-import Link from "next/link";
 
 interface ArcCardProps {
   arc: GeneratedArc;
