@@ -1,13 +1,7 @@
-// This route runs on Vercel's Edge Runtime — a lightweight
-// execution environment that's geographically distributed
-// across Vercel's global network. When someone in Tokyo
-// shares an arc link and a Discord crawler in Singapore
-// requests the OG image, it gets served from the nearest
-// edge node rather than a single server somewhere.
-// This is why we use Edge here and Node.js in the generate
-// route — each runtime is the right tool for its specific job.
-// Edge is fast for simple read + render operations.
-// Node.js is necessary for Prisma's database drivers.
+// This route runs on Node.js runtime because we read font files
+// from disk with fs/promises before rendering the image.
+// @vercel/og can run in multiple runtimes, but this implementation
+// intentionally uses Node APIs for font loading.
 
 import { ImageResponse } from "@vercel/og";
 import { GeneratedArc } from "@/types/arc";
@@ -38,19 +32,17 @@ export async function GET(
   try {
     const { id } = await params;
 
-    // Fetch the arc from the database.
-    // Note: because we're on the Edge runtime, we can't use
-    // Prisma here — Prisma requires Node.js native modules
-    // that the Edge runtime doesn't provide. Instead we make
-    // a direct fetch call to our own API to get the arc data.
-    // This is a deliberate architectural pattern: the Edge
-    // function calls back into our own Node.js API route,
-    // which handles the Prisma query and returns the data.
-    // It's one extra network hop but it keeps the runtimes clean.
-    const baseUrl =
-      process.env.NEXT_PUBLIC_APP_URL ?? "https://arcforge.me";
+    // Resolve the base URL from the incoming request so OG rendering
+    // works in local dev, preview deployments, and production domains
+    // without relying on NEXT_PUBLIC_APP_URL configuration.
+    const arcApiUrl = new URL(
+      `/api/arc/${id}`,
+      req.nextUrl.origin,
+    );
 
-    const arcResponse = await fetch(`${baseUrl}/api/arc/${id}`);
+    const arcResponse = await fetch(arcApiUrl, {
+      cache: "no-store",
+    });
 
     if (!arcResponse.ok) {
       return new Response("Arc not found", { status: 404 });

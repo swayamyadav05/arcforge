@@ -5,6 +5,7 @@ import { GeneratedArc } from "@/types/arc";
 import { useEffect, useRef, useState } from "react";
 import QuestionCard from "./QuestionCard";
 import { useRouter } from "next/navigation";
+import { usePostHog } from "posthog-js/react";
 
 // These are the three phases the quiz can be in at any moment.
 // Modelling them as a union type rather than multiple booleans
@@ -90,6 +91,7 @@ const QuizFlow = () => {
   const [isStatusChecking, setIsStatusChecking] = useState(true);
   const toastTimeoutRef = useRef<number | null>(null);
   const router = useRouter();
+  const posthog = usePostHog();
 
   useEffect(() => {
     return () => {
@@ -196,10 +198,11 @@ const QuizFlow = () => {
     const newAnswers = { ...answers, [question.id]: answer };
     setAnswers(newAnswers);
 
+    if (currentIndex === 0) {
+      posthog.capture("quiz_started");
+    }
+
     if (currentIndex < QUESTIONS.length - 1) {
-      // Not the last question — advance to the next one.
-      // We increment the index which causes QuizFlow to
-      // re-render with the next question's data.
       setCurrentIndex(currentIndex + 1);
       return;
     }

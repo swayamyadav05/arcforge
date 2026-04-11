@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Outfit, Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/landing/Navbar";
+import { PostHogProvider } from "@/components/PostHogProvider";
 import { Suspense } from "react";
 // import Footer from "@/components/landing/Footer";
 
@@ -84,11 +85,13 @@ export default function RootLayout({
       lang="en"
       className={`${outfit.variable} ${inter.variable}`}>
       <body className="antialiased">
-        <Suspense fallback={null}>
-          <Navbar />
-        </Suspense>
-        <div className="mt-18 bg-forge-bg-deepest">{children}</div>
-        {/* <Footer /> */}
+        <PostHogProvider>
+          <Suspense fallback={null}>
+            <Navbar />
+          </Suspense>
+          <div className="mt-18 bg-forge-bg-deepest">{children}</div>
+          {/* <Footer /> */}
+        </PostHogProvider>
       </body>
     </html>
   );
