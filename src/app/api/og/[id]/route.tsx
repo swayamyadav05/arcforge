@@ -38,7 +38,7 @@ export async function GET(
     const arcApiUrl = new URL(`/api/arc/${id}`, req.nextUrl.origin);
 
     const arcResponse = await fetch(arcApiUrl, {
-      cache: "no-store",
+      cache: "force-cache",
     });
 
     if (!arcResponse.ok) {
@@ -311,6 +311,9 @@ export async function GET(
       {
         width: 1200,
         height: 630,
+        headers: {
+          "Cache-Control": "public, max-age=31536000, immutable",
+        },
         // 1200x630 is the universal Open Graph image standard.
         // Every major platform — Twitter, Discord, LinkedIn,
         // iMessage, Slack — uses this exact ratio for link previews.

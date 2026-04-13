@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
 import { Filter, Plus, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SignOutButton from "@/components/dashboard/SignOutButton";
@@ -146,11 +147,14 @@ export default function DashboardClient({
                   </Link>
                 </Button>
 
-                <Link
-                  href="/gallery"
+                <button
+                  type="button"
+                  onClick={() =>
+                    toast("Public gallery coming soon — stay tuned.")
+                  }
                   className="text-sm text-purple-400/70 no-underline transition-colors duration-300 hover:text-purple-300">
                   Explore others&apos; arcs →
-                </Link>
+                </button>
               </div>
             </div>
           </div>

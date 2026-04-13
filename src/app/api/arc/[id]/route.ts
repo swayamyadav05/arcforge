@@ -36,7 +36,11 @@ export async function GET(
     // other internal fields because this endpoint is
     // publicly accessible by design (social crawlers need
     // it), and there's no reason to expose internal metadata.
-    return NextResponse.json(arc.arcData);
+    return NextResponse.json(arc.arcData, {
+      headers: {
+        "Cache-Control": "public, max-age=31536000, immutable",
+      },
+    });
   } catch (error) {
     console.error("[api/arc/[id]] Error:", error);
     return NextResponse.json(
