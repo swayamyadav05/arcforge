@@ -25,6 +25,7 @@ export default function QuestionCard({
   totalQuestions,
   onAnswer,
 }: QuestionCardProps) {
+  const MIN_ANSWER_CHARACTERS = 50;
   const [value, setValue] = useState("");
   const [isVisible, setIsVisible] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -36,10 +37,11 @@ export default function QuestionCard({
   }, []);
 
   const isLastQuestion = questionNumber === totalQuestions;
-  const hasContent = value.trim().length > 0;
+  const answerLength = value.trim().length;
+  const hasMinimumCharacters = answerLength >= MIN_ANSWER_CHARACTERS;
 
   function handleNext() {
-    if (!hasContent) return;
+    if (!hasMinimumCharacters) return;
     setIsVisible(false);
     setTimeout(() => onAnswer(value.trim()), 300);
   }
@@ -92,14 +94,14 @@ export default function QuestionCard({
 
           <div className="flex justify-between items-center">
             <span className="text-sm text-purple-400/60">
-              {hasContent
-                ? `${value.length} characters`
-                : "Take your time. Be honest."}
+              {hasMinimumCharacters
+                ? `${answerLength} characters`
+                : "Keep going - the more specific you are, the more your arc will reveal"}
             </span>
 
             <Button
               onClick={handleNext}
-              disabled={!hasContent}
+              disabled={!hasMinimumCharacters}
               className="bg-linear-to-r from-[#534AB7] to-[#6B5FD8] hover:from-[#6B5FD8] hover:to-[#7F73E8] text-white px-8 py-6 rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
               {isLastQuestion ? "Forge my arc" : "Next"}
               <ArrowRight className="ml-2 w-5 h-5" />

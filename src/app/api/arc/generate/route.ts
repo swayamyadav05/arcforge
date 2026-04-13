@@ -14,6 +14,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 type GenerateArcErrorCode =
   | "INVALID_ANSWERS"
+  | "UNAUTHORIZED"
   | "DAILY_LIMIT_REACHED"
   | "ARC_GENERATION_FAILED";
 
@@ -49,6 +50,20 @@ export async function POST(req: NextRequest) {
       answers: Record<string, string>;
       fingerprint: string | null;
     };
+
+    const session = await auth.api.getSession({
+      headers: req.headers,
+    });
+
+    if (!session) {
+      return NextResponse.json(
+        {
+          code: "UNAUTHORIZED" as GenerateArcErrorCode,
+          error: "You must be signed in to forge an arc.",
+        },
+        { status: 401 },
+      );
+    }
 
     // Basic validation - we need exactly 8 answers.
     // We check the count rather than individual keys so the validation stays resilient if we rename questions later.
@@ -138,10 +153,6 @@ export async function POST(req: NextRequest) {
     const arcId = nanoid(8);
     const shareUrl = `${baseUrl}/arc/${arcId}`;
 
-    const session = await auth.api.getSession({
-      headers: req.headers,
-    });
-
     const arc_record = await prisma.arc.create({
       data: {
         id: arcId,
@@ -149,7 +160,7 @@ export async function POST(req: NextRequest) {
         arcData: arc as object,
         ipAddress: ip,
         fingerprint: fingerprint ?? null,
-        userId: session?.user?.id ?? null,
+        userId: session.user.id,
       },
     });
 

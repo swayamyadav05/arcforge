@@ -272,7 +272,7 @@ const QuizFlow = () => {
 
       setArc(data.arc);
       setArcId(data.arcId);
-      router.push(`/arc/${data.arcId}?new=true`);
+      router.push("/dashboard");
     } catch (err) {
       const fallbackMessage =
         err instanceof Error
