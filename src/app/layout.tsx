@@ -5,6 +5,7 @@ import "./globals.css";
 import Navbar from "@/components/landing/Navbar";
 import { PostHogProvider } from "@/components/PostHogProvider";
 import { Suspense } from "react";
+import { Toaster } from "sonner";
 // import Footer from "@/components/landing/Footer";
 
 const inter = Inter({
@@ -91,6 +92,7 @@ export default function RootLayout({
           </Suspense>
           <div className="bg-forge-bg-deepest">{children}</div>
           {/* <Footer /> */}
+          <Toaster position="top-center" richColors theme="dark" />
         </PostHogProvider>
       </body>
     </html>
