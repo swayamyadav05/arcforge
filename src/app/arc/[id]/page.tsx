@@ -8,7 +8,7 @@
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import Link from "next/link";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import prisma from "@/lib/prisma";
 import { GeneratedArc } from "@/types/arc";
 import ArcCard from "@/components/arc/ArcCard";
@@ -17,6 +17,7 @@ import {
   hasOwnerAccess,
   OWNER_SESSION_COOKIE,
 } from "@/lib/ownerSession";
+import { auth } from "@/lib/auth";
 
 interface ArcPageProps {
   params: Promise<{ id: string }>;
@@ -61,11 +62,9 @@ export default async function ArcPage({ params }: ArcPageProps) {
   const arc = await getArc(id);
   if (!arc) notFound();
 
-  const cookieStore = await cookies();
-  const ownerSessionCookie = cookieStore.get(
-    OWNER_SESSION_COOKIE,
-  )?.value;
-  const isOwner = hasOwnerAccess(ownerSessionCookie, id);
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
   const arcData = arc.arcData as unknown as GeneratedArc;
   // The share URL is the canonical public URL — no query params.
@@ -73,7 +72,22 @@ export default async function ArcPage({ params }: ArcPageProps) {
   const shareUrl = `https://arcforge.me/arc/${id}`;
 
   // ── Owner reveal experience ──────────────────────────────────────
-  if (isOwner) {
+  if (session && arc.userId === session.user.id) {
+    return (
+      // ArcReveal is a client component that handles animations
+      // and browser APIs like clipboard. We pass all arc data as
+      // props so it has everything it needs without making its own
+      // database call — the server component already fetched it.
+      <ArcReveal arc={arcData} arcId={id} shareUrl={shareUrl} />
+    );
+  }
+
+  const cookieStore = await cookies();
+  const ownerSessionCookie = cookieStore.get(
+    OWNER_SESSION_COOKIE,
+  )?.value;
+
+  if (hasOwnerAccess(ownerSessionCookie, id)) {
     return (
       // ArcReveal is a client component that handles animations
       // and browser APIs like clipboard. We pass all arc data as

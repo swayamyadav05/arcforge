@@ -8,8 +8,7 @@
 import { motion } from "motion/react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { getOrCreateFingerprint } from "@/lib/fingerprint";
-import { useEffect, useState } from "react";
+import { useSession } from "@/lib/auth-client";
 // Point to your existing ArcCard, not the Vite version.
 // Note: ArcCard uses inline styles throughout (required for @vercel/og
 // compatibility), so it works fine inside a client component.
@@ -76,60 +75,12 @@ const SAMPLE_ARC: GeneratedArc = {
   },
 };
 
-type ArcStatusResponse = {
-  latestArcId?: string | null;
-};
-
 export default function Hero() {
-  const [latestArcId, setLatestArcId] = useState<string | null>(null);
-
-  useEffect(() => {
-    let isCancelled = false;
-
-    const hydrateLatestArc = async () => {
-      try {
-        const localArcId = localStorage.getItem(
-          "arcforge_latest_arc_id",
-        );
-
-        if (localArcId && !isCancelled) {
-          setLatestArcId(localArcId);
-        }
-
-        const fingerprint = await getOrCreateFingerprint();
-
-        const response = await fetch("/api/arc/status", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ fingerprint }),
-        });
-
-        if (!response.ok) {
-          return;
-        }
-
-        const data = (await response.json()) as ArcStatusResponse;
-
-        if (isCancelled || !data.latestArcId) {
-          return;
-        }
-
-        setLatestArcId(data.latestArcId);
-        localStorage.setItem(
-          "arcforge_latest_arc_id",
-          data.latestArcId,
-        );
-      } catch {
-        // If status lookup fails, we keep the default hero CTAs.
-      }
-    };
-
-    hydrateLatestArc();
-
-    return () => {
-      isCancelled = true;
-    };
-  }, []);
+  const { data: session } = useSession();
+  const primaryCtaHref = session?.user ? "/dashboard" : "/login";
+  const primaryCtaLabel = session?.user
+    ? "Go to dashboard"
+    : "Forge my arc →";
 
   return (
     <section className="max-w-screen-2xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center px-4 sm:px-6 lg:px-8 pt-10 pb-16 overflow-x-clip">
@@ -182,22 +133,14 @@ export default function Hero() {
             Button's visual treatment on the Link element rather than
             wrapping Link inside a button (which would be invalid HTML). */}
         <div className="flex flex-col sm:flex-row gap-4 pt-4">
-          {latestArcId && (
-            <Button variant="secondary" size="lg" asChild>
-              <Link href={`/arc/${latestArcId}`}>
-                Continue my arc
-              </Link>
-            </Button>
-          )}
-
           <Button variant="default" size="lg" asChild>
-            <Link href="/awakening">Forge my arc →</Link>
+            <Link href={primaryCtaHref}>{primaryCtaLabel}</Link>
           </Button>
 
           {/* Secondary button — outline variant, links to the sample arc
               we generated during testing so visitors can see a real output. */}
           <Button variant="outline" size="lg" asChild>
-            <Link href="/arc/-eTpPVSp">See a sample arc</Link>
+            <Link href="/arc/-eTpPVSp">Sample arc</Link>
           </Button>
         </div>
 

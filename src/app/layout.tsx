@@ -89,7 +89,7 @@ export default function RootLayout({
           <Suspense fallback={null}>
             <Navbar />
           </Suspense>
-          <div className="mt-18 bg-forge-bg-deepest">{children}</div>
+          <div className="bg-forge-bg-deepest">{children}</div>
           {/* <Footer /> */}
         </PostHogProvider>
       </body>
