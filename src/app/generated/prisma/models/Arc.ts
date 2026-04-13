@@ -190,6 +190,7 @@ export type ArcWhereInput = {
   fingerprint?: Prisma.StringNullableFilter<"Arc"> | string | null
   userId?: Prisma.StringNullableFilter<"Arc"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Arc"> | Date | string
+  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }
 
 export type ArcOrderByWithRelationInput = {
@@ -200,6 +201,7 @@ export type ArcOrderByWithRelationInput = {
   fingerprint?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  user?: Prisma.UserOrderByWithRelationInput
 }
 
 export type ArcWhereUniqueInput = Prisma.AtLeast<{
@@ -213,6 +215,7 @@ export type ArcWhereUniqueInput = Prisma.AtLeast<{
   fingerprint?: Prisma.StringNullableFilter<"Arc"> | string | null
   userId?: Prisma.StringNullableFilter<"Arc"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Arc"> | Date | string
+  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }, "id">
 
 export type ArcOrderByWithAggregationInput = {
@@ -247,8 +250,8 @@ export type ArcCreateInput = {
   arcData: Prisma.JsonNullValueInput | runtime.InputJsonValue
   ipAddress: string
   fingerprint?: string | null
-  userId?: string | null
   createdAt?: Date | string
+  user?: Prisma.UserCreateNestedOneWithoutArcsInput
 }
 
 export type ArcUncheckedCreateInput = {
@@ -267,8 +270,8 @@ export type ArcUpdateInput = {
   arcData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   ipAddress?: Prisma.StringFieldUpdateOperationsInput | string
   fingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneWithoutArcsNestedInput
 }
 
 export type ArcUncheckedUpdateInput = {
@@ -297,7 +300,6 @@ export type ArcUpdateManyMutationInput = {
   arcData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   ipAddress?: Prisma.StringFieldUpdateOperationsInput | string
   fingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -337,6 +339,16 @@ export type ArcMinOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
 }
 
+export type ArcListRelationFilter = {
+  every?: Prisma.ArcWhereInput
+  some?: Prisma.ArcWhereInput
+  none?: Prisma.ArcWhereInput
+}
+
+export type ArcOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
 export type StringFieldUpdateOperationsInput = {
   set?: string
 }
@@ -349,6 +361,141 @@ export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
 }
 
+export type ArcCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.ArcCreateWithoutUserInput, Prisma.ArcUncheckedCreateWithoutUserInput> | Prisma.ArcCreateWithoutUserInput[] | Prisma.ArcUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.ArcCreateOrConnectWithoutUserInput | Prisma.ArcCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.ArcCreateManyUserInputEnvelope
+  connect?: Prisma.ArcWhereUniqueInput | Prisma.ArcWhereUniqueInput[]
+}
+
+export type ArcUncheckedCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.ArcCreateWithoutUserInput, Prisma.ArcUncheckedCreateWithoutUserInput> | Prisma.ArcCreateWithoutUserInput[] | Prisma.ArcUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.ArcCreateOrConnectWithoutUserInput | Prisma.ArcCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.ArcCreateManyUserInputEnvelope
+  connect?: Prisma.ArcWhereUniqueInput | Prisma.ArcWhereUniqueInput[]
+}
+
+export type ArcUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.ArcCreateWithoutUserInput, Prisma.ArcUncheckedCreateWithoutUserInput> | Prisma.ArcCreateWithoutUserInput[] | Prisma.ArcUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.ArcCreateOrConnectWithoutUserInput | Prisma.ArcCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.ArcUpsertWithWhereUniqueWithoutUserInput | Prisma.ArcUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.ArcCreateManyUserInputEnvelope
+  set?: Prisma.ArcWhereUniqueInput | Prisma.ArcWhereUniqueInput[]
+  disconnect?: Prisma.ArcWhereUniqueInput | Prisma.ArcWhereUniqueInput[]
+  delete?: Prisma.ArcWhereUniqueInput | Prisma.ArcWhereUniqueInput[]
+  connect?: Prisma.ArcWhereUniqueInput | Prisma.ArcWhereUniqueInput[]
+  update?: Prisma.ArcUpdateWithWhereUniqueWithoutUserInput | Prisma.ArcUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.ArcUpdateManyWithWhereWithoutUserInput | Prisma.ArcUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.ArcScalarWhereInput | Prisma.ArcScalarWhereInput[]
+}
+
+export type ArcUncheckedUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.ArcCreateWithoutUserInput, Prisma.ArcUncheckedCreateWithoutUserInput> | Prisma.ArcCreateWithoutUserInput[] | Prisma.ArcUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.ArcCreateOrConnectWithoutUserInput | Prisma.ArcCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.ArcUpsertWithWhereUniqueWithoutUserInput | Prisma.ArcUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.ArcCreateManyUserInputEnvelope
+  set?: Prisma.ArcWhereUniqueInput | Prisma.ArcWhereUniqueInput[]
+  disconnect?: Prisma.ArcWhereUniqueInput | Prisma.ArcWhereUniqueInput[]
+  delete?: Prisma.ArcWhereUniqueInput | Prisma.ArcWhereUniqueInput[]
+  connect?: Prisma.ArcWhereUniqueInput | Prisma.ArcWhereUniqueInput[]
+  update?: Prisma.ArcUpdateWithWhereUniqueWithoutUserInput | Prisma.ArcUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.ArcUpdateManyWithWhereWithoutUserInput | Prisma.ArcUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.ArcScalarWhereInput | Prisma.ArcScalarWhereInput[]
+}
+
+export type ArcCreateWithoutUserInput = {
+  id: string
+  answers: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  arcData: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  ipAddress: string
+  fingerprint?: string | null
+  createdAt?: Date | string
+}
+
+export type ArcUncheckedCreateWithoutUserInput = {
+  id: string
+  answers: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  arcData: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  ipAddress: string
+  fingerprint?: string | null
+  createdAt?: Date | string
+}
+
+export type ArcCreateOrConnectWithoutUserInput = {
+  where: Prisma.ArcWhereUniqueInput
+  create: Prisma.XOR<Prisma.ArcCreateWithoutUserInput, Prisma.ArcUncheckedCreateWithoutUserInput>
+}
+
+export type ArcCreateManyUserInputEnvelope = {
+  data: Prisma.ArcCreateManyUserInput | Prisma.ArcCreateManyUserInput[]
+  skipDuplicates?: boolean
+}
+
+export type ArcUpsertWithWhereUniqueWithoutUserInput = {
+  where: Prisma.ArcWhereUniqueInput
+  update: Prisma.XOR<Prisma.ArcUpdateWithoutUserInput, Prisma.ArcUncheckedUpdateWithoutUserInput>
+  create: Prisma.XOR<Prisma.ArcCreateWithoutUserInput, Prisma.ArcUncheckedCreateWithoutUserInput>
+}
+
+export type ArcUpdateWithWhereUniqueWithoutUserInput = {
+  where: Prisma.ArcWhereUniqueInput
+  data: Prisma.XOR<Prisma.ArcUpdateWithoutUserInput, Prisma.ArcUncheckedUpdateWithoutUserInput>
+}
+
+export type ArcUpdateManyWithWhereWithoutUserInput = {
+  where: Prisma.ArcScalarWhereInput
+  data: Prisma.XOR<Prisma.ArcUpdateManyMutationInput, Prisma.ArcUncheckedUpdateManyWithoutUserInput>
+}
+
+export type ArcScalarWhereInput = {
+  AND?: Prisma.ArcScalarWhereInput | Prisma.ArcScalarWhereInput[]
+  OR?: Prisma.ArcScalarWhereInput[]
+  NOT?: Prisma.ArcScalarWhereInput | Prisma.ArcScalarWhereInput[]
+  id?: Prisma.StringFilter<"Arc"> | string
+  answers?: Prisma.JsonFilter<"Arc">
+  arcData?: Prisma.JsonFilter<"Arc">
+  ipAddress?: Prisma.StringFilter<"Arc"> | string
+  fingerprint?: Prisma.StringNullableFilter<"Arc"> | string | null
+  userId?: Prisma.StringNullableFilter<"Arc"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"Arc"> | Date | string
+}
+
+export type ArcCreateManyUserInput = {
+  id: string
+  answers: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  arcData: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  ipAddress: string
+  fingerprint?: string | null
+  createdAt?: Date | string
+}
+
+export type ArcUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  arcData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  ipAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  fingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ArcUncheckedUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  arcData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  ipAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  fingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ArcUncheckedUpdateManyWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  arcData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  ipAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  fingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 
 
 export type ArcSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -359,6 +506,7 @@ export type ArcSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   fingerprint?: boolean
   userId?: boolean
   createdAt?: boolean
+  user?: boolean | Prisma.Arc$userArgs<ExtArgs>
 }, ExtArgs["result"]["arc"]>
 
 export type ArcSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -369,6 +517,7 @@ export type ArcSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extension
   fingerprint?: boolean
   userId?: boolean
   createdAt?: boolean
+  user?: boolean | Prisma.Arc$userArgs<ExtArgs>
 }, ExtArgs["result"]["arc"]>
 
 export type ArcSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -379,6 +528,7 @@ export type ArcSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extension
   fingerprint?: boolean
   userId?: boolean
   createdAt?: boolean
+  user?: boolean | Prisma.Arc$userArgs<ExtArgs>
 }, ExtArgs["result"]["arc"]>
 
 export type ArcSelectScalar = {
@@ -392,10 +542,21 @@ export type ArcSelectScalar = {
 }
 
 export type ArcOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "answers" | "arcData" | "ipAddress" | "fingerprint" | "userId" | "createdAt", ExtArgs["result"]["arc"]>
+export type ArcInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  user?: boolean | Prisma.Arc$userArgs<ExtArgs>
+}
+export type ArcIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  user?: boolean | Prisma.Arc$userArgs<ExtArgs>
+}
+export type ArcIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  user?: boolean | Prisma.Arc$userArgs<ExtArgs>
+}
 
 export type $ArcPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Arc"
-  objects: {}
+  objects: {
+    user: Prisma.$UserPayload<ExtArgs> | null
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     answers: runtime.JsonValue
@@ -798,6 +959,7 @@ readonly fields: ArcFieldRefs;
  */
 export interface Prisma__ArcClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  user<T extends Prisma.Arc$userArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Arc$userArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -851,6 +1013,10 @@ export type ArcFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    */
   omit?: Prisma.ArcOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ArcInclude<ExtArgs> | null
+  /**
    * Filter, which Arc to fetch.
    */
   where: Prisma.ArcWhereUniqueInput
@@ -869,6 +1035,10 @@ export type ArcFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.In
    */
   omit?: Prisma.ArcOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ArcInclude<ExtArgs> | null
+  /**
    * Filter, which Arc to fetch.
    */
   where: Prisma.ArcWhereUniqueInput
@@ -886,6 +1056,10 @@ export type ArcFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    * Omit specific fields from the Arc
    */
   omit?: Prisma.ArcOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ArcInclude<ExtArgs> | null
   /**
    * Filter, which Arc to fetch.
    */
@@ -935,6 +1109,10 @@ export type ArcFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.Int
    */
   omit?: Prisma.ArcOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ArcInclude<ExtArgs> | null
+  /**
    * Filter, which Arc to fetch.
    */
   where?: Prisma.ArcWhereInput
@@ -982,6 +1160,10 @@ export type ArcFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
    * Omit specific fields from the Arc
    */
   omit?: Prisma.ArcOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ArcInclude<ExtArgs> | null
   /**
    * Filter, which Arcs to fetch.
    */
@@ -1031,6 +1213,10 @@ export type ArcCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs 
    */
   omit?: Prisma.ArcOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ArcInclude<ExtArgs> | null
+  /**
    * The data needed to create a Arc.
    */
   data: Prisma.XOR<Prisma.ArcCreateInput, Prisma.ArcUncheckedCreateInput>
@@ -1064,6 +1250,10 @@ export type ArcCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.
    */
   data: Prisma.ArcCreateManyInput | Prisma.ArcCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ArcIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1078,6 +1268,10 @@ export type ArcUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs 
    * Omit specific fields from the Arc
    */
   omit?: Prisma.ArcOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ArcInclude<ExtArgs> | null
   /**
    * The data needed to update a Arc.
    */
@@ -1130,6 +1324,10 @@ export type ArcUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.
    * Limit how many Arcs to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ArcIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1144,6 +1342,10 @@ export type ArcUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs 
    * Omit specific fields from the Arc
    */
   omit?: Prisma.ArcOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ArcInclude<ExtArgs> | null
   /**
    * The filter to search for the Arc to update in case it exists.
    */
@@ -1171,6 +1373,10 @@ export type ArcDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs 
    */
   omit?: Prisma.ArcOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ArcInclude<ExtArgs> | null
+  /**
    * Filter which Arc to delete.
    */
   where: Prisma.ArcWhereUniqueInput
@@ -1191,6 +1397,25 @@ export type ArcDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 }
 
 /**
+ * Arc.user
+ */
+export type Arc$userArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+}
+
+/**
  * Arc without action
  */
 export type ArcDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1202,4 +1427,8 @@ export type ArcDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
    * Omit specific fields from the Arc
    */
   omit?: Prisma.ArcOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ArcInclude<ExtArgs> | null
 }

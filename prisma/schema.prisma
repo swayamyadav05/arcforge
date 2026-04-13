@@ -57,6 +57,7 @@ model Arc {
   // convention) and snake_case (Postgres convention).
   // @@map at the model level means the TypeScript model is
   // called Arc but the Postgres table is called arcs.
+  user User? @relation(fields: [userId], references: [id])
 
   @@map("arcs")
 }
@@ -105,4 +106,72 @@ model ApiUsageLog {
 
   @@index([arcId])
   @@map("api_usage_logs")
+}
+
+model User {
+  id            String   @id @default(cuid())
+  name          String?
+  email         String   @unique
+  // Better Auth uses Boolean not DateTime for emailVerified
+  emailVerified Boolean  @default(false) @map("email_verified")
+  image         String?
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  sessions Session[]
+  accounts Account[]
+  arcs     Arc[]
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  // Better Auth uses expiresAt not expires
+  expiresAt DateTime @map("expires_at")
+  // Better Auth uses token not sessionToken
+  token     String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  ipAddress String?  @map("ip_address")
+  userAgent String?  @map("user_agent")
+  userId    String   @map("user_id")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  // Better Auth uses accountId not providerAccountId
+  accountId             String    @map("account_id")
+  // Better Auth uses providerId not provider
+  providerId            String    @map("provider_id")
+  userId                String    @map("user_id")
+  accessToken           String?   @map("access_token") @db.Text
+  refreshToken          String?   @map("refresh_token") @db.Text
+  idToken               String?   @map("id_token") @db.Text
+  accessTokenExpiresAt  DateTime? @map("access_token_expires_at")
+  refreshTokenExpiresAt DateTime? @map("refresh_token_expires_at")
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now()) @map("created_at")
+  updatedAt             DateTime  @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("accounts")
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  // Better Auth uses identifier not identifier+token composite
+  identifier String
+  value      String
+  expiresAt  DateTime @map("expires_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@map("verifications")
 }

@@ -1,3 +1,4 @@
+import { auth } from "@/lib/auth";
 import { generateArc } from "@/lib/claude";
 import {
   appendOwnerArc,
@@ -137,6 +138,10 @@ export async function POST(req: NextRequest) {
     const arcId = nanoid(8);
     const shareUrl = `${baseUrl}/arc/${arcId}`;
 
+    const session = await auth.api.getSession({
+      headers: req.headers,
+    });
+
     const arc_record = await prisma.arc.create({
       data: {
         id: arcId,
@@ -144,7 +149,7 @@ export async function POST(req: NextRequest) {
         arcData: arc as object,
         ipAddress: ip,
         fingerprint: fingerprint ?? null,
-        userId: null,
+        userId: session?.user?.id ?? null,
       },
     });
 
