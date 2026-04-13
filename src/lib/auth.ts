@@ -7,13 +7,38 @@ import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+function normalizeOrigin(value?: string | null) {
+  return value?.replace(/\/$/, "");
+}
+
+const authBaseURL =
+  normalizeOrigin(process.env.BETTER_AUTH_URL) ??
+  normalizeOrigin(process.env.NEXT_PUBLIC_APP_URL) ??
+  (process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : "http://localhost:3000");
+
+const trustedOrigins = Array.from(
+  new Set(
+    [
+      authBaseURL,
+      normalizeOrigin(process.env.BETTER_AUTH_URL),
+      normalizeOrigin(process.env.NEXT_PUBLIC_APP_URL),
+      process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : null,
+      process.env.VERCEL_PROJECT_PRODUCTION_URL
+        ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+        : null,
+      "https://arcforge.me",
+      "https://www.arcforge.me",
+      "http://localhost:3000",
+    ].filter((origin): origin is string => Boolean(origin)),
+  ),
+);
+
 export const auth = betterAuth({
-  trustedOrigins: [
-    process.env.BETTER_AUTH_URL || "http://localhost:3000",
-    ...(process.env.VERCEL_URL
-      ? [`https://${process.env.VERCEL_URL}`]
-      : []),
-  ],
+  trustedOrigins,
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
@@ -57,9 +82,8 @@ export const auth = betterAuth({
     updateAge: 60 * 60 * 24, // refresh session if older than 1 day
   },
 
-  // The base URL must match your deployment environment.
-  // Better Auth uses this to construct callback URLs in emails.
-  baseURL: process.env.NEXT_PUBLIC_APP_URL ?? "https://arcforge.me",
+  // Better Auth uses this for callback URLs in emails and host validation.
+  baseURL: authBaseURL,
 });
 
 // Export the type for use in client-side auth client creation

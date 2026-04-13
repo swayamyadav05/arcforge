@@ -4,8 +4,18 @@
 import { createAuthClient } from "better-auth/react";
 import { magicLinkClient } from "better-auth/client/plugins";
 
+function resolveAuthBaseURL() {
+  // Use the current browser origin in production to avoid cross-origin
+  // redirects (for example apex <-> www) that surface as CORS errors.
+  if (typeof window !== "undefined" && window.location?.origin) {
+    return window.location.origin;
+  }
+
+  return process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+}
+
 export const authClient = createAuthClient({
-  baseURL: process.env.NEXT_PUBLIC_APP_URL ?? "https://arcforge.me",
+  baseURL: resolveAuthBaseURL(),
   plugins: [magicLinkClient()],
 });
 
