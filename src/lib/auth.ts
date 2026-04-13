@@ -5,7 +5,15 @@ import { magicLink } from "better-auth/plugins";
 import prisma from "@/lib/prisma";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resendApiKey =
+  process.env.RESEND_API_KEY ?? process.env.RESEND_KEY ?? null;
+const resendFromAddress =
+  process.env.AUTH_RESEND_FROM ??
+  process.env.RESEND_FROM_EMAIL ??
+  process.env.RESEND_FROM ??
+  null;
+
+const resend = resendApiKey ? new Resend(resendApiKey) : null;
 
 function normalizeOrigin(value?: string | null) {
   return value?.replace(/\/$/, "");
@@ -49,27 +57,62 @@ export const auth = betterAuth({
   plugins: [
     magicLink({
       sendMagicLink: async ({ email, url }) => {
-        await resend.emails.send({
-          from: process.env.AUTH_RESEND_FROM!,
-          to: email,
-          subject: "Your ArcForge sign-in link",
-          html: `
-            <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 40px 24px; background: #0a0612; color: #EEEDFE;">
-              <h1 style="font-size: 24px; font-weight: 700; margin-bottom: 8px; color: #EEEDFE;">
-                Your arc is waiting.
-              </h1>
-              <p style="color: #AFA9EC; margin-bottom: 32px; line-height: 1.6;">
-                Click the link below to sign in to ArcForge. This link expires in 10 minutes and can only be used once.
-              </p>
-              <a href="${url}" style="display: inline-block; background: #534AB7; color: #EEEDFE; padding: 14px 32px; border-radius: 10px; text-decoration: none; font-weight: 500; font-size: 15px;">
-                Enter ArcForge
-              </a>
-              <p style="color: #7F77DD; font-size: 12px; margin-top: 32px;">
-                If you didn't request this, you can safely ignore this email.
-              </p>
-            </div>
-          `,
-        });
+        if (!resend) {
+          throw new Error(
+            "Magic link is not configured: missing RESEND_API_KEY.",
+          );
+        }
+
+        if (!resendFromAddress) {
+          throw new Error(
+            "Magic link is not configured: missing AUTH_RESEND_FROM.",
+          );
+        }
+
+        try {
+          const result = await resend.emails.send({
+            from: resendFromAddress,
+            to: email,
+            subject: "Your ArcForge sign-in link",
+            html: `
+              <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 40px 24px; background: #0a0612; color: #EEEDFE;">
+                <h1 style="font-size: 24px; font-weight: 700; margin-bottom: 8px; color: #EEEDFE;">
+                  Your arc is waiting.
+                </h1>
+                <p style="color: #AFA9EC; margin-bottom: 32px; line-height: 1.6;">
+                  Click the link below to sign in to ArcForge. This link expires in 10 minutes and can only be used once.
+                </p>
+                <a href="${url}" style="display: inline-block; background: #534AB7; color: #EEEDFE; padding: 14px 32px; border-radius: 10px; text-decoration: none; font-weight: 500; font-size: 15px;">
+                  Enter ArcForge
+                </a>
+                <p style="color: #7F77DD; font-size: 12px; margin-top: 32px;">
+                  If you didn't request this, you can safely ignore this email.
+                </p>
+              </div>
+            `,
+          });
+
+          if (result.error) {
+            console.error("[auth] Resend sendMagicLink error", {
+              message: result.error.message,
+              name: result.error.name,
+              from: resendFromAddress,
+            });
+            throw new Error(
+              result.error.message ??
+                "Unable to send magic link email.",
+            );
+          }
+        } catch (error) {
+          console.error("[auth] sendMagicLink failed", {
+            message:
+              error instanceof Error
+                ? error.message
+                : "Unknown error",
+            from: resendFromAddress,
+          });
+          throw error;
+        }
       },
     }),
   ],
