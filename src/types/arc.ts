@@ -55,6 +55,6 @@ export interface GeneratedArc {
   how_their_story_ends: string | Record<string, string>;
   if_they_were_a_genre: string;
   rarity: ArcRarity;
-  numeric_stats: ArcNumericStats;
-  episode_one_mission: ArcMission;
+  numeric_stats?: ArcNumericStats;
+  episode_one_mission?: ArcMission;
 }

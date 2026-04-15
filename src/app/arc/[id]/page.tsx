@@ -13,6 +13,7 @@ import prisma from "@/lib/prisma";
 import { GeneratedArc } from "@/types/arc";
 import ArcCard from "@/components/arc/ArcCard";
 import ArcReveal from "@/components/arc/ArcReveal";
+import EpisodeLabel from "@/components/ui/EpisodeLabel";
 import {
   hasOwnerAccess,
   OWNER_SESSION_COOKIE,
@@ -117,9 +118,7 @@ export default async function ArcPage({ params }: ArcPageProps) {
 
         {/* Arc identity — the emotional hook for a first-time visitor */}
         <div className="text-center mb-8">
-          <p className="text-xs font-medium tracking-[0.15em] uppercase text-purple-400 mb-4">
-            Episode 01 · The Awakening
-          </p>
+          <EpisodeLabel episodeNumber={1} className="mb-4" />
           <h1
             className="font-heading font-bold text-[#EEEDFE] mb-6"
             style={{ fontSize: "clamp(2.5rem, 6vw, 4rem)" }}>

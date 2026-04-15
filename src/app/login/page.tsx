@@ -163,7 +163,11 @@ function LoginPageContent() {
             <div className="group relative">
               <div className="absolute -inset-1 rounded-lg bg-linear-to-r from-purple-600 to-purple-400 opacity-0 blur transition duration-500 group-focus-within:opacity-20" />
               <div className="relative">
+                <label htmlFor="email" className="sr-only">
+                  Email address
+                </label>
                 <input
+                  id="email"
                   type="email"
                   placeholder="your.email@domain.com"
                   value={email}

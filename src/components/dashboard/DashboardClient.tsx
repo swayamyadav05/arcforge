@@ -5,6 +5,8 @@ import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Filter, Plus, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import EpisodeLabel from "@/components/ui/EpisodeLabel";
+import RarityBadge from "@/components/ui/RarityBadge";
 import SignOutButton from "@/components/dashboard/SignOutButton";
 import type { ArcRarity, GeneratedArc } from "@/types/arc";
 
@@ -36,20 +38,6 @@ const RARITIES: RarityFilter[] = [
   "Common",
 ];
 
-function getEpisodeTitle(index: number) {
-  if (index === 0) return "THE AWAKENING";
-  if (index === 1) return "THE CONFRONTATION";
-  return "THE CONTINUATION";
-}
-
-function getRarityColor(rarity: ArcRarity) {
-  if (rarity === "Legendary")
-    return "from-amber-500/20 to-yellow-300/20";
-  if (rarity === "Mythic") return "from-purple-500/20 to-pink-400/20";
-  if (rarity === "Rare") return "from-blue-500/20 to-cyan-400/20";
-  return "from-gray-400/20 to-gray-300/20";
-}
-
 export default function DashboardClient({
   user,
   arcs,
@@ -65,7 +53,6 @@ export default function DashboardClient({
       arcs.map((arc, index) => ({
         ...arc,
         episodeNumber: index + 1,
-        episodeTitle: getEpisodeTitle(index),
         episodeCount: index + 1,
       })),
     [arcs],
@@ -138,12 +125,9 @@ export default function DashboardClient({
               </p>
 
               <div className="mb-12 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                <Button
-                  asChild
-                  className="h-auto! rounded-lg bg-linear-to-r from-forge-purple-700 to-forge-lavender-600 px-8 py-6! text-lg text-forge-white shadow-lg shadow-purple-500/30 transition-all duration-300 hover:from-forge-lavender-600 hover:to-forge-lavender-400 hover:shadow-purple-500/50">
+                <Button size="lg" asChild>
                   <Link href="/awakening">
-                    <Plus className="mr-2 h-5 w-5" />
-                    Forge your first arc
+                    Forge your first arc →
                   </Link>
                 </Button>
 
@@ -217,15 +201,13 @@ export default function DashboardClient({
                     className="group block cursor-pointer no-underline">
                     <div className="rounded-xl border border-purple-500/20 bg-linear-to-br from-purple-950/40 to-purple-900/20 p-6 transition-all duration-300 hover:scale-105 hover:border-purple-400/40 hover:shadow-xl hover:shadow-purple-500/20">
                       <div className="mb-4 flex items-start justify-between">
-                        <div className="text-xs tracking-widest text-purple-300/60 uppercase">
-                          EPISODE{" "}
-                          {String(arc.episodeNumber).padStart(2, "0")}{" "}
-                          · {arc.episodeTitle}
-                        </div>
-                        <div
-                          className={`rounded-full bg-linear-to-r ${getRarityColor(arc.arcData.rarity)} px-3 py-1 text-xs font-medium text-white shadow-lg`}>
-                          {arc.arcData.rarity}
-                        </div>
+                        <EpisodeLabel
+                          episodeNumber={arc.episodeNumber}
+                        />
+                        <RarityBadge
+                          rarity={arc.arcData.rarity}
+                          variant="gradient"
+                        />
                       </div>
 
                       <h3
@@ -312,6 +294,7 @@ export default function DashboardClient({
       {hasArcs ? (
         <Link
           href="/awakening"
+          aria-label="Start a new arc"
           className="fixed right-8 bottom-8 z-30 rounded-full bg-primary p-4 text-primary-foreground shadow-2xl shadow-purple-500/50 transition-all duration-300 hover:scale-110 hover:bg-primary/80 hover:shadow-purple-500/70"
           title="Start a new arc">
           <Plus className="h-6 w-6" />
