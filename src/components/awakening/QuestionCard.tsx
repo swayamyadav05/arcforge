@@ -39,6 +39,7 @@ export default function QuestionCard({
   const isLastQuestion = questionNumber === totalQuestions;
   const answerLength = value.trim().length;
   const hasMinimumCharacters = answerLength >= MIN_ANSWER_CHARACTERS;
+  const textareaId = `question-answer-${question.id}`;
 
   function handleNext() {
     if (!hasMinimumCharacters) return;
@@ -82,7 +83,11 @@ export default function QuestionCard({
         </div>
 
         <div className="space-y-6">
+          <label htmlFor={textareaId} className="sr-only">
+            Your answer for: {question.text}
+          </label>
           <Textarea
+            id={textareaId}
             ref={textareaRef}
             value={value}
             onChange={(e) => setValue(e.target.value)}
