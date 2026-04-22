@@ -1,9 +1,7 @@
 ---
 description: "Use when editing OG image generation or Arc card rendering. Covers @vercel/og constraints, inline-style compatibility, and safe public-share data boundaries."
 name: "OG Card Guidelines"
-applyTo:
-  - "src/app/api/og/**"
-  - "src/components/arc/ArcCard.tsx"
+applyTo: "src/app/api/og/**, src/components/arc/ArcCard.tsx"
 ---
 
 # OG Card Guidelines

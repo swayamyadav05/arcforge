@@ -1,0 +1,42 @@
+{
+  "rarity": "Uncommon",
+  "archetype": "The Ex-Gifted Kid",
+  "character_name": "The Spreadsheet That Cried",
+  "signature_move": "Flawless Under Observation — performs at peak capacity when watched, collapses the instant no one is looking, has not rested unobserved since age fourteen.",
+  "if_they_were_a_genre": "March Comes in Like a Lion meets Chihayafuru — quiet, precise, relentlessly competitive, running on fumes she won't admit to.",
+  "opening_episode_quote": "I'm fine. I'm just tired in a way sleep doesn't fix. Anyway, what did you need.",
+  "the_truth_they_avoid": "She does not know what she likes. She knows what she's good at, what she's supposed to want, and what looks right on paper. She has built her entire life out of the second two and is quietly terrified that the first one is empty.",
+  "character_flaw_that_is_also_their_strength": "Cannot stop optimizing. Will silently improve the system you hired her into until it runs without her, then feel guilty for not being busy. The flaw is she can't rest. The strength is that once she's in a room, that room works better.",
+  "core_stats": {
+    "impact": "Massive in systems. Invisible in rooms. I have made three teams measurably better and no one has ever written my name on a slide.",
+    "endurance": "Catastrophically high. I will outlast any reasonable person. I am not sure this is a good trait anymore.",
+    "conviction": "Strong in what's correct. Weak in what I want. I can defend a decision against a board of directors and cannot order food without second-guessing.",
+    "visibility": "I've been underestimated in every role I've had. I used to think this was a bug. I think now I engineered it."
+  },
+  "character_arc": {
+    "the_wound": "Was praised for being smart, once, at seven, and has been trying to earn that moment back ever since. Learned that approval is conditional on output. Forgot there were other conditions.",
+    "the_weapon": "When she commits to a problem, it gets solved. Not hoped-solved. Solved. She has the rarest combination of rigor and follow-through, and she will run a process the whole way through while everyone else is still scheduling the kickoff call.",
+    "the_destiny": "The version of her that separates 'what I'm good at' from 'who I am' becomes dangerous. Not bitter — precise. The kind of person who picks three things that matter and wins at them on her own terms, instead of everything, on everyone else's."
+  },
+  "numeric_stats": { "chaos": 22, "focus": 89, "empathy": 61, "resolve": 84 },
+  "rivals_and_mentors": {
+    "the_rival": {
+      "name": "The Person Who Left Early",
+      "description": "Peer from grad school who quit the achievement track at 26, moved somewhere smaller, and appears visibly happier in every photo. She has not unfollowed this person. She checks the account monthly. She cannot tell if she's watching a cautionary tale or a blueprint."
+    },
+    "the_mentor": {
+      "name": "The Senior Who Finally Said It",
+      "description": "Three levels above her. Told her once, quietly, at the end of a 1:1, 'you're going to have to learn to want things for yourself eventually.' Has not brought it up since. It's been eight months."
+    }
+  },
+  "episode_one_mission": {
+    "title": "Want Something Without Checking",
+    "stakes": "If she does it: one preference becomes real. A foothold for the rest. If she doesn't: the achievement engine keeps running on credit and the bill eventually comes.",
+    "description": "Identify one thing she wants that has no justification. No career value, no optics, no strategic upside. Just wanted. Do that one thing this week without telling herself why."
+  },
+  "episode_one_scenario": "It's 11:14pm. She has closed the laptop for the third time. The calendar for tomorrow has nine meetings. She is standing in the kitchen holding a glass of water she didn't decide to pour. She notices this. She files it as interesting data.",
+  "how_their_story_ends": {
+    "BAD_END": "Gets every promotion. Hits every metric. Retires at 55 to a house she picked because it was a good investment and discovers, in the quiet, that she does not know what she likes. Starts learning. Runs out of time.",
+    "GOOD_END": "Quits one thing that wasn't hers. Then another. Keeps the parts she actually chose. Becomes someone who is extremely competent *and* present. Rare combination. People notice. She stops needing them to."
+  }
+}

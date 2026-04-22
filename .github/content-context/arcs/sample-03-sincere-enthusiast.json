@@ -1,0 +1,42 @@
+{
+  "rarity": "Common",
+  "archetype": "The Sincere Enthusiast",
+  "character_name": "The One Who Still Hopes",
+  "signature_move": "Unironic Engagement — cares about things out loud, in public, with zero defensive framing, and has not yet learned he is supposed to be embarrassed about it.",
+  "if_they_were_a_genre": "Barakamon meets Laid-Back Camp — warm, easy, quietly fortified, built to last longer than the cynics.",
+  "opening_episode_quote": "oh my god. wait. wait wait wait. okay. so. hear me out.",
+  "the_truth_they_avoid": "He's already been hurt. He's already been condescended to. He has simply decided, without announcing it, that he is not going to let it win. This looks like naivety from the outside. It is not. It is a policy.",
+  "character_flaw_that_is_also_their_strength": "Trusts too easily — extends benefit of the doubt past where most people would cut someone off. The flaw is he occasionally gets burned. The strength is that in a world where everyone is hedging their care, his is radical.",
+  "core_stats": {
+    "impact": "I make rooms warmer. I'm not sure that's a skill. But people do tell me it happened.",
+    "endurance": "High in good faith. Will keep trying with people longer than they deserve. Unclear if this is a bug.",
+    "conviction": "I believe kindness is not a weakness. I believe this in spite of being told, many times, that it is. I think the people who tell you that are tired in a specific way.",
+    "visibility": "Too visible, in a good way. Everyone remembers me. I've stopped being surprised by this."
+  },
+  "character_arc": {
+    "the_wound": "Was called naive so many times in high school that he almost became cynical to fit in. Almost. Got most of the way there, then noticed the people who'd convinced him were unhappy, and stopped.",
+    "the_weapon": "Durability. Most optimism is brittle. His isn't, because he's actually tested it. He knows how bad things can get. He just isn't going to let that decide his posture.",
+    "the_destiny": "The rare person who gets to middle age still genuinely caring. The one friends call when they don't need a fix, just need to not feel alone. Builds things that outlast him because he doesn't need them to prove anything."
+  },
+  "numeric_stats": { "chaos": 54, "focus": 48, "empathy": 85, "resolve": 77 },
+  "rivals_and_mentors": {
+    "the_rival": {
+      "name": "The Performative Cynic",
+      "description": "Smart, funny, tired, slightly older. Treats his optimism like a bit. Doesn't realize he is actively envious. The protagonist can feel this but has decided not to make it awkward."
+    },
+    "the_mentor": {
+      "name": "The Grandma Who Outlived Everyone",
+      "description": "Lost a husband, two siblings, and a best friend. Still laughs louder than everyone in the room. The protagonist watches her like a manual."
+    }
+  },
+  "episode_one_mission": {
+    "title": "Tell Someone You Actually Like Them",
+    "stakes": "If he does it: the friendship gets real. If he doesn't: everyone stays polite and no one is ever held.",
+    "description": "Text one person this week and say, plainly, 'I like having you in my life.' No joke on the end. No emoji softening it. Send it and close the app."
+  },
+  "episode_one_scenario": "The group chat is making fun of someone who cried at a movie. His thumbs hover over the keyboard. He can laugh along and stay in. He can defend the crier and become the crier. The message sits in his head, half-typed.",
+  "how_their_story_ends": {
+    "BAD_END": "Learns, slowly, to hedge. Makes every sincere statement 40% ironic. Becomes easier to be around. Becomes harder to reach. Realizes at 45 that he doesn't know how to talk to his own kids without a joke shield.",
+    "GOOD_END": "Stays the way he is. Gets called naive for three more years and then, at some point, stops getting called naive and starts getting called grounded, and he cannot remember when the word changed."
+  }
+}

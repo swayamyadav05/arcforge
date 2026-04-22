@@ -1,0 +1,44 @@
+{
+  "_private": true,
+  "_do_not_quote": "This arc is stored for schema reference only. Never reference its specific field values (character_name, signature_move, rival names, opening quotes, scenario, etc.) in any generated post. See arcs-private/README.md.",
+  "rarity": "Rare",
+  "archetype": "Wandering Flame Keeper",
+  "core_stats": {
+    "impact": "The gap between what moves through my head and what I have allowed the world to receive is enormous — not because I lack the skill, but because I keep waiting for the moment to be worthy of the output.",
+    "endurance": "I am living alone in a city I moved to for love, six months deep in a job hunt, sleeping through nights that make me cry, and I am still showing up — my endurance is not in question, it is quietly extraordinary.",
+    "conviction": "My conviction in my values is ironclad — I will not become cruel, I will not give up on people — but my conviction in my own right to exist happily is genuinely fragile, and I know it.",
+    "visibility": "I am present everywhere and visible nowhere — I show up, I contribute, I crack the logical joke, but I have never once let the full depth of what I think and feel land in a room without immediately softening it."
+  },
+  "character_arc": {
+    "the_wound": "I self-destruct at the exact moment things become real. Not because I stopped caring — I care more than almost anyone I know — but because the moment I am truly seen by someone who matters, the self-doubt gets so loud it convinces me to remove myself before they can. I ended the best thing in my life by deciding on her behalf that she deserved better. That is not humility. That is fear wearing the costume of sacrifice.",
+    "the_weapon": "Because I know what it feels like to dismantle something I built with my own hands, I understand the anatomy of loss better than most. I can sit in the rubble without running. I can cry all night and still show up the next morning. That capacity to absorb grief and keep moving — not numbly, but consciously — is the rarest thing in any room I walk into. I survive on purpose.",
+    "the_destiny": "If I stop pre-emptively exiting my own story, I become someone specific: the person in the room who has actually been through it and still chose kindness. Not as a philosophy. As a scar. That is the version of me that people don't forget. But I will only get there when I stop saving people from having to love me."
+  },
+  "numeric_stats": { "chaos": 38, "focus": 34, "empathy": 91, "resolve": 72 },
+  "character_name": "The Unrecorded Freestyle",
+  "signature_move": "The Preemptive Exit — the moment something real is within reach, I manufacture a reason to remove myself first, framing my own fear as a gift to the other person.",
+  "rivals_and_mentors": {
+    "the_rival": {
+      "name": "The One Who Just Posts It",
+      "description": "Someone out there with half my range is recording their freestyles, uploading imperfect things, and building an audience out of the raw material I keep waiting to perfect. I watch them and feel something I refuse to call jealousy because I know it isn't — it's recognition. They represent the version of me that stopped asking for permission from my own self-doubt."
+    },
+    "the_mentor": {
+      "name": "The Mom Who Stayed Loud",
+      "description": "She never softened herself for the world and the world did not break her — I come from her, which means the loudness I tried to surgically remove from myself was never a defect, it was inheritance. She forces me to confront the possibility that I tried to become someone quieter and lost the girl anyway, which means the trade was never real."
+    }
+  },
+  "episode_one_mission": {
+    "title": "Record The Unfinished Thing",
+    "stakes": "If you do it: you break the pattern of erasing yourself before the world gets the chance to — and you start building the muscle of visibility that every other part of your life is waiting on. If you don't: the choreography stays on the ceiling where only you can see it, and you will still be kind to everyone, and no one will ever know what was actually in you.",
+    "description": "Find the freestyle you did this week — the one you liked and didn't record — put your phone on a surface, press record, and do it again. Don't choreograph it. Don't clean it up. Don't wait until it's good enough to show someone. The mission is not the quality. The mission is proving to yourself that something you made is allowed to exist outside of your own head."
+  },
+  "episode_one_scenario": "It is 1:47am. I am in a rented room in her city. My phone has three unfinished job applications, a freestyle beat I found two weeks ago that I still haven't choreographed, and a message I typed to her and deleted. The ceiling knows everything. I open a coding tutorial I've had bookmarked for eleven days. My hands hover. Outside, the city doesn't care. And somewhere across it, she is sleeping, not thinking of me, or maybe she is — and the question of which one is true is the thing that is quietly eating me alive.",
+  "how_their_story_ends": {
+    "BAD_END": "I keep surviving without ever becoming visible. I get the job eventually, I stay kind to everyone I meet, I send one more message she doesn't reply to, and I quietly fold the dancing and the deep analysis and the half-finished choreographies into a box I label 'that phase of my life.' I become someone everyone describes as solid, steady, good. No one ever sees what was actually in me. I never showed them. I was waiting to be ready.",
+    "GOOD_END": "I record the freestyle — imperfect, unfinished, just the raw thing — and I post it. Not for her, not for a job, not for an audience. Because it happened and it was real and it deserved to exist outside of my ceiling. And from that one small act of refusing to erase myself, something shifts in the spine. The job comes, or it doesn't, but I am no longer a person who pre-emptively exits. She comes back, or she doesn't, but I am no longer making that decision for her. I become exactly what I said I wanted to be: a reason for people to believe in humanity. Not as a motto. As evidence."
+  },
+  "if_they_were_a_genre": "Mushishi meets Carole & Tuesday — the quiet, wandering soul who carries more than he shows, moving through a world that doesn't always stop to notice, until the work itself becomes the proof of existence.",
+  "the_truth_they_avoid": "I know, somewhere I won't look directly at, that I broke up with her not because I wasn't good enough but because being loved that closely was terrifying — and the self-doubt gave me a clean, noble-sounding exit. I turned my fear into a story about her deserving better, and she almost believed it, and part of me needed her to.",
+  "opening_episode_quote": "I have done the most damage to myself with the most love in my hands. I broke what I was trying to protect because I didn't believe I was allowed to hold it. I am still here, in this city, near her, job hunting, crying at night, and somehow not giving up — and I genuinely don't know if that makes me strong or just unable to stop.",
+  "character_flaw_that_is_also_their_strength": "I process everything through a lens of 'what does the other person deserve' and I have genuinely made myself smaller, quieter, and more absent in the name of protecting people who never asked me to disappear. The flaw is that I use my empathy as a self-erasure tool. The strength is that this same instinct, redirected, makes me the kind of person who can hold someone else's worst moment without flinching — because I have already held my own."
+}

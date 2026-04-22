@@ -1,0 +1,22 @@
+{
+  "id": "sample-03",
+  "name": "Dev \"404\" Rathore",
+  "archetype": "The Feral Genius",
+  "power": {
+    "name": "Chaos Pattern",
+    "description": "Connects things that shouldn't connect, is right 73% of the time, cannot explain how. Three of the remaining 27% are spectacular failures."
+  },
+  "arc_title": "Episode 01 — Too Online to Fail",
+  "tagline": "Has been awake for 31 hours. Is somehow winning.",
+  "backstory": "Dropped out twice. Returned to a community college to audit one (1) course on game theory. Runs an anonymous Twitter account with 12k followers that only posts at 3am. Was banned from a Discord for being correct about something in the wrong tone. Has never had a LinkedIn.",
+  "rival": {
+    "name": "The Credential",
+    "description": "Ivy League. Well-rested. Cannot predict what Dev will say next and it is eating him alive."
+  },
+  "mentor": {
+    "name": "An Old Forum Post",
+    "description": "From 2009. Author unknown. Dev has it memorized. Returns to it when nothing else works."
+  },
+  "final_form_locked": "Final Form: The Pattern Saint — unlocks after Episode 7.",
+  "opening_line": "He was wrong about one thing. He was wrong spectacularly. He was right about everything else."
+}

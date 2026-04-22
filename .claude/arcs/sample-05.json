@@ -1,0 +1,22 @@
+{
+  "id": "sample-05",
+  "name": "Nikhil \"Lightbearer\" Shah",
+  "archetype": "The Optimist with Teeth",
+  "power": {
+    "name": "Unbreakable Morale",
+    "description": "Can rally a broken squad back into a fight. Cannot be talked out of hope. Has been tested. Has held."
+  },
+  "arc_title": "Episode 01 — The One Who Keeps Getting Up",
+  "tagline": "Naive people don't get knocked down this many times. He's not naive.",
+  "backstory": "He lost three things in one year at twenty: a person, a plan, and a version of himself. He kept showing up. Not because he didn't feel it. Because he refused to let the alternative win. People mistake him for easy. He is not easy. He is decided.",
+  "rival": {
+    "name": "The Performative Cynic",
+    "description": "Smart, funny, tired. Thinks Nikhil's hope is a bit. Does not understand that Nikhil has checked and it is not."
+  },
+  "mentor": {
+    "name": "The Woman Who Lost Hers",
+    "description": "Was once like Nikhil. Broke, quietly, eight years ago. Watches him now with something between pride and warning."
+  },
+  "final_form_locked": "Final Form: The Dawnbreaker — unlocks after Episode 6.",
+  "opening_line": "He had been told the world was ending, every year, his whole life. He decided to disagree."
+}

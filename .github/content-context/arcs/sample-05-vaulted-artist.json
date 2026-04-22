@@ -1,0 +1,42 @@
+{
+  "rarity": "Legendary",
+  "archetype": "The Vaulted Artist",
+  "character_name": "The Folder Full Of Drafts",
+  "signature_move": "Ninety Percent And Stop — finishes work to the point just before anyone else could see it, then files it. Has done this approximately 340 times.",
+  "if_they_were_a_genre": "Blue Period meets Shirobako — the person who has the talent and the work ethic and the hours logged, and cannot cross the line between making the thing and releasing the thing.",
+  "opening_episode_quote": "It's not done yet. Don't look at it. I mean it.",
+  "the_truth_they_avoid": "She's not a perfectionist. That's the flattering story. The real story is that an unfinished work contains all possible versions of her talent, and a finished work contains only one. She has been hoarding the possibility. The moment she releases, she has to be the specific person who made that specific thing.",
+  "character_flaw_that_is_also_their_strength": "Will not release. Cannot release. The flaw is that years of work are sitting in folders nobody has seen. The strength is that the quality of what's in the folders is, genuinely, extraordinary — because she has iterated on each piece far past the point where other artists would have called it done.",
+  "core_stats": {
+    "impact": "In a folder. Tremendous. Unseen. I could show you if I wanted and I do not want to.",
+    "endurance": "I have worked on one piece for three years. I don't know if that's endurance or a trap. Possibly both.",
+    "conviction": "I know exactly what I'm making. I know exactly why. I know it's good. I cannot, however, let anyone else know any of that.",
+    "visibility": "Zero. Intentionally. This is the entire problem."
+  },
+  "character_arc": {
+    "the_wound": "Was shown publicly, once, at the wrong moment, by the wrong person, to the wrong audience, and watched the work get misread. Decided, that day, that she would rather be misunderstood in theory than misunderstood in reality. Has held that line for ten years.",
+    "the_weapon": "Obsessive refinement. She sees the four layers underneath a finished piece that other artists stop at. She is, genuinely, better than most of the people publishing. The skill is real. The skill was never the problem.",
+    "the_destiny": "The version of her that releases one thing — one — discovers that the world does not, in fact, crush her. The reception is mixed, as it always is, and she survives it, and she releases another. Two years later, she is the artist she was already capable of being. The only thing that changed was the folder."
+  },
+  "numeric_stats": { "chaos": 44, "focus": 93, "empathy": 69, "resolve": 67 },
+  "rivals_and_mentors": {
+    "the_rival": {
+      "name": "The Prolific One",
+      "description": "Half her skill. Triple her output. Has a real audience. Is occasionally critiqued. Survives every critique. Keeps posting. She has been watching this person for five years and knows, somewhere, that the gap is not talent."
+    },
+    "the_mentor": {
+      "name": "The Artist Who Published Ugly Work",
+      "description": "Someone she admires whose early work is, objectively, not that good. It's out there. It's findable. The maturation happened in public, where other people could watch. She is trying to accept what this means."
+    }
+  },
+  "episode_one_mission": {
+    "title": "Release The One You Called Done In January",
+    "stakes": "If she does it: the pattern cracks, even if the piece flops. If she doesn't: the folder keeps growing and the world keeps not knowing what she can do.",
+    "description": "Take the piece she actually called finished eight months ago. Stop tweaking it. Post it. Same week. No announcement. No context paragraph. Just the work."
+  },
+  "episode_one_scenario": "The file is open. The export dialog is open. The upload page is open in the other tab. She has been in this exact configuration forty-one times. She checks the file one more time. She finds nothing wrong. She closes the export dialog.",
+  "how_their_story_ends": {
+    "BAD_END": "Dies with a hard drive full of work that would have mattered. Someone finds it. It's too late. A retrospective happens. The retrospective is beautiful. She is not there for it.",
+    "GOOD_END": "Releases the piece. It does okay. Not great. It does not destroy her. She releases another. It does slightly better. Ten years pass. She is, by then, the artist she always was, but visible, and the folder is finally a normal size."
+  }
+}

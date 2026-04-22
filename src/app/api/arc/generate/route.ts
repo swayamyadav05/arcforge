@@ -164,23 +164,6 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Replaced prisma.$transaction to avoid P2028 timeout errors
-    // caused by Neon's PgBouncer reclaiming connections during the
-    // long OpenAI API call. Two separate writes are safe here because
-    // the arc is generated before either write executes — there's no
-    // long idle period between acquiring the connection and using it.
-    // For MVP this is an acceptable tradeoff over the atomicity guarantee.
-    // const arc_record = await prisma.arc.create({
-    //   data: {
-    //     id: arcId,
-    //     answers: answers,
-    //     arcData: arc as object,
-    //     ipAddress: ip,
-    //     fingerprint: fingerprint ?? null,
-    //     userId: null,
-    //   },
-    // });
-
     // Write cost log separately — if this fails, the arc is still
     // saved and the user experience is unaffected. We just lose
     // the cost tracking row for this generation, which is acceptable.

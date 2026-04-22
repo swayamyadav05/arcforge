@@ -1,0 +1,42 @@
+{
+  "rarity": "Common",
+  "archetype": "The Guy Who Hasn't Looked Yet",
+  "character_name": "Just A Guy",
+  "signature_move": "The Shrug — a gesture so neutral it has defeated therapists. Not cruel. Not evasive. Genuinely, at this moment, he does not know.",
+  "if_they_were_a_genre": "Mob Psycho 100 (before the season) meets ReLIFE — the guy who hasn't realized yet that there's a whole arc waiting for him if he actually looks.",
+  "opening_episode_quote": "idk man. i'm good i guess. what's for dinner.",
+  "the_truth_they_avoid": "He hasn't avoided anything yet. He just hasn't turned toward it. There's no repression — there's absence. The questions have not been asked loudly enough to reach him. He would answer honestly if they were.",
+  "character_flaw_that_is_also_their_strength": "Lack of self-examination. The flaw is he has no narrative about his own life and may miss the moment it starts. The strength is he's not carrying a single hang-up, grudge, or self-concept that needs dismantling first. When he decides to look, he'll look clean.",
+  "core_stats": {
+    "impact": "Low and steady. Hasn't tried to make one yet. Not sure he needs to. The jury, as they say, is out.",
+    "endurance": "Untested. He hasn't been put through anything that required it. This is not a weakness. It's a fact.",
+    "conviction": "Mild. Will defend a pizza topping harder than most of his beliefs. This is honesty, not cowardice.",
+    "visibility": "Adequate. Has friends. Is liked. Has never been the main character and has never needed to be."
+  },
+  "character_arc": {
+    "the_wound": "None, currently. Not because nothing has happened — things have — but because he has not yet processed any of it into meaning. The data sits unexamined.",
+    "the_weapon": "Genuine evenness. He's not calm because he's suppressing something. He's calm because there's nothing to suppress yet. This makes him unusually good in a crisis, because he reacts to what's actually happening rather than to his story about what's happening.",
+    "the_destiny": "If something cracks him open — and it will, eventually, because that is what life does — he starts from zero. No baggage, no pre-built identity to defend. The person he becomes after the crack could be extraordinary, because he won't be protecting an older version of himself."
+  },
+  "numeric_stats": { "chaos": 30, "focus": 45, "empathy": 55, "resolve": 50 },
+  "rivals_and_mentors": {
+    "the_rival": {
+      "name": "His Own Future Self",
+      "description": "The version of him that eventually did the work, looked at the questions, developed a story about himself. That guy isn't here yet. When he arrives, he'll be embarrassed about this period but also kind of fond."
+    },
+    "the_mentor": {
+      "name": "A Question He Hasn't Been Asked Yet",
+      "description": "Somewhere, somebody is going to ask him something that he actually has to stop and answer. He doesn't know who. He doesn't know when. Statistically, it's coming."
+    }
+  },
+  "episode_one_mission": {
+    "title": "Notice One Thing This Week",
+    "stakes": "If he does it: the door opens a crack. If he doesn't: no penalty, he just stays where he is a bit longer.",
+    "description": "Pick one thing he did this week on autopilot. Describe, to himself, why he did it. That's it."
+  },
+  "episode_one_scenario": "Sunday afternoon. He's on the couch. The show isn't that interesting. His phone is in his hand and he hasn't decided to pick it up. He notices this. He's not sure why he noticed. Huh, he thinks, and then the show gets slightly more interesting.",
+  "how_their_story_ends": {
+    "BAD_END": "Stays pretty much the same. Lives a fine life. Dies mildly satisfied. Nothing was wrong. Nothing was right either.",
+    "GOOD_END": "Something happens — could be almost anything — and he turns toward it instead of around it. Discovers he has a whole interior he'd never been introduced to. Starts building. Late start. Good builder."
+  }
+}
