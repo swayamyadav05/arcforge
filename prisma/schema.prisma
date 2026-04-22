@@ -1,8 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client"
   output   = "../src/app/generated/prisma"
@@ -12,107 +10,261 @@ datasource db {
   provider = "postgresql"
 }
 
+// ============================================================
+// ARC SERIES — Sprint 2
+// ============================================================
+// The series is the container for a user's ongoing narrative.
+// One user can have multiple active or archived series —
+// each series is an independent story arc with its own
+// characters, wounds, and trajectory. Starting a new series
+// doesn't affect existing ones.
+
+model ArcSeries {
+  id     String @id @default(cuid())
+  userId String @map("user_id")
+
+  // The current episode number in this series.
+  // Starts at 1 when the series is created.
+  // Incremented after each successful episode generation.
+  currentEpisode Int @default(1) @map("current_episode")
+
+  // When was the most recent episode generated.
+  // Used to calculate whether the 7-day window for
+  // Episode N+1 generation has passed.
+  lastEpisodeAt DateTime @default(now()) @map("last_episode_at")
+
+  // Series lifecycle status.
+  // active: user can continue generating episodes
+  // archived: user started a new series but kept this one
+  status ArcSeriesStatus @default(active)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  episodes    Arc[]
+  reflections Reflection[]
+  storyBible  StoryBible?
+  storyEvents StoryEvent[]
+
+  @@index([userId])
+  @@index([userId, status])
+  @@map("arc_series")
+}
+
+enum ArcSeriesStatus {
+  active
+  archived
+
+  @@map("arc_series_status")
+}
+
+// ============================================================
+// ARC (EPISODE) — Updated for Sprint 2
+// ============================================================
+
 model Arc {
   // We use String for the id instead of the default Int or UUID.
   // This is our NanoID — short, URL-safe, human-shareable.
-  // @id tells Prisma this is the primary key.
-  // @default(cuid()) is a fallback — we'll override this in code
-  // with our own nanoid generation before inserting.
   id String @id
 
-  // The raw answers the user typed. We store this as a Json type
-  // rather than 8 separate columns because the answer structure
-  // might evolve — maybe we add a 9th question later. Storing
-  // as JSON means no migration needed for that change.
+  // --- Sprint 2 additions ---
+  // Every arc now belongs to a series.
+  // Episode 1 creates the series, subsequent episodes link to it.
+  // Nullable during migration — backfilled in a one-time script.
+  seriesId String? @map("series_id")
+
+  // The episode's position within its series.
+  // Derived from ArcSeries.currentEpisode at time of creation.
+  episodeNumber Int? @map("episode_number")
+
+  // Actual days elapsed since the previous episode.
+  // Passed into Episode 2+ prompts as metadata so Claude
+  // knows if the user returned on day 7 or day 23.
+  // Null for Episode 1 of any series.
+  daysSincePrev Int? @map("days_since_prev")
+
+  // --- Existing fields ---
+  // The raw answers the user typed.
+  // Episode 1: the 8 awakening questions
+  // Episode 2+: the reflection answers from the previous window
   answers Json
 
-  // Claude's full generated response. Also Json because the
-  // structure is defined by our prompt, not by the DB. If we
-  // change the prompt and add a new field to the output,
-  // the database doesn't care — it's just JSON.
+  // Claude's full generated response.
   arcData Json @map("arc_data")
 
-  // For rate limiting. We store the IP that generated this arc
-  // so we can cross-reference against the rate_limits table.
+  // For rate limiting cross-reference.
   ipAddress String @map("ip_address")
 
-  // The browser fingerprint from FingerprintJS.
-  // Optional because in rare cases (private browsing, strict
-  // browser settings) fingerprinting may fail. We gracefully
-  // degrade to IP-only rate limiting in that case.
+  // FingerprintJS browser fingerprint for rate limit hybrid.
   fingerprint String?
 
-  // userId is nullable — this is the Phase 1 → Phase 2 bridge.
-  // In MVP, every arc is anonymous so this is always null.
-  // In Phase 2, when a user signs up and claims their arc,
-  // we populate this field. The column exists now so we never
-  // need to run a schema migration just to add it later.
+  // userId is nullable for Phase 1 backward compatibility.
+  // In Sprint 2 account-first flow, this is always set on new arcs.
   userId String? @map("user_id")
 
   createdAt DateTime @default(now()) @map("created_at")
 
-  // The @map decorator tells Prisma that in TypeScript you
-  // write arc.arcData, but the actual Postgres column is
-  // named arc_data. This bridges camelCase (TypeScript
-  // convention) and snake_case (Postgres convention).
-  // @@map at the model level means the TypeScript model is
-  // called Arc but the Postgres table is called arcs.
-  user User? @relation(fields: [userId], references: [id])
+  // Relations
+  user   User?      @relation(fields: [userId], references: [id])
+  series ArcSeries? @relation(fields: [seriesId], references: [id], onDelete: Cascade)
 
+  @@unique([seriesId, episodeNumber])
+  @@index([seriesId])
+  @@index([userId])
   @@map("arcs")
 }
 
-model RateLimit {
-  // Composite primary key — the combination of IP + fingerprint
-  // is what uniquely identifies a "session" for rate limiting.
-  // This is more expressive than a separate auto-increment id
-  // and also enforces uniqueness at the DB level for free.
-  id String @id @default(cuid())
+// ============================================================
+// REFLECTION — Sprint 2
+// ============================================================
+// The in-progress reflection a user writes during the
+// 7-day window before generating the next episode.
+// Auto-saved as they type, editable throughout the window.
+// One active reflection per series at a time.
+// Deleted after successful episode generation.
 
+model Reflection {
+  id       String @id @default(cuid())
+  seriesId String @unique @map("series_id")
+
+  // The reflection answers keyed by question id.
+  // Stored as JSON for flexibility — the reflection questions
+  // may evolve per episode without requiring schema changes.
+  answers Json
+
+  // When the user marked the reflection as ready for generation.
+  // Null while still drafting.
+  submittedAt DateTime? @map("submitted_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  series ArcSeries @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+
+  @@map("reflections")
+}
+
+// ============================================================
+// STORY BIBLE — Sprint 2
+// ============================================================
+// The compressed narrative state for a series.
+// This is the canonical "what is true about the story so far."
+// Updated after every episode generation via state_delta
+// from the Claude response.
+
+model StoryBible {
+  id       String @id @default(cuid())
+  seriesId String @unique @map("series_id")
+
+  // The full bible as structured JSON. Shape:
+  //   world: { genre, tone, hard_rules }
+  //   characters: map keyed by stable id with:
+  //     name, archetype, description, voice, status,
+  //     wounds[], possessions[], knowledge_state[]
+  //   relationships: edges between characters
+  //   unresolved_threads: open narrative threads
+  //   timeline: one-sentence per episode
+  //   motifs: recurring themes
+  //   established_facts: canonical facts with:
+  //     fact, established_episode, last_changed_episode,
+  //     valid_until (null if still valid)
+  //   emotional_arc: { start, current, target }
+  //   style_guide: voice and tone rules
+  bible Json
+
+  // Approximate token count of the bible.
+  // Used for cache budgeting — if bible exceeds threshold,
+  // trigger a compaction pass to summarize older entries.
+  tokenCount Int @default(0) @map("token_count")
+
+  // Optimistic lock version for safe concurrent updates.
+  version Int @default(1)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  series ArcSeries @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+
+  @@map("story_bibles")
+}
+
+// ============================================================
+// STORY EVENT — Sprint 2
+// ============================================================
+// Append-only event log. Every episode generation appends
+// events describing what happened in narrative terms.
+// The bible is the current state — this is the full history.
+// Enables time-travel debugging and safe regeneration.
+
+model StoryEvent {
+  id            String @id @default(cuid())
+  seriesId      String @map("series_id")
+  episodeNumber Int    @map("episode_number")
+
+  // Event type discriminator. Common types:
+  //   wound_surfaced, wound_deepened, wound_healed
+  //   promise_made, promise_kept, promise_broken
+  //   relationship_formed, relationship_changed
+  //   secret_revealed, secret_kept
+  //   mission_assigned, mission_completed, mission_avoided
+  eventType String @map("event_type")
+
+  // Full event payload as JSON. Each event type has
+  // its own shape — the TypeScript reducer handles
+  // applying the event to the bible.
+  payload Json
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  series ArcSeries @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+
+  @@index([seriesId])
+  @@index([seriesId, episodeNumber])
+  @@map("story_events")
+}
+
+// ============================================================
+// RATE LIMIT — unchanged
+// ============================================================
+
+model RateLimit {
+  id          String   @id @default(cuid())
   ipAddress   String   @map("ip_address")
   fingerprint String?
   arcCount    Int      @default(0) @map("arc_count")
   windowStart DateTime @map("window_start")
   updatedAt   DateTime @updatedAt @map("updated_at")
-  // @updatedAt is a Prisma magic field — it automatically
-  // sets this to the current timestamp whenever the row
-  // is updated. Useful for debugging stale windows.
 
-  // This index tells Postgres to build a fast lookup structure
-  // on ip_address. Without this, every rate limit check would
-  // do a full table scan — fine at 100 rows, terrible at 100,000.
   @@index([ipAddress])
   @@index([fingerprint])
   @@map("rate_limits")
 }
 
+// ============================================================
+// API USAGE LOG — unchanged
+// ============================================================
+
 model ApiUsageLog {
-  id String @id @default(cuid())
-
-  // We store arcId so we can always answer "how much did
-  // generating this specific arc cost?" — useful for debugging
-  // and for understanding which types of answers are most
-  // expensive to process.
-  arcId String @map("arc_id")
-
-  tokensInput  Int @map("tokens_input")
-  tokensOutput Int @map("tokens_output")
-
-  // Storing cost in a Float lets us query total spend easily:
-  // SELECT SUM(cost_usd) FROM api_usage_logs WHERE ...
-  costUsd Float @map("cost_usd")
-
-  createdAt DateTime @default(now()) @map("created_at")
+  id           String   @id @default(cuid())
+  arcId        String   @map("arc_id")
+  tokensInput  Int      @map("tokens_input")
+  tokensOutput Int      @map("tokens_output")
+  costUsd      Float    @map("cost_usd")
+  createdAt    DateTime @default(now()) @map("created_at")
 
   @@index([arcId])
   @@map("api_usage_logs")
 }
 
+// ============================================================
+// USER — Updated for Sprint 2
+// ============================================================
+
 model User {
   id            String   @id @default(cuid())
   name          String?
   email         String   @unique
-  // Better Auth uses Boolean not DateTime for emailVerified
   emailVerified Boolean  @default(false) @map("email_verified")
   image         String?
   createdAt     DateTime @default(now()) @map("created_at")
@@ -121,15 +273,18 @@ model User {
   sessions Session[]
   accounts Account[]
   arcs     Arc[]
+  series   ArcSeries[] // Sprint 2 addition
 
   @@map("users")
 }
 
+// ============================================================
+// SESSION, ACCOUNT, VERIFICATION — unchanged (Better Auth)
+// ============================================================
+
 model Session {
   id        String   @id @default(cuid())
-  // Better Auth uses expiresAt not expires
   expiresAt DateTime @map("expires_at")
-  // Better Auth uses token not sessionToken
   token     String   @unique
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -144,9 +299,7 @@ model Session {
 
 model Account {
   id                    String    @id @default(cuid())
-  // Better Auth uses accountId not providerAccountId
   accountId             String    @map("account_id")
-  // Better Auth uses providerId not provider
   providerId            String    @map("provider_id")
   userId                String    @map("user_id")
   accessToken           String?   @map("access_token") @db.Text
@@ -166,7 +319,6 @@ model Account {
 
 model Verification {
   id         String   @id @default(cuid())
-  // Better Auth uses identifier not identifier+token composite
   identifier String
   value      String
   expiresAt  DateTime @map("expires_at")

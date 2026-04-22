@@ -9,7 +9,9 @@
 * 🟢 You can import this file directly.
 */
 
+export const ArcSeriesStatus = {
+  active: 'active',
+  archived: 'archived'
+} as const
 
-
-// This file is empty because there are no enums in the schema.
-export {}
+export type ArcSeriesStatus = (typeof ArcSeriesStatus)[keyof typeof ArcSeriesStatus]

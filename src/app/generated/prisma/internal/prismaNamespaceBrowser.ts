@@ -51,7 +51,11 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
+  ArcSeries: 'ArcSeries',
   Arc: 'Arc',
+  Reflection: 'Reflection',
+  StoryBible: 'StoryBible',
+  StoryEvent: 'StoryEvent',
   RateLimit: 'RateLimit',
   ApiUsageLog: 'ApiUsageLog',
   User: 'User',
@@ -76,8 +80,24 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
+export const ArcSeriesScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  currentEpisode: 'currentEpisode',
+  lastEpisodeAt: 'lastEpisodeAt',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ArcSeriesScalarFieldEnum = (typeof ArcSeriesScalarFieldEnum)[keyof typeof ArcSeriesScalarFieldEnum]
+
+
 export const ArcScalarFieldEnum = {
   id: 'id',
+  seriesId: 'seriesId',
+  episodeNumber: 'episodeNumber',
+  daysSincePrev: 'daysSincePrev',
   answers: 'answers',
   arcData: 'arcData',
   ipAddress: 'ipAddress',
@@ -87,6 +107,43 @@ export const ArcScalarFieldEnum = {
 } as const
 
 export type ArcScalarFieldEnum = (typeof ArcScalarFieldEnum)[keyof typeof ArcScalarFieldEnum]
+
+
+export const ReflectionScalarFieldEnum = {
+  id: 'id',
+  seriesId: 'seriesId',
+  answers: 'answers',
+  submittedAt: 'submittedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ReflectionScalarFieldEnum = (typeof ReflectionScalarFieldEnum)[keyof typeof ReflectionScalarFieldEnum]
+
+
+export const StoryBibleScalarFieldEnum = {
+  id: 'id',
+  seriesId: 'seriesId',
+  bible: 'bible',
+  tokenCount: 'tokenCount',
+  version: 'version',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type StoryBibleScalarFieldEnum = (typeof StoryBibleScalarFieldEnum)[keyof typeof StoryBibleScalarFieldEnum]
+
+
+export const StoryEventScalarFieldEnum = {
+  id: 'id',
+  seriesId: 'seriesId',
+  episodeNumber: 'episodeNumber',
+  eventType: 'eventType',
+  payload: 'payload',
+  createdAt: 'createdAt'
+} as const
+
+export type StoryEventScalarFieldEnum = (typeof StoryEventScalarFieldEnum)[keyof typeof StoryEventScalarFieldEnum]
 
 
 export const RateLimitScalarFieldEnum = {
