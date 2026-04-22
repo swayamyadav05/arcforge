@@ -9,6 +9,7 @@ import {
 import posthog from "@/lib/posthog";
 import prisma from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/rateLimit";
+import { estimateTokenCount } from "@/lib/tokens";
 import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -42,9 +43,6 @@ export async function POST(req: NextRequest) {
       "unknown";
 
     // -- Step 2: Parse and validate the request body --
-    // We explicitly type the destructured values so TypeScript
-    // enforces our expectations. If the client sends malformed
-    // JSON or missing fields, the catch block handles it cleanly.
     const body = await req.json();
     const { answers, fingerprint } = body as {
       answers: Record<string, string>;
@@ -66,7 +64,6 @@ export async function POST(req: NextRequest) {
     }
 
     // Basic validation - we need exactly 8 answers.
-    // We check the count rather than individual keys so the validation stays resilient if we rename questions later.
     if (!answers || Object.keys(answers).length !== 8) {
       return NextResponse.json(
         {
@@ -100,10 +97,6 @@ export async function POST(req: NextRequest) {
           error: "Arc creation is limited to once per day.",
           retryAfterSeconds: 24 * 60 * 60,
           latestArcId: latestOwnedArcId,
-          // We send a retry-friendly message rather than a
-          // generic "rate limited" error because this text
-          // might actually appear in the UI. It should feel
-          // like part of the product, not an error page.
         },
         {
           status: 429,
@@ -123,50 +116,77 @@ export async function POST(req: NextRequest) {
     });
 
     // -- Step 4: Call Claude --
-    const { arc, usage } = await generateArc(answers);
-
-    // console.log("ARC Data:", arc);
+    // generateArc now returns arc + bible + usage.
+    // The database connection is NOT held during this call —
+    // the transaction below only starts after Claude has fully responded.
+    const { arc, bible, usage } = await generateArc(answers);
 
     // -- Step 5: Calculate cost before the transaction --
-    // We calculate cost here, outside the transaction, because
-    // it's pure arithmetic - no DB calls needed. Keeping pure logic outside transactions makes them shorter,
-    // which reduces the window where a lock could be held.
+    // Pure arithmetic — no DB calls needed. Keeping pure logic outside
+    // transactions makes them shorter, reducing the connection hold window.
     // Current Claude Sonnet pricing: $3/M input, $15/M output.
-    // centralised in lib/cost.ts - so a pricing change means editing exactly one file.
     const COST_PER_INPUT_TOKEN = 3 / 1_000_000;
     const COST_PER_OUTPUT_TOKEN = 15 / 1_000_000;
     const costUsd =
       usage.input_tokens * COST_PER_INPUT_TOKEN +
       usage.output_tokens * COST_PER_OUTPUT_TOKEN;
 
-    // -- Step 6: Atomic transaction --
-    // This is the critical section. Both writes
-    // must succeed together or neither succeeds. If the
-    // apiUsageLog write fails after the arc is written.
-    // Prisma automatically rolls back the arc insert too.
-    // The user gets a 500 error and can try again - no money
-    // is silently lost, no arc exists without a cost record.
-    // NanoID is generated before the transaction so both
-    // writes can reference it without a callback-style
-    // interactive transaction (which has a short connection-
-    // start timeout that the long Claude call can exhaust).
     const arcId = nanoid(8);
     const shareUrl = `${baseUrl}/arc/${arcId}`;
 
-    const arc_record = await prisma.arc.create({
-      data: {
-        id: arcId,
-        answers: answers,
-        arcData: arc as object,
-        ipAddress: ip,
-        fingerprint: fingerprint ?? null,
-        userId: session.user.id,
-      },
+    // -- Step 6: Four-write atomic transaction --
+    // Claude has already returned, so the connection is only held for
+    // the ~few hundred milliseconds these four fast writes take.
+    // All four must succeed together or none are committed.
+    const { arc_record } = await prisma.$transaction(async (tx) => {
+      const series_record = await tx.arcSeries.create({
+        data: {
+          userId: session.user.id,
+        },
+      });
+
+      const arc_record = await tx.arc.create({
+        data: {
+          id: arcId,
+          seriesId: series_record.id,
+          episodeNumber: 1,
+          daysSincePrev: null,
+          answers: answers,
+          arcData: arc as object,
+          ipAddress: ip,
+          fingerprint: fingerprint ?? null,
+          userId: session.user.id,
+        },
+      });
+
+      await tx.storyBible.create({
+        data: {
+          seriesId: series_record.id,
+          bible: bible as object,
+          tokenCount: estimateTokenCount(bible),
+          version: 1,
+        },
+      });
+
+      await tx.storyEvent.create({
+        data: {
+          seriesId: series_record.id,
+          episodeNumber: 1,
+          eventType: "episode_canonized",
+          payload: {
+            character_name: arc.character_name,
+            archetype: arc.archetype,
+            wound: arc.character_arc.the_wound,
+            weapon: arc.character_arc.the_weapon,
+          },
+        },
+      });
+
+      return { arc_record };
     });
 
-    // Write cost log separately — if this fails, the arc is still
-    // saved and the user experience is unaffected. We just lose
-    // the cost tracking row for this generation, which is acceptable.
+    // -- Step 7: Non-critical cost log (outside transaction) --
+    // Failure here is acceptable — the arc and series are already saved.
     await prisma.apiUsageLog
       .create({
         data: {
@@ -177,8 +197,6 @@ export async function POST(req: NextRequest) {
         },
       })
       .catch((err) => {
-        // Log the error but don't let it bubble up and crash the request.
-        // The arc is already saved — the user should still get their result.
         console.error(
           "[arc/generate] Cost log write failed - arc was saved successfully:",
           err,
@@ -198,10 +216,8 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // -- Step 7: Return the response --
-    // We return both the generated arc data AND the arcId.
-    // The frontend needs arcId immediately to construct the
-    // shareable URL without making a second network request.
+    // -- Step 8: Return the response --
+    // Same shape as before — { arcId, arc, shareUrl } — frontend unchanged.
     const response = NextResponse.json(
       {
         arcId: arc_record.id,
@@ -228,7 +244,6 @@ export async function POST(req: NextRequest) {
 
     return response;
   } catch (error) {
-    // -- Global error handler--
     console.error("[arc/generate] Unhandled error:", error);
 
     posthog.capture({
