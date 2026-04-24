@@ -1,3 +1,13 @@
 {
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:docs.anthropic.com)",
+      "Bash(npx prisma *)",
+      "Bash(mkdir -p \"S:/Products/arcforge_me/arcforge/src/lib/bible\")",
+      "Bash(mkdir -p \"S:/Products/arcforge_me/arcforge/src/app/api/arc/series/[seriesId]/generate-next\")",
+      "Bash(npx tsc *)"
+    ]
+  },
   "spinnerTipsEnabled": false
 }

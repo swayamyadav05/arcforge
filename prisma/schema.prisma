@@ -38,6 +38,10 @@ model ArcSeries {
   // archived: user started a new series but kept this one
   status ArcSeriesStatus @default(active)
 
+  // Critic output from the most recent episode generation.
+  // hard_flags here block next generation until clarified.
+  criticNotes Json? @map("critic_notes")
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -83,6 +87,10 @@ model Arc {
   // knows if the user returned on day 7 or day 23.
   // Null for Episode 1 of any series.
   daysSincePrev Int? @map("days_since_prev")
+
+  // The narrative title of this episode, set during generation.
+  // Episode 1 default is "The Awakening" (backfilled by script).
+  episodeTitle String? @map("episode_title")
 
   // --- Existing fields ---
   // The raw answers the user typed.

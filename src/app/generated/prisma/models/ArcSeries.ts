@@ -60,6 +60,7 @@ export type ArcSeriesCountAggregateOutputType = {
   currentEpisode: number
   lastEpisodeAt: number
   status: number
+  criticNotes: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -100,6 +101,7 @@ export type ArcSeriesCountAggregateInputType = {
   currentEpisode?: true
   lastEpisodeAt?: true
   status?: true
+  criticNotes?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -197,6 +199,7 @@ export type ArcSeriesGroupByOutputType = {
   currentEpisode: number
   lastEpisodeAt: Date
   status: $Enums.ArcSeriesStatus
+  criticNotes: runtime.JsonValue | null
   createdAt: Date
   updatedAt: Date
   _count: ArcSeriesCountAggregateOutputType | null
@@ -230,6 +233,7 @@ export type ArcSeriesWhereInput = {
   currentEpisode?: Prisma.IntFilter<"ArcSeries"> | number
   lastEpisodeAt?: Prisma.DateTimeFilter<"ArcSeries"> | Date | string
   status?: Prisma.EnumArcSeriesStatusFilter<"ArcSeries"> | $Enums.ArcSeriesStatus
+  criticNotes?: Prisma.JsonNullableFilter<"ArcSeries">
   createdAt?: Prisma.DateTimeFilter<"ArcSeries"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ArcSeries"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -245,6 +249,7 @@ export type ArcSeriesOrderByWithRelationInput = {
   currentEpisode?: Prisma.SortOrder
   lastEpisodeAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  criticNotes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
@@ -263,6 +268,7 @@ export type ArcSeriesWhereUniqueInput = Prisma.AtLeast<{
   currentEpisode?: Prisma.IntFilter<"ArcSeries"> | number
   lastEpisodeAt?: Prisma.DateTimeFilter<"ArcSeries"> | Date | string
   status?: Prisma.EnumArcSeriesStatusFilter<"ArcSeries"> | $Enums.ArcSeriesStatus
+  criticNotes?: Prisma.JsonNullableFilter<"ArcSeries">
   createdAt?: Prisma.DateTimeFilter<"ArcSeries"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ArcSeries"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -278,6 +284,7 @@ export type ArcSeriesOrderByWithAggregationInput = {
   currentEpisode?: Prisma.SortOrder
   lastEpisodeAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  criticNotes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ArcSeriesCountOrderByAggregateInput
@@ -296,6 +303,7 @@ export type ArcSeriesScalarWhereWithAggregatesInput = {
   currentEpisode?: Prisma.IntWithAggregatesFilter<"ArcSeries"> | number
   lastEpisodeAt?: Prisma.DateTimeWithAggregatesFilter<"ArcSeries"> | Date | string
   status?: Prisma.EnumArcSeriesStatusWithAggregatesFilter<"ArcSeries"> | $Enums.ArcSeriesStatus
+  criticNotes?: Prisma.JsonNullableWithAggregatesFilter<"ArcSeries">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ArcSeries"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ArcSeries"> | Date | string
 }
@@ -305,6 +313,7 @@ export type ArcSeriesCreateInput = {
   currentEpisode?: number
   lastEpisodeAt?: Date | string
   status?: $Enums.ArcSeriesStatus
+  criticNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutSeriesInput
@@ -320,6 +329,7 @@ export type ArcSeriesUncheckedCreateInput = {
   currentEpisode?: number
   lastEpisodeAt?: Date | string
   status?: $Enums.ArcSeriesStatus
+  criticNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   episodes?: Prisma.ArcUncheckedCreateNestedManyWithoutSeriesInput
@@ -333,6 +343,7 @@ export type ArcSeriesUpdateInput = {
   currentEpisode?: Prisma.IntFieldUpdateOperationsInput | number
   lastEpisodeAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumArcSeriesStatusFieldUpdateOperationsInput | $Enums.ArcSeriesStatus
+  criticNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutSeriesNestedInput
@@ -348,6 +359,7 @@ export type ArcSeriesUncheckedUpdateInput = {
   currentEpisode?: Prisma.IntFieldUpdateOperationsInput | number
   lastEpisodeAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumArcSeriesStatusFieldUpdateOperationsInput | $Enums.ArcSeriesStatus
+  criticNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   episodes?: Prisma.ArcUncheckedUpdateManyWithoutSeriesNestedInput
@@ -362,6 +374,7 @@ export type ArcSeriesCreateManyInput = {
   currentEpisode?: number
   lastEpisodeAt?: Date | string
   status?: $Enums.ArcSeriesStatus
+  criticNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -371,6 +384,7 @@ export type ArcSeriesUpdateManyMutationInput = {
   currentEpisode?: Prisma.IntFieldUpdateOperationsInput | number
   lastEpisodeAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumArcSeriesStatusFieldUpdateOperationsInput | $Enums.ArcSeriesStatus
+  criticNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -381,6 +395,7 @@ export type ArcSeriesUncheckedUpdateManyInput = {
   currentEpisode?: Prisma.IntFieldUpdateOperationsInput | number
   lastEpisodeAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumArcSeriesStatusFieldUpdateOperationsInput | $Enums.ArcSeriesStatus
+  criticNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -391,6 +406,7 @@ export type ArcSeriesCountOrderByAggregateInput = {
   currentEpisode?: Prisma.SortOrder
   lastEpisodeAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  criticNotes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -568,6 +584,7 @@ export type ArcSeriesCreateWithoutEpisodesInput = {
   currentEpisode?: number
   lastEpisodeAt?: Date | string
   status?: $Enums.ArcSeriesStatus
+  criticNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutSeriesInput
@@ -582,6 +599,7 @@ export type ArcSeriesUncheckedCreateWithoutEpisodesInput = {
   currentEpisode?: number
   lastEpisodeAt?: Date | string
   status?: $Enums.ArcSeriesStatus
+  criticNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   reflections?: Prisma.ReflectionUncheckedCreateNestedManyWithoutSeriesInput
@@ -610,6 +628,7 @@ export type ArcSeriesUpdateWithoutEpisodesInput = {
   currentEpisode?: Prisma.IntFieldUpdateOperationsInput | number
   lastEpisodeAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumArcSeriesStatusFieldUpdateOperationsInput | $Enums.ArcSeriesStatus
+  criticNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutSeriesNestedInput
@@ -624,6 +643,7 @@ export type ArcSeriesUncheckedUpdateWithoutEpisodesInput = {
   currentEpisode?: Prisma.IntFieldUpdateOperationsInput | number
   lastEpisodeAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumArcSeriesStatusFieldUpdateOperationsInput | $Enums.ArcSeriesStatus
+  criticNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reflections?: Prisma.ReflectionUncheckedUpdateManyWithoutSeriesNestedInput
@@ -636,6 +656,7 @@ export type ArcSeriesCreateWithoutReflectionsInput = {
   currentEpisode?: number
   lastEpisodeAt?: Date | string
   status?: $Enums.ArcSeriesStatus
+  criticNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutSeriesInput
@@ -650,6 +671,7 @@ export type ArcSeriesUncheckedCreateWithoutReflectionsInput = {
   currentEpisode?: number
   lastEpisodeAt?: Date | string
   status?: $Enums.ArcSeriesStatus
+  criticNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   episodes?: Prisma.ArcUncheckedCreateNestedManyWithoutSeriesInput
@@ -678,6 +700,7 @@ export type ArcSeriesUpdateWithoutReflectionsInput = {
   currentEpisode?: Prisma.IntFieldUpdateOperationsInput | number
   lastEpisodeAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumArcSeriesStatusFieldUpdateOperationsInput | $Enums.ArcSeriesStatus
+  criticNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutSeriesNestedInput
@@ -692,6 +715,7 @@ export type ArcSeriesUncheckedUpdateWithoutReflectionsInput = {
   currentEpisode?: Prisma.IntFieldUpdateOperationsInput | number
   lastEpisodeAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumArcSeriesStatusFieldUpdateOperationsInput | $Enums.ArcSeriesStatus
+  criticNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   episodes?: Prisma.ArcUncheckedUpdateManyWithoutSeriesNestedInput
@@ -704,6 +728,7 @@ export type ArcSeriesCreateWithoutStoryBibleInput = {
   currentEpisode?: number
   lastEpisodeAt?: Date | string
   status?: $Enums.ArcSeriesStatus
+  criticNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutSeriesInput
@@ -718,6 +743,7 @@ export type ArcSeriesUncheckedCreateWithoutStoryBibleInput = {
   currentEpisode?: number
   lastEpisodeAt?: Date | string
   status?: $Enums.ArcSeriesStatus
+  criticNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   episodes?: Prisma.ArcUncheckedCreateNestedManyWithoutSeriesInput
@@ -746,6 +772,7 @@ export type ArcSeriesUpdateWithoutStoryBibleInput = {
   currentEpisode?: Prisma.IntFieldUpdateOperationsInput | number
   lastEpisodeAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumArcSeriesStatusFieldUpdateOperationsInput | $Enums.ArcSeriesStatus
+  criticNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutSeriesNestedInput
@@ -760,6 +787,7 @@ export type ArcSeriesUncheckedUpdateWithoutStoryBibleInput = {
   currentEpisode?: Prisma.IntFieldUpdateOperationsInput | number
   lastEpisodeAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumArcSeriesStatusFieldUpdateOperationsInput | $Enums.ArcSeriesStatus
+  criticNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   episodes?: Prisma.ArcUncheckedUpdateManyWithoutSeriesNestedInput
@@ -772,6 +800,7 @@ export type ArcSeriesCreateWithoutStoryEventsInput = {
   currentEpisode?: number
   lastEpisodeAt?: Date | string
   status?: $Enums.ArcSeriesStatus
+  criticNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutSeriesInput
@@ -786,6 +815,7 @@ export type ArcSeriesUncheckedCreateWithoutStoryEventsInput = {
   currentEpisode?: number
   lastEpisodeAt?: Date | string
   status?: $Enums.ArcSeriesStatus
+  criticNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   episodes?: Prisma.ArcUncheckedCreateNestedManyWithoutSeriesInput
@@ -814,6 +844,7 @@ export type ArcSeriesUpdateWithoutStoryEventsInput = {
   currentEpisode?: Prisma.IntFieldUpdateOperationsInput | number
   lastEpisodeAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumArcSeriesStatusFieldUpdateOperationsInput | $Enums.ArcSeriesStatus
+  criticNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutSeriesNestedInput
@@ -828,6 +859,7 @@ export type ArcSeriesUncheckedUpdateWithoutStoryEventsInput = {
   currentEpisode?: Prisma.IntFieldUpdateOperationsInput | number
   lastEpisodeAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumArcSeriesStatusFieldUpdateOperationsInput | $Enums.ArcSeriesStatus
+  criticNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   episodes?: Prisma.ArcUncheckedUpdateManyWithoutSeriesNestedInput
@@ -840,6 +872,7 @@ export type ArcSeriesCreateWithoutUserInput = {
   currentEpisode?: number
   lastEpisodeAt?: Date | string
   status?: $Enums.ArcSeriesStatus
+  criticNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   episodes?: Prisma.ArcCreateNestedManyWithoutSeriesInput
@@ -853,6 +886,7 @@ export type ArcSeriesUncheckedCreateWithoutUserInput = {
   currentEpisode?: number
   lastEpisodeAt?: Date | string
   status?: $Enums.ArcSeriesStatus
+  criticNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   episodes?: Prisma.ArcUncheckedCreateNestedManyWithoutSeriesInput
@@ -896,6 +930,7 @@ export type ArcSeriesScalarWhereInput = {
   currentEpisode?: Prisma.IntFilter<"ArcSeries"> | number
   lastEpisodeAt?: Prisma.DateTimeFilter<"ArcSeries"> | Date | string
   status?: Prisma.EnumArcSeriesStatusFilter<"ArcSeries"> | $Enums.ArcSeriesStatus
+  criticNotes?: Prisma.JsonNullableFilter<"ArcSeries">
   createdAt?: Prisma.DateTimeFilter<"ArcSeries"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ArcSeries"> | Date | string
 }
@@ -905,6 +940,7 @@ export type ArcSeriesCreateManyUserInput = {
   currentEpisode?: number
   lastEpisodeAt?: Date | string
   status?: $Enums.ArcSeriesStatus
+  criticNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -914,6 +950,7 @@ export type ArcSeriesUpdateWithoutUserInput = {
   currentEpisode?: Prisma.IntFieldUpdateOperationsInput | number
   lastEpisodeAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumArcSeriesStatusFieldUpdateOperationsInput | $Enums.ArcSeriesStatus
+  criticNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   episodes?: Prisma.ArcUpdateManyWithoutSeriesNestedInput
@@ -927,6 +964,7 @@ export type ArcSeriesUncheckedUpdateWithoutUserInput = {
   currentEpisode?: Prisma.IntFieldUpdateOperationsInput | number
   lastEpisodeAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumArcSeriesStatusFieldUpdateOperationsInput | $Enums.ArcSeriesStatus
+  criticNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   episodes?: Prisma.ArcUncheckedUpdateManyWithoutSeriesNestedInput
@@ -940,6 +978,7 @@ export type ArcSeriesUncheckedUpdateManyWithoutUserInput = {
   currentEpisode?: Prisma.IntFieldUpdateOperationsInput | number
   lastEpisodeAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumArcSeriesStatusFieldUpdateOperationsInput | $Enums.ArcSeriesStatus
+  criticNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -999,6 +1038,7 @@ export type ArcSeriesSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   currentEpisode?: boolean
   lastEpisodeAt?: boolean
   status?: boolean
+  criticNotes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1015,6 +1055,7 @@ export type ArcSeriesSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   currentEpisode?: boolean
   lastEpisodeAt?: boolean
   status?: boolean
+  criticNotes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1026,6 +1067,7 @@ export type ArcSeriesSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   currentEpisode?: boolean
   lastEpisodeAt?: boolean
   status?: boolean
+  criticNotes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1037,11 +1079,12 @@ export type ArcSeriesSelectScalar = {
   currentEpisode?: boolean
   lastEpisodeAt?: boolean
   status?: boolean
+  criticNotes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ArcSeriesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "currentEpisode" | "lastEpisodeAt" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["arcSeries"]>
+export type ArcSeriesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "currentEpisode" | "lastEpisodeAt" | "status" | "criticNotes" | "createdAt" | "updatedAt", ExtArgs["result"]["arcSeries"]>
 export type ArcSeriesInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   episodes?: boolean | Prisma.ArcSeries$episodesArgs<ExtArgs>
@@ -1072,6 +1115,7 @@ export type $ArcSeriesPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     currentEpisode: number
     lastEpisodeAt: Date
     status: $Enums.ArcSeriesStatus
+    criticNotes: runtime.JsonValue | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["arcSeries"]>
@@ -1507,6 +1551,7 @@ export interface ArcSeriesFieldRefs {
   readonly currentEpisode: Prisma.FieldRef<"ArcSeries", 'Int'>
   readonly lastEpisodeAt: Prisma.FieldRef<"ArcSeries", 'DateTime'>
   readonly status: Prisma.FieldRef<"ArcSeries", 'ArcSeriesStatus'>
+  readonly criticNotes: Prisma.FieldRef<"ArcSeries", 'Json'>
   readonly createdAt: Prisma.FieldRef<"ArcSeries", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"ArcSeries", 'DateTime'>
 }

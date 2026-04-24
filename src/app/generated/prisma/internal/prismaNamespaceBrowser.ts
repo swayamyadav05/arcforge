@@ -86,6 +86,7 @@ export const ArcSeriesScalarFieldEnum = {
   currentEpisode: 'currentEpisode',
   lastEpisodeAt: 'lastEpisodeAt',
   status: 'status',
+  criticNotes: 'criticNotes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -98,6 +99,7 @@ export const ArcScalarFieldEnum = {
   seriesId: 'seriesId',
   episodeNumber: 'episodeNumber',
   daysSincePrev: 'daysSincePrev',
+  episodeTitle: 'episodeTitle',
   answers: 'answers',
   arcData: 'arcData',
   ipAddress: 'ipAddress',
@@ -234,6 +236,14 @@ export const SortOrder = {
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const JsonNullValueInput = {

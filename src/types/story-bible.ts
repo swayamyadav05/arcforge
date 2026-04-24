@@ -11,6 +11,7 @@ export interface StoryBibleCharacter {
   voice: string;
   status: string;
   wounds: string[];
+  complications?: string[]; // appended by state delta reducer; absent on Episode 1 bibles
   possessions: string[];
   knowledge_state: string[];
 }
@@ -62,6 +63,7 @@ export interface StoryBibleShape {
   };
   relationships: StoryBibleRelationship[];
   unresolved_threads: StoryBibleUnresolvedThread[];
+  resolved_threads?: StoryBibleUnresolvedThread[]; // populated by reducer when threads close
   timeline: StoryBibleTimelineEntry[];
   motifs: string[];
   emotional_arc: StoryBibleEmotionalArc;
