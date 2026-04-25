@@ -8,7 +8,7 @@ import {
 } from "@/lib/ownerSession";
 import posthog from "@/lib/posthog";
 import prisma from "@/lib/prisma";
-import { checkRateLimit } from "@/lib/rateLimit";
+import { consumeRateLimit, getRateLimitStatus } from "@/lib/rateLimit";
 import { estimateTokenCount } from "@/lib/tokens";
 import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
@@ -75,10 +75,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // -- Step 3: Rate limit check --
-    const allowed = await checkRateLimit(ip, fingerprint ?? null);
+    // -- Step 3: Rate limit check (read-only) --
+    const { canForge } = await getRateLimitStatus(ip, fingerprint ?? null);
 
-    if (!allowed) {
+    if (!canForge) {
       posthog.capture({
         distinctId: ip,
         event: "rate_limit_hit",
@@ -138,54 +138,70 @@ export async function POST(req: NextRequest) {
     // Claude has already returned, so the connection is only held for
     // the ~few hundred milliseconds these four fast writes take.
     // All four must succeed together or none are committed.
-    const { arc_record } = await prisma.$transaction(async (tx) => {
-      const series_record = await tx.arcSeries.create({
-        data: {
-          userId: session.user.id,
-        },
-      });
-
-      const arc_record = await tx.arc.create({
-        data: {
-          id: arcId,
-          seriesId: series_record.id,
-          episodeNumber: 1,
-          daysSincePrev: null,
-          answers: answers,
-          arcData: arc as object,
-          ipAddress: ip,
-          fingerprint: fingerprint ?? null,
-          userId: session.user.id,
-        },
-      });
-
-      await tx.storyBible.create({
-        data: {
-          seriesId: series_record.id,
-          bible: bible as object,
-          tokenCount: estimateTokenCount(bible),
-          version: 1,
-        },
-      });
-
-      await tx.storyEvent.create({
-        data: {
-          seriesId: series_record.id,
-          episodeNumber: 1,
-          eventType: "episode_canonized",
-          payload: {
-            character_name: arc.character_name,
-            archetype: arc.archetype,
-            wound: arc.character_arc.the_wound,
-            weapon: arc.character_arc.the_weapon,
+    const { arc_record } = await prisma.$transaction(
+      async (tx) => {
+        const series_record = await tx.arcSeries.create({
+          data: {
+            userId: session.user.id,
           },
-        },
-      });
+        });
 
-      return { arc_record };
+        const arc_record = await tx.arc.create({
+          data: {
+            id: arcId,
+            seriesId: series_record.id,
+            episodeNumber: 1,
+            daysSincePrev: null,
+            answers: answers,
+            arcData: arc as object,
+            ipAddress: ip,
+            fingerprint: fingerprint ?? null,
+            userId: session.user.id,
+          },
+        });
+
+        await tx.storyBible.create({
+          data: {
+            seriesId: series_record.id,
+            bible: bible as object,
+            tokenCount: estimateTokenCount(bible),
+            version: 1,
+          },
+        });
+
+        await tx.storyEvent.create({
+          data: {
+            seriesId: series_record.id,
+            episodeNumber: 1,
+            eventType: "episode_canonized",
+            payload: {
+              character_name: arc.character_name,
+              archetype: arc.archetype,
+              wound: arc.character_arc.the_wound,
+              weapon: arc.character_arc.the_weapon,
+            },
+          },
+        });
+
+        return { arc_record };
+      },
+
+      {
+        maxWait: 10000, // 10s to acquire connection from pool
+        timeout: 30000, // 30s max for the four writes to complete
+      },
+    );
+
+    // -- Step 7: Consume rate limit slot now that the arc is saved --
+    // Placed after the transaction so a Claude or DB failure doesn't burn the user's daily quota.
+    await consumeRateLimit(ip, fingerprint ?? null).catch((err) => {
+      console.error(
+        "[arc/generate] Rate limit increment failed - arc was saved successfully:",
+        err,
+      );
     });
 
-    // -- Step 7: Non-critical cost log (outside transaction) --
+    // -- Step 8: Non-critical cost log (outside transaction) --
     // Failure here is acceptable — the arc and series are already saved.
     await prisma.apiUsageLog
       .create({
@@ -216,7 +232,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // -- Step 8: Return the response --
+    // -- Step 9: Return the response --
     // Same shape as before — { arcId, arc, shareUrl } — frontend unchanged.
     const response = NextResponse.json(
       {

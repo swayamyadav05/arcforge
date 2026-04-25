@@ -34,7 +34,7 @@ import {
 
 const anthropic = new Anthropic();
 
-const SONNET = "claude-sonnet-4-6";
+const SONNET = "claude-sonnet-4-6-invalid";
 const HAIKU = "claude-haiku-4-5-20251001";
 
 function buildUserMessage(answers: Record<string, string>): string {
@@ -117,7 +117,11 @@ export async function generateArc(
 
 export async function generateEpisodeN(params: {
   bible: StoryBibleShape;
-  previousEpisode: { episodeNumber: number; title: string; summary: string };
+  previousEpisode: {
+    episodeNumber: number;
+    title: string;
+    summary: string;
+  };
   reflectionQ1: string;
   reflectionQ2: string | null;
   elapsedDays: number;

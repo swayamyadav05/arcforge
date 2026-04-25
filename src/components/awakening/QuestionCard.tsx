@@ -17,6 +17,8 @@ interface QuestionCardProps {
   questionNumber: number;
   totalQuestions: number;
   onAnswer: (answer: string) => void;
+  onBack?: (currentValue: string) => void;
+  initialValue?: string;
 }
 
 export default function QuestionCard({
@@ -24,9 +26,11 @@ export default function QuestionCard({
   questionNumber,
   totalQuestions,
   onAnswer,
+  onBack,
+  initialValue,
 }: QuestionCardProps) {
   const MIN_ANSWER_CHARACTERS = 50;
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState(initialValue ?? "");
   const [isVisible, setIsVisible] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -92,25 +96,44 @@ export default function QuestionCard({
             value={value}
             onChange={(e) => setValue(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Your answer..."
+            placeholder="Take your time — at least 50 characters helps Claude see you clearly."
             autoFocus
             className="min-h-50 bg-purple-950/20 border-purple-500/20 text-white placeholder:text-purple-400/30 text-lg resize-none focus:border-purple-500/40 focus:ring-purple-500/20"
           />
 
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-purple-400/60">
-              {hasMinimumCharacters
-                ? `${answerLength} characters`
-                : "Keep going - the more specific you are, the more your arc will reveal"}
-            </span>
+          <div className="space-y-2">
+            <div className="flex justify-end">
+              <span
+                className={`text-xs tabular-nums transition-colors ${
+                  hasMinimumCharacters
+                    ? "text-emerald-400/60"
+                    : "text-purple-400/50"
+                }`}>
+                {answerLength}/{MIN_ANSWER_CHARACTERS} minimum
+                {hasMinimumCharacters ? " ✓" : ""}
+              </span>
+            </div>
 
-            <Button
-              onClick={handleNext}
-              disabled={!hasMinimumCharacters}
-              className="bg-linear-to-r from-[#534AB7] to-[#6B5FD8] hover:from-[#6B5FD8] hover:to-[#7F73E8] text-white px-8 py-6 rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
-              {isLastQuestion ? "Forge my arc" : "Next"}
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
+            <div className="flex items-center justify-between">
+              {questionNumber > 1 ? (
+                <button
+                  type="button"
+                  onClick={() => onBack?.(value)}
+                  className="text-sm text-purple-400/60 hover:text-purple-300 transition-colors flex items-center gap-1">
+                  ← Back
+                </button>
+              ) : (
+                <div />
+              )}
+
+              <Button
+                onClick={handleNext}
+                disabled={!hasMinimumCharacters}
+                className="bg-linear-to-r from-[#534AB7] to-[#6B5FD8] hover:from-[#6B5FD8] hover:to-[#7F73E8] text-white px-8 py-6 rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                {isLastQuestion ? "Forge my arc" : "Next"}
+                <ArrowRight className="ml-2 w-5 h-5" />
+              </Button>
+            </div>
           </div>
         </div>
       </div>

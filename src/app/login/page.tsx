@@ -70,6 +70,7 @@ function LoginPageContent() {
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [sendError, setSendError] = useState<string | null>(null);
   const searchParams = useSearchParams();
 
   const callbackURL = searchParams.get("callbackURL") ?? "/dashboard";
@@ -77,10 +78,21 @@ function LoginPageContent() {
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
-    await authClient.signIn.magicLink({
+    setSendError(null);
+
+    const { error } = await authClient.signIn.magicLink({
       email,
       callbackURL,
     });
+
+    if (error) {
+      setSendError(
+        error.message ?? "Something went wrong. Please try again.",
+      );
+      setLoading(false);
+      return;
+    }
+
     setSent(true);
     setLoading(false);
   }
@@ -195,6 +207,12 @@ function LoginPageContent() {
               )}
             </Button>
           </form>
+
+          {sendError && (
+            <p className="mt-4 text-center text-sm text-red-400/80">
+              {sendError}
+            </p>
+          )}
 
           <div className="mt-12 text-center">
             <p className="text-xs tracking-wide text-purple-400/40">
