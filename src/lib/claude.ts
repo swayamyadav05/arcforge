@@ -34,7 +34,7 @@ import {
 
 const anthropic = new Anthropic();
 
-const SONNET = "claude-sonnet-4-6-invalid";
+const SONNET = "claude-sonnet-4-6";
 const HAIKU = "claude-haiku-4-5-20251001";
 
 function buildUserMessage(answers: Record<string, string>): string {
