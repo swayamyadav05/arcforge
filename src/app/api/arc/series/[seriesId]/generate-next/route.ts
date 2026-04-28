@@ -23,7 +23,10 @@ function parseBible(raw: unknown): StoryBibleShape | null {
     }
   }
   const b = obj as Record<string, unknown>;
-  if (!b.characters || !(b.characters as Record<string, unknown>).protagonist) {
+  if (
+    !b.characters ||
+    !(b.characters as Record<string, unknown>).protagonist
+  ) {
     return null;
   }
   return b as unknown as StoryBibleShape;
@@ -51,10 +54,13 @@ export async function POST(
   try {
     const { seriesId } = await params;
     const ip =
-      req.headers.get("x-forwarded-for")?.split(",")[0].trim() ?? "unknown";
+      req.headers.get("x-forwarded-for")?.split(",")[0].trim() ??
+      "unknown";
 
     // ── 1. Auth check ──────────────────────────────────────────────
-    const session = await auth.api.getSession({ headers: req.headers });
+    const session = await auth.api.getSession({
+      headers: req.headers,
+    });
     if (!session) {
       return NextResponse.json(
         {
@@ -107,7 +113,8 @@ export async function POST(
       return NextResponse.json(
         {
           code: "REFLECTION_REQUIRED" as GenerateNextErrorCode,
-          error: "A reflection is required before generating the next episode.",
+          error:
+            "A reflection is required before generating the next episode.",
         },
         { status: 400 },
       );
@@ -173,7 +180,8 @@ export async function POST(
     };
 
     // ── 7. Check for blocking hard flags from previous generation ──
-    const existingCriticNotes = series.criticNotes as CriticOutput | null;
+    const existingCriticNotes =
+      series.criticNotes as CriticOutput | null;
     if (
       existingCriticNotes?.hard_flags &&
       existingCriticNotes.hard_flags.length > 0
@@ -224,51 +232,58 @@ export async function POST(
       usage.extract.output * HAIKU_OUTPUT_COST;
 
     // ── 11. Four-write transaction ─────────────────────────────────
-    await prisma.$transaction(async (tx) => {
-      await tx.arc.create({
-        data: {
-          id: arcId,
-          seriesId,
-          episodeNumber: newEpisodeNumber,
-          episodeTitle: draft.episode_title,
-          daysSincePrev,
-          answers: { q1: reflectionQ1, q2: reflectionQ2 } as object,
-          arcData: { ...draft, _plan: plan } as object,
-          ipAddress: ip,
-          fingerprint: null,
-          userId: session.user.id,
-        },
-      });
-
-      await tx.storyBible.update({
-        where: { seriesId },
-        data: {
-          bible: updatedBible as object,
-          tokenCount: estimateTokenCount(updatedBible),
-          version: { increment: 1 },
-        },
-      });
-
-      await tx.arcSeries.update({
-        where: { id: seriesId },
-        data: {
-          currentEpisode: { increment: 1 },
-          lastEpisodeAt: now,
-          criticNotes: criticOutput as object,
-        },
-      });
-
-      for (const event of stateDelta.events) {
-        await tx.storyEvent.create({
+    await prisma.$transaction(
+      async (tx) => {
+        await tx.arc.create({
           data: {
+            id: arcId,
             seriesId,
             episodeNumber: newEpisodeNumber,
-            eventType: event.type,
-            payload: event.payload as object,
+            episodeTitle: draft.episode_title,
+            daysSincePrev,
+            answers: { q1: reflectionQ1, q2: reflectionQ2 } as object,
+            arcData: { ...draft, _plan: plan } as object,
+            ipAddress: ip,
+            fingerprint: null,
+            userId: session.user.id,
           },
         });
-      }
-    });
+
+        await tx.storyBible.update({
+          where: { seriesId },
+          data: {
+            bible: updatedBible as object,
+            tokenCount: estimateTokenCount(updatedBible),
+            version: { increment: 1 },
+          },
+        });
+
+        await tx.arcSeries.update({
+          where: { id: seriesId },
+          data: {
+            currentEpisode: { increment: 1 },
+            lastEpisodeAt: now,
+            criticNotes: criticOutput as object,
+          },
+        });
+
+        for (const event of stateDelta.events) {
+          await tx.storyEvent.create({
+            data: {
+              seriesId,
+              episodeNumber: newEpisodeNumber,
+              eventType: event.type,
+              payload: event.payload as object,
+            },
+          });
+        }
+      },
+
+      {
+        maxWait: 10000, // 10s to acquire connection from pool
+        timeout: 30000, // 30s max for the four writes to complete
+      },
+    );
 
     // ── 12. Delete reflection (best-effort, outside transaction) ───
     await prisma.reflection

@@ -195,6 +195,8 @@ export default function Hero() {
             <ArcCard
               arc={SAMPLE_ARC}
               arcId="-eTpPVSp"
+              episodeNumber={1}
+              bodyText={SAMPLE_ARC.opening_episode_quote}
               compact={true}
             />
           </div>
@@ -203,6 +205,8 @@ export default function Hero() {
             <ArcCard
               arc={SAMPLE_ARC}
               arcId="-eTpPVSp"
+              episodeNumber={1}
+              bodyText={SAMPLE_ARC.opening_episode_quote}
               compact={true}
             />
           </div>
