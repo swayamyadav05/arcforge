@@ -43,7 +43,7 @@ export default function ArcCardInteractive({
           arc={arc}
           arcId={arcId}
           episodeNumber={1}
-          bodyText={arc.opening_episode_quote}
+          bodyText={arc.episode_one_scenario}
           compact={compact}
         />
       </div>

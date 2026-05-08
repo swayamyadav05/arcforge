@@ -196,7 +196,7 @@ export default function Hero() {
               arc={SAMPLE_ARC}
               arcId="-eTpPVSp"
               episodeNumber={1}
-              bodyText={SAMPLE_ARC.opening_episode_quote}
+              bodyText={SAMPLE_ARC.episode_one_scenario}
               compact={true}
             />
           </div>
@@ -206,7 +206,7 @@ export default function Hero() {
               arc={SAMPLE_ARC}
               arcId="-eTpPVSp"
               episodeNumber={1}
-              bodyText={SAMPLE_ARC.opening_episode_quote}
+              bodyText={SAMPLE_ARC.episode_one_scenario}
               compact={true}
             />
           </div>
