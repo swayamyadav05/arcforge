@@ -1,14 +1,36 @@
 "use client";
 
+import React, { useMemo, useState } from "react";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Filter, Plus, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import EpisodeLabel from "@/components/ui/EpisodeLabel";
 import RarityBadge from "@/components/ui/RarityBadge";
 import SignOutButton from "@/components/dashboard/SignOutButton";
+import ReflectionCard from "@/components/dashboard/ReflectionCard";
+import ReflectionDialog from "@/components/reflection/ReflectionDialog";
 import type { ArcRarity, GeneratedArc } from "@/types/arc";
+import type { EpisodeNOutput } from "@/types/episode-n";
+
+// ── Types ────────────────────────────────────────────────────────────────────
+
+export interface DashboardEpisode {
+  id: string;
+  episodeNumber: number;
+  arcData: Record<string, unknown>;
+}
+
+export interface DashboardSeries {
+  id: string;
+  status: "active" | "archived";
+  currentEpisode: number;
+  daysSincePrev: number;
+  hasDraft: boolean;
+  missionPreview: string;
+  episodes: DashboardEpisode[];
+}
 
 export interface DashboardUser {
   id: string;
@@ -16,15 +38,9 @@ export interface DashboardUser {
   email: string | null;
 }
 
-export interface DashboardArc {
-  id: string;
-  createdAt: string;
-  arcData: GeneratedArc;
-}
-
 interface DashboardClientProps {
   user: DashboardUser;
-  arcs: DashboardArc[];
+  series: DashboardSeries[];
   heroName: string;
 }
 
@@ -38,50 +54,48 @@ const RARITIES: RarityFilter[] = [
   "Common",
 ];
 
+const STAT_KEYS = ["Resolve", "Chaos", "Empathy", "Focus"] as const;
+
+// ── Component ────────────────────────────────────────────────────────────────
+
 export default function DashboardClient({
   user,
-  arcs,
+  series,
   heroName,
 }: DashboardClientProps) {
-  const [selectedRarity, setSelectedRarity] =
-    useState<RarityFilter>("All");
+  const router = useRouter();
+  const [selectedRarity, setSelectedRarity] = useState<RarityFilter>("All");
+  const [openSeriesId, setOpenSeriesId] = useState<string | null>(null);
 
   const accountName = user.name ?? user.email ?? "Protagonist";
+  const hasSeries = series.length > 0;
 
-  const arcsWithMeta = useMemo(
-    () =>
-      arcs.map((arc, index) => ({
-        ...arc,
-        episodeNumber: index + 1,
-        episodeCount: index + 1,
-      })),
-    [arcs],
-  );
-
-  const filteredArcs = useMemo(() => {
-    if (selectedRarity === "All") {
-      return arcsWithMeta;
-    }
-    return arcsWithMeta.filter(
-      (arc) => arc.arcData.rarity === selectedRarity,
+  const filteredSeries = useMemo(() => {
+    if (selectedRarity === "All") return series;
+    return series.filter(
+      (s) =>
+        (s.episodes[0]?.arcData as unknown as GeneratedArc | undefined)
+          ?.rarity === selectedRarity,
     );
-  }, [arcsWithMeta, selectedRarity]);
+  }, [series, selectedRarity]);
 
-  const hasArcs = arcsWithMeta.length > 0;
+  const openSeries = openSeriesId
+    ? (series.find((s) => s.id === openSeriesId) ?? null)
+    : null;
 
   return (
     <div className="relative min-h-screen bg-forge-bg-deepest text-forge-white">
       <div className="absolute inset-0 bg-linear-to-br from-forge-purple-900/20 via-forge-bg-deepest to-forge-purple-700/20 opacity-50" />
 
       <div className="relative z-10">
+        {/* ── Nav ──────────────────────────────────────────────────── */}
         <div className="sticky top-0 z-20 border-b border-white/5 bg-forge-bg-deepest/80 backdrop-blur-md">
-          <div className="flex justify-between items-center px-6 py-5 w-full max-w-screen-2xl mx-auto">
+          <div className="mx-auto flex w-full max-w-screen-2xl items-center justify-between px-6 py-5">
             <Link href="/" className="no-underline">
               <span className="font-heading font-extrabold tracking-tighter uppercase text-[22px] text-[#EEEDFE]">
                 ArcForge
               </span>
             </Link>
-
             <div
               className="flex items-center space-x-4"
               aria-label={`${accountName} dashboard actions`}>
@@ -96,7 +110,8 @@ export default function DashboardClient({
           </div>
         </div>
 
-        {!hasArcs ? (
+        {/* ── Empty state ───────────────────────────────────────────── */}
+        {!hasSeries ? (
           <div className="flex min-h-[60vh] items-center justify-center">
             <div className="mx-auto max-w-2xl px-6 text-center">
               <div className="relative mb-12">
@@ -126,11 +141,8 @@ export default function DashboardClient({
 
               <div className="mb-12 flex flex-col items-center justify-center gap-4 sm:flex-row">
                 <Button size="lg" asChild>
-                  <Link href="/awakening">
-                    Forge your first arc →
-                  </Link>
+                  <Link href="/awakening">Forge your first arc →</Link>
                 </Button>
-
                 <button
                   type="button"
                   onClick={() =>
@@ -143,6 +155,7 @@ export default function DashboardClient({
             </div>
           </div>
         ) : (
+          /* ── Main content ─────────────────────────────────────────── */
           <div className="container mx-auto px-6 py-10">
             <div className="mb-12 text-center">
               <div className="mb-3 text-xs tracking-widest text-purple-400/60 uppercase">
@@ -154,16 +167,15 @@ export default function DashboardClient({
                 {heroName}
               </h1>
               <p className="mx-auto max-w-2xl text-xl text-purple-200/80">
-                These are your arcs. Your stories. Your evolution.
+                Your arc, episode by episode.
               </p>
             </div>
 
+            {/* Rarity filter */}
             <div className="mb-12 flex flex-wrap items-center justify-center gap-3">
               <div className="flex items-center space-x-2 text-purple-300">
                 <Filter className="h-4 w-4" />
-                <span className="text-sm font-medium">
-                  Filter by rarity:
-                </span>
+                <span className="text-sm font-medium">Filter by rarity:</span>
               </div>
               {RARITIES.map((rarity) => (
                 <button
@@ -180,7 +192,7 @@ export default function DashboardClient({
               ))}
             </div>
 
-            {filteredArcs.length === 0 ? (
+            {filteredSeries.length === 0 ? (
               <div className="py-14 text-center">
                 <p className="mb-6 text-lg text-purple-300/60">
                   No arcs found with this rarity.
@@ -194,104 +206,120 @@ export default function DashboardClient({
               </div>
             ) : (
               <div className="mx-auto grid max-w-7xl gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {filteredArcs.map((arc) => (
-                  <Link
-                    key={arc.id}
-                    href={`/arc/${arc.id}?new=true`}
-                    className="group block cursor-pointer no-underline">
-                    <div className="rounded-xl border border-purple-500/20 bg-linear-to-br from-purple-950/40 to-purple-900/20 p-6 transition-all duration-300 hover:scale-105 hover:border-purple-400/40 hover:shadow-xl hover:shadow-purple-500/20">
-                      <div className="mb-4 flex items-start justify-between">
-                        <EpisodeLabel
-                          episodeNumber={arc.episodeNumber}
+                {filteredSeries.map((s) => {
+                  const ep1Data = s.episodes[0]
+                    ?.arcData as unknown as GeneratedArc;
+
+                  return (
+                    <React.Fragment key={s.id}>
+                      {s.episodes.map((ep) => {
+                        const isFirstEp = ep.episodeNumber === 1;
+                        const epN = ep.arcData as unknown as EpisodeNOutput;
+                        // Per-episode flavor fields
+                        const subtitle = isFirstEp
+                          ? ep1Data.archetype
+                          : epN.episode_title;
+                        const bodyText = isFirstEp
+                          ? ep1Data.episode_one_scenario
+                          : epN.episode_scene;
+
+                        return (
+                          <Link
+                            key={ep.id}
+                            href={
+                              ep.episodeNumber === 1
+                                ? `/arc/${s.episodes[0].id}/episodes`
+                                : `/arc/${s.episodes[0].id}/episodes?ep=${ep.episodeNumber}`
+                            }
+                            className="group block cursor-pointer no-underline">
+                            <div className="rounded-xl border border-purple-500/20 bg-linear-to-br from-purple-950/40 to-purple-900/20 p-6 transition-all duration-300 hover:scale-105 hover:border-purple-400/40 hover:shadow-xl hover:shadow-purple-500/20">
+                              <div className="mb-4 flex items-start justify-between">
+                                <EpisodeLabel episodeNumber={ep.episodeNumber} />
+                                <RarityBadge
+                                  rarity={ep1Data.rarity}
+                                  variant="gradient"
+                                />
+                              </div>
+
+                              <h3
+                                className="mb-2 text-2xl font-bold transition-colors group-hover:text-purple-300"
+                                style={{ fontFamily: "var(--font-heading)" }}>
+                                {ep1Data.character_name}
+                              </h3>
+
+                              <div className="mb-4 text-sm text-purple-400">
+                                {subtitle}
+                              </div>
+
+                              <p className="mb-6 line-clamp-3 text-sm leading-relaxed text-purple-200/70">
+                                {bodyText}
+                              </p>
+
+                              {ep1Data.numeric_stats ? (
+                                <div className="mb-4 grid grid-cols-4 gap-2 text-xs">
+                                  {STAT_KEYS.map((label) => (
+                                    <div key={label} className="text-center">
+                                      <div className="text-purple-400">
+                                        {label}
+                                      </div>
+                                      <div className="font-bold text-white">
+                                        {ep1Data.numeric_stats![
+                                          label.toLowerCase() as keyof NonNullable<
+                                            typeof ep1Data.numeric_stats
+                                          >
+                                        ]}
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              ) : null}
+
+                              <div className="mb-4 border-t border-purple-500/20 pt-4 text-xs text-purple-300/80">
+                                <span className="font-medium text-purple-300">
+                                  Signature Move:
+                                </span>
+                                <div className="mt-1 line-clamp-2">
+                                  {ep1Data.signature_move}
+                                </div>
+                              </div>
+
+                              <div className="flex items-center justify-between border-t border-purple-500/20 pt-4">
+                                <div className="text-xs text-purple-400/60">
+                                  Episode{" "}
+                                  {String(ep.episodeNumber).padStart(2, "0")}
+                                </div>
+                                <div className="text-sm font-medium text-purple-300 transition-colors group-hover:text-purple-200">
+                                  View episode →
+                                </div>
+                              </div>
+                            </div>
+                          </Link>
+                        );
+                      })}
+
+                      {/* Reflection card — active series only */}
+                      {s.status === "active" && (
+                        <ReflectionCard
+                          seriesId={s.id}
+                          characterName={ep1Data.character_name}
+                          episodeNumber={s.currentEpisode + 1}
+                          daysSincePrev={s.daysSincePrev}
+                          hasDraft={s.hasDraft}
+                          missionPreview={s.missionPreview}
+                          onClick={() => setOpenSeriesId(s.id)}
                         />
-                        <RarityBadge
-                          rarity={arc.arcData.rarity}
-                          variant="gradient"
-                        />
-                      </div>
-
-                      <h3
-                        className="mb-2 text-2xl font-bold transition-colors group-hover:text-purple-300"
-                        style={{ fontFamily: "var(--font-heading)" }}>
-                        {arc.arcData.character_name}
-                      </h3>
-
-                      <div className="mb-4 text-sm text-purple-400">
-                        {arc.arcData.archetype}
-                      </div>
-
-                      <p className="mb-6 line-clamp-3 text-sm italic leading-relaxed text-purple-200/70">
-                        &quot;{arc.arcData.opening_episode_quote}
-                        &quot;
-                      </p>
-
-                      {arc.arcData.numeric_stats ? (
-                        <div className="mb-4 grid grid-cols-4 gap-2 text-xs">
-                          <div className="text-center">
-                            <div className="text-purple-400">
-                              Resolve
-                            </div>
-                            <div className="font-bold text-white">
-                              {arc.arcData.numeric_stats.resolve}
-                            </div>
-                          </div>
-                          <div className="text-center">
-                            <div className="text-purple-400">
-                              Chaos
-                            </div>
-                            <div className="font-bold text-white">
-                              {arc.arcData.numeric_stats.chaos}
-                            </div>
-                          </div>
-                          <div className="text-center">
-                            <div className="text-purple-400">
-                              Empathy
-                            </div>
-                            <div className="font-bold text-white">
-                              {arc.arcData.numeric_stats.empathy}
-                            </div>
-                          </div>
-                          <div className="text-center">
-                            <div className="text-purple-400">
-                              Focus
-                            </div>
-                            <div className="font-bold text-white">
-                              {arc.arcData.numeric_stats.focus}
-                            </div>
-                          </div>
-                        </div>
-                      ) : null}
-
-                      <div className="mb-4 border-t border-purple-500/20 pt-4 text-xs text-purple-300/80">
-                        <span className="font-medium text-purple-300">
-                          Signature Move:
-                        </span>
-                        <div className="mt-1 line-clamp-2">
-                          {arc.arcData.signature_move}
-                        </div>
-                      </div>
-
-                      <div className="flex items-center justify-between border-t border-purple-500/20 pt-4">
-                        <div className="text-xs text-purple-400/60">
-                          {arc.episodeCount}{" "}
-                          {arc.episodeCount === 1
-                            ? "episode"
-                            : "episodes"}
-                        </div>
-                        <div className="text-sm font-medium text-purple-300 transition-colors group-hover:text-purple-200">
-                          View full arc →
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
+                      )}
+                    </React.Fragment>
+                  );
+                })}
               </div>
             )}
           </div>
         )}
       </div>
 
-      {hasArcs ? (
+      {/* FAB */}
+      {hasSeries ? (
         <Link
           href="/awakening"
           aria-label="Start a new arc"
@@ -300,6 +328,34 @@ export default function DashboardClient({
           <Plus className="h-6 w-6" />
         </Link>
       ) : null}
+
+      {/* Reflection dialog */}
+      {openSeries && (
+        <ReflectionDialog
+          seriesId={openSeries.id}
+          characterName={
+            (
+              openSeries.episodes[0]
+                ?.arcData as unknown as GeneratedArc | undefined
+            )?.character_name ?? "Protagonist"
+          }
+          episodeNumber={openSeries.currentEpisode + 1}
+          open={true}
+          onOpenChange={(o) => {
+            if (!o) setOpenSeriesId(null);
+          }}
+          onGenerated={() => {
+            const ep1ArcId = openSeries.episodes[0]?.id;
+            const newEpNum = openSeries.currentEpisode + 1;
+            setOpenSeriesId(null);
+            router.push(
+              ep1ArcId
+                ? `/arc/${ep1ArcId}/episodes?ep=${newEpNum}`
+                : `/dashboard`,
+            );
+          }}
+        />
+      )}
     </div>
   );
 }

@@ -20,12 +20,28 @@ export type ArcModel = runtime.Types.Result.DefaultSelection<Prisma.$ArcPayload>
 
 export type AggregateArc = {
   _count: ArcCountAggregateOutputType | null
+  _avg: ArcAvgAggregateOutputType | null
+  _sum: ArcSumAggregateOutputType | null
   _min: ArcMinAggregateOutputType | null
   _max: ArcMaxAggregateOutputType | null
 }
 
+export type ArcAvgAggregateOutputType = {
+  episodeNumber: number | null
+  daysSincePrev: number | null
+}
+
+export type ArcSumAggregateOutputType = {
+  episodeNumber: number | null
+  daysSincePrev: number | null
+}
+
 export type ArcMinAggregateOutputType = {
   id: string | null
+  seriesId: string | null
+  episodeNumber: number | null
+  daysSincePrev: number | null
+  episodeTitle: string | null
   ipAddress: string | null
   fingerprint: string | null
   userId: string | null
@@ -34,6 +50,10 @@ export type ArcMinAggregateOutputType = {
 
 export type ArcMaxAggregateOutputType = {
   id: string | null
+  seriesId: string | null
+  episodeNumber: number | null
+  daysSincePrev: number | null
+  episodeTitle: string | null
   ipAddress: string | null
   fingerprint: string | null
   userId: string | null
@@ -42,6 +62,10 @@ export type ArcMaxAggregateOutputType = {
 
 export type ArcCountAggregateOutputType = {
   id: number
+  seriesId: number
+  episodeNumber: number
+  daysSincePrev: number
+  episodeTitle: number
   answers: number
   arcData: number
   ipAddress: number
@@ -52,8 +76,22 @@ export type ArcCountAggregateOutputType = {
 }
 
 
+export type ArcAvgAggregateInputType = {
+  episodeNumber?: true
+  daysSincePrev?: true
+}
+
+export type ArcSumAggregateInputType = {
+  episodeNumber?: true
+  daysSincePrev?: true
+}
+
 export type ArcMinAggregateInputType = {
   id?: true
+  seriesId?: true
+  episodeNumber?: true
+  daysSincePrev?: true
+  episodeTitle?: true
   ipAddress?: true
   fingerprint?: true
   userId?: true
@@ -62,6 +100,10 @@ export type ArcMinAggregateInputType = {
 
 export type ArcMaxAggregateInputType = {
   id?: true
+  seriesId?: true
+  episodeNumber?: true
+  daysSincePrev?: true
+  episodeTitle?: true
   ipAddress?: true
   fingerprint?: true
   userId?: true
@@ -70,6 +112,10 @@ export type ArcMaxAggregateInputType = {
 
 export type ArcCountAggregateInputType = {
   id?: true
+  seriesId?: true
+  episodeNumber?: true
+  daysSincePrev?: true
+  episodeTitle?: true
   answers?: true
   arcData?: true
   ipAddress?: true
@@ -117,6 +163,18 @@ export type ArcAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: ArcAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: ArcSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: ArcMinAggregateInputType
@@ -147,12 +205,18 @@ export type ArcGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
   take?: number
   skip?: number
   _count?: ArcCountAggregateInputType | true
+  _avg?: ArcAvgAggregateInputType
+  _sum?: ArcSumAggregateInputType
   _min?: ArcMinAggregateInputType
   _max?: ArcMaxAggregateInputType
 }
 
 export type ArcGroupByOutputType = {
   id: string
+  seriesId: string | null
+  episodeNumber: number | null
+  daysSincePrev: number | null
+  episodeTitle: string | null
   answers: runtime.JsonValue
   arcData: runtime.JsonValue
   ipAddress: string
@@ -160,6 +224,8 @@ export type ArcGroupByOutputType = {
   userId: string | null
   createdAt: Date
   _count: ArcCountAggregateOutputType | null
+  _avg: ArcAvgAggregateOutputType | null
+  _sum: ArcSumAggregateOutputType | null
   _min: ArcMinAggregateOutputType | null
   _max: ArcMaxAggregateOutputType | null
 }
@@ -184,6 +250,10 @@ export type ArcWhereInput = {
   OR?: Prisma.ArcWhereInput[]
   NOT?: Prisma.ArcWhereInput | Prisma.ArcWhereInput[]
   id?: Prisma.StringFilter<"Arc"> | string
+  seriesId?: Prisma.StringNullableFilter<"Arc"> | string | null
+  episodeNumber?: Prisma.IntNullableFilter<"Arc"> | number | null
+  daysSincePrev?: Prisma.IntNullableFilter<"Arc"> | number | null
+  episodeTitle?: Prisma.StringNullableFilter<"Arc"> | string | null
   answers?: Prisma.JsonFilter<"Arc">
   arcData?: Prisma.JsonFilter<"Arc">
   ipAddress?: Prisma.StringFilter<"Arc"> | string
@@ -191,10 +261,15 @@ export type ArcWhereInput = {
   userId?: Prisma.StringNullableFilter<"Arc"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Arc"> | Date | string
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  series?: Prisma.XOR<Prisma.ArcSeriesNullableScalarRelationFilter, Prisma.ArcSeriesWhereInput> | null
 }
 
 export type ArcOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  seriesId?: Prisma.SortOrderInput | Prisma.SortOrder
+  episodeNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  daysSincePrev?: Prisma.SortOrderInput | Prisma.SortOrder
+  episodeTitle?: Prisma.SortOrderInput | Prisma.SortOrder
   answers?: Prisma.SortOrder
   arcData?: Prisma.SortOrder
   ipAddress?: Prisma.SortOrder
@@ -202,13 +277,19 @@ export type ArcOrderByWithRelationInput = {
   userId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
+  series?: Prisma.ArcSeriesOrderByWithRelationInput
 }
 
 export type ArcWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  seriesId_episodeNumber?: Prisma.ArcSeriesIdEpisodeNumberCompoundUniqueInput
   AND?: Prisma.ArcWhereInput | Prisma.ArcWhereInput[]
   OR?: Prisma.ArcWhereInput[]
   NOT?: Prisma.ArcWhereInput | Prisma.ArcWhereInput[]
+  seriesId?: Prisma.StringNullableFilter<"Arc"> | string | null
+  episodeNumber?: Prisma.IntNullableFilter<"Arc"> | number | null
+  daysSincePrev?: Prisma.IntNullableFilter<"Arc"> | number | null
+  episodeTitle?: Prisma.StringNullableFilter<"Arc"> | string | null
   answers?: Prisma.JsonFilter<"Arc">
   arcData?: Prisma.JsonFilter<"Arc">
   ipAddress?: Prisma.StringFilter<"Arc"> | string
@@ -216,10 +297,15 @@ export type ArcWhereUniqueInput = Prisma.AtLeast<{
   userId?: Prisma.StringNullableFilter<"Arc"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Arc"> | Date | string
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
-}, "id">
+  series?: Prisma.XOR<Prisma.ArcSeriesNullableScalarRelationFilter, Prisma.ArcSeriesWhereInput> | null
+}, "id" | "seriesId_episodeNumber">
 
 export type ArcOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  seriesId?: Prisma.SortOrderInput | Prisma.SortOrder
+  episodeNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  daysSincePrev?: Prisma.SortOrderInput | Prisma.SortOrder
+  episodeTitle?: Prisma.SortOrderInput | Prisma.SortOrder
   answers?: Prisma.SortOrder
   arcData?: Prisma.SortOrder
   ipAddress?: Prisma.SortOrder
@@ -227,8 +313,10 @@ export type ArcOrderByWithAggregationInput = {
   userId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.ArcCountOrderByAggregateInput
+  _avg?: Prisma.ArcAvgOrderByAggregateInput
   _max?: Prisma.ArcMaxOrderByAggregateInput
   _min?: Prisma.ArcMinOrderByAggregateInput
+  _sum?: Prisma.ArcSumOrderByAggregateInput
 }
 
 export type ArcScalarWhereWithAggregatesInput = {
@@ -236,6 +324,10 @@ export type ArcScalarWhereWithAggregatesInput = {
   OR?: Prisma.ArcScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ArcScalarWhereWithAggregatesInput | Prisma.ArcScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Arc"> | string
+  seriesId?: Prisma.StringNullableWithAggregatesFilter<"Arc"> | string | null
+  episodeNumber?: Prisma.IntNullableWithAggregatesFilter<"Arc"> | number | null
+  daysSincePrev?: Prisma.IntNullableWithAggregatesFilter<"Arc"> | number | null
+  episodeTitle?: Prisma.StringNullableWithAggregatesFilter<"Arc"> | string | null
   answers?: Prisma.JsonWithAggregatesFilter<"Arc">
   arcData?: Prisma.JsonWithAggregatesFilter<"Arc">
   ipAddress?: Prisma.StringWithAggregatesFilter<"Arc"> | string
@@ -246,16 +338,24 @@ export type ArcScalarWhereWithAggregatesInput = {
 
 export type ArcCreateInput = {
   id: string
+  episodeNumber?: number | null
+  daysSincePrev?: number | null
+  episodeTitle?: string | null
   answers: Prisma.JsonNullValueInput | runtime.InputJsonValue
   arcData: Prisma.JsonNullValueInput | runtime.InputJsonValue
   ipAddress: string
   fingerprint?: string | null
   createdAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutArcsInput
+  series?: Prisma.ArcSeriesCreateNestedOneWithoutEpisodesInput
 }
 
 export type ArcUncheckedCreateInput = {
   id: string
+  seriesId?: string | null
+  episodeNumber?: number | null
+  daysSincePrev?: number | null
+  episodeTitle?: string | null
   answers: Prisma.JsonNullValueInput | runtime.InputJsonValue
   arcData: Prisma.JsonNullValueInput | runtime.InputJsonValue
   ipAddress: string
@@ -266,16 +366,24 @@ export type ArcUncheckedCreateInput = {
 
 export type ArcUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  episodeNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  daysSincePrev?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  episodeTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   arcData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   ipAddress?: Prisma.StringFieldUpdateOperationsInput | string
   fingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutArcsNestedInput
+  series?: Prisma.ArcSeriesUpdateOneWithoutEpisodesNestedInput
 }
 
 export type ArcUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  seriesId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  episodeNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  daysSincePrev?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  episodeTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   arcData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   ipAddress?: Prisma.StringFieldUpdateOperationsInput | string
@@ -286,6 +394,10 @@ export type ArcUncheckedUpdateInput = {
 
 export type ArcCreateManyInput = {
   id: string
+  seriesId?: string | null
+  episodeNumber?: number | null
+  daysSincePrev?: number | null
+  episodeTitle?: string | null
   answers: Prisma.JsonNullValueInput | runtime.InputJsonValue
   arcData: Prisma.JsonNullValueInput | runtime.InputJsonValue
   ipAddress: string
@@ -296,6 +408,9 @@ export type ArcCreateManyInput = {
 
 export type ArcUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  episodeNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  daysSincePrev?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  episodeTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   arcData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   ipAddress?: Prisma.StringFieldUpdateOperationsInput | string
@@ -305,38 +420,16 @@ export type ArcUpdateManyMutationInput = {
 
 export type ArcUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  seriesId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  episodeNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  daysSincePrev?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  episodeTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   arcData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   ipAddress?: Prisma.StringFieldUpdateOperationsInput | string
   fingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-export type ArcCountOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  answers?: Prisma.SortOrder
-  arcData?: Prisma.SortOrder
-  ipAddress?: Prisma.SortOrder
-  fingerprint?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
-}
-
-export type ArcMaxOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  ipAddress?: Prisma.SortOrder
-  fingerprint?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
-}
-
-export type ArcMinOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  ipAddress?: Prisma.SortOrder
-  fingerprint?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
 }
 
 export type ArcListRelationFilter = {
@@ -349,16 +442,111 @@ export type ArcOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type StringFieldUpdateOperationsInput = {
-  set?: string
+export type ArcSeriesIdEpisodeNumberCompoundUniqueInput = {
+  seriesId: string
+  episodeNumber: number
+}
+
+export type ArcCountOrderByAggregateInput = {
+  id?: Prisma.SortOrder
+  seriesId?: Prisma.SortOrder
+  episodeNumber?: Prisma.SortOrder
+  daysSincePrev?: Prisma.SortOrder
+  episodeTitle?: Prisma.SortOrder
+  answers?: Prisma.SortOrder
+  arcData?: Prisma.SortOrder
+  ipAddress?: Prisma.SortOrder
+  fingerprint?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+}
+
+export type ArcAvgOrderByAggregateInput = {
+  episodeNumber?: Prisma.SortOrder
+  daysSincePrev?: Prisma.SortOrder
+}
+
+export type ArcMaxOrderByAggregateInput = {
+  id?: Prisma.SortOrder
+  seriesId?: Prisma.SortOrder
+  episodeNumber?: Prisma.SortOrder
+  daysSincePrev?: Prisma.SortOrder
+  episodeTitle?: Prisma.SortOrder
+  ipAddress?: Prisma.SortOrder
+  fingerprint?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+}
+
+export type ArcMinOrderByAggregateInput = {
+  id?: Prisma.SortOrder
+  seriesId?: Prisma.SortOrder
+  episodeNumber?: Prisma.SortOrder
+  daysSincePrev?: Prisma.SortOrder
+  episodeTitle?: Prisma.SortOrder
+  ipAddress?: Prisma.SortOrder
+  fingerprint?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+}
+
+export type ArcSumOrderByAggregateInput = {
+  episodeNumber?: Prisma.SortOrder
+  daysSincePrev?: Prisma.SortOrder
+}
+
+export type ArcCreateNestedManyWithoutSeriesInput = {
+  create?: Prisma.XOR<Prisma.ArcCreateWithoutSeriesInput, Prisma.ArcUncheckedCreateWithoutSeriesInput> | Prisma.ArcCreateWithoutSeriesInput[] | Prisma.ArcUncheckedCreateWithoutSeriesInput[]
+  connectOrCreate?: Prisma.ArcCreateOrConnectWithoutSeriesInput | Prisma.ArcCreateOrConnectWithoutSeriesInput[]
+  createMany?: Prisma.ArcCreateManySeriesInputEnvelope
+  connect?: Prisma.ArcWhereUniqueInput | Prisma.ArcWhereUniqueInput[]
+}
+
+export type ArcUncheckedCreateNestedManyWithoutSeriesInput = {
+  create?: Prisma.XOR<Prisma.ArcCreateWithoutSeriesInput, Prisma.ArcUncheckedCreateWithoutSeriesInput> | Prisma.ArcCreateWithoutSeriesInput[] | Prisma.ArcUncheckedCreateWithoutSeriesInput[]
+  connectOrCreate?: Prisma.ArcCreateOrConnectWithoutSeriesInput | Prisma.ArcCreateOrConnectWithoutSeriesInput[]
+  createMany?: Prisma.ArcCreateManySeriesInputEnvelope
+  connect?: Prisma.ArcWhereUniqueInput | Prisma.ArcWhereUniqueInput[]
+}
+
+export type ArcUpdateManyWithoutSeriesNestedInput = {
+  create?: Prisma.XOR<Prisma.ArcCreateWithoutSeriesInput, Prisma.ArcUncheckedCreateWithoutSeriesInput> | Prisma.ArcCreateWithoutSeriesInput[] | Prisma.ArcUncheckedCreateWithoutSeriesInput[]
+  connectOrCreate?: Prisma.ArcCreateOrConnectWithoutSeriesInput | Prisma.ArcCreateOrConnectWithoutSeriesInput[]
+  upsert?: Prisma.ArcUpsertWithWhereUniqueWithoutSeriesInput | Prisma.ArcUpsertWithWhereUniqueWithoutSeriesInput[]
+  createMany?: Prisma.ArcCreateManySeriesInputEnvelope
+  set?: Prisma.ArcWhereUniqueInput | Prisma.ArcWhereUniqueInput[]
+  disconnect?: Prisma.ArcWhereUniqueInput | Prisma.ArcWhereUniqueInput[]
+  delete?: Prisma.ArcWhereUniqueInput | Prisma.ArcWhereUniqueInput[]
+  connect?: Prisma.ArcWhereUniqueInput | Prisma.ArcWhereUniqueInput[]
+  update?: Prisma.ArcUpdateWithWhereUniqueWithoutSeriesInput | Prisma.ArcUpdateWithWhereUniqueWithoutSeriesInput[]
+  updateMany?: Prisma.ArcUpdateManyWithWhereWithoutSeriesInput | Prisma.ArcUpdateManyWithWhereWithoutSeriesInput[]
+  deleteMany?: Prisma.ArcScalarWhereInput | Prisma.ArcScalarWhereInput[]
+}
+
+export type ArcUncheckedUpdateManyWithoutSeriesNestedInput = {
+  create?: Prisma.XOR<Prisma.ArcCreateWithoutSeriesInput, Prisma.ArcUncheckedCreateWithoutSeriesInput> | Prisma.ArcCreateWithoutSeriesInput[] | Prisma.ArcUncheckedCreateWithoutSeriesInput[]
+  connectOrCreate?: Prisma.ArcCreateOrConnectWithoutSeriesInput | Prisma.ArcCreateOrConnectWithoutSeriesInput[]
+  upsert?: Prisma.ArcUpsertWithWhereUniqueWithoutSeriesInput | Prisma.ArcUpsertWithWhereUniqueWithoutSeriesInput[]
+  createMany?: Prisma.ArcCreateManySeriesInputEnvelope
+  set?: Prisma.ArcWhereUniqueInput | Prisma.ArcWhereUniqueInput[]
+  disconnect?: Prisma.ArcWhereUniqueInput | Prisma.ArcWhereUniqueInput[]
+  delete?: Prisma.ArcWhereUniqueInput | Prisma.ArcWhereUniqueInput[]
+  connect?: Prisma.ArcWhereUniqueInput | Prisma.ArcWhereUniqueInput[]
+  update?: Prisma.ArcUpdateWithWhereUniqueWithoutSeriesInput | Prisma.ArcUpdateWithWhereUniqueWithoutSeriesInput[]
+  updateMany?: Prisma.ArcUpdateManyWithWhereWithoutSeriesInput | Prisma.ArcUpdateManyWithWhereWithoutSeriesInput[]
+  deleteMany?: Prisma.ArcScalarWhereInput | Prisma.ArcScalarWhereInput[]
+}
+
+export type NullableIntFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
 }
 
 export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
-}
-
-export type DateTimeFieldUpdateOperationsInput = {
-  set?: Date | string
 }
 
 export type ArcCreateNestedManyWithoutUserInput = {
@@ -403,17 +591,94 @@ export type ArcUncheckedUpdateManyWithoutUserNestedInput = {
   deleteMany?: Prisma.ArcScalarWhereInput | Prisma.ArcScalarWhereInput[]
 }
 
-export type ArcCreateWithoutUserInput = {
+export type ArcCreateWithoutSeriesInput = {
   id: string
+  episodeNumber?: number | null
+  daysSincePrev?: number | null
+  episodeTitle?: string | null
   answers: Prisma.JsonNullValueInput | runtime.InputJsonValue
   arcData: Prisma.JsonNullValueInput | runtime.InputJsonValue
   ipAddress: string
   fingerprint?: string | null
   createdAt?: Date | string
+  user?: Prisma.UserCreateNestedOneWithoutArcsInput
+}
+
+export type ArcUncheckedCreateWithoutSeriesInput = {
+  id: string
+  episodeNumber?: number | null
+  daysSincePrev?: number | null
+  episodeTitle?: string | null
+  answers: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  arcData: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  ipAddress: string
+  fingerprint?: string | null
+  userId?: string | null
+  createdAt?: Date | string
+}
+
+export type ArcCreateOrConnectWithoutSeriesInput = {
+  where: Prisma.ArcWhereUniqueInput
+  create: Prisma.XOR<Prisma.ArcCreateWithoutSeriesInput, Prisma.ArcUncheckedCreateWithoutSeriesInput>
+}
+
+export type ArcCreateManySeriesInputEnvelope = {
+  data: Prisma.ArcCreateManySeriesInput | Prisma.ArcCreateManySeriesInput[]
+  skipDuplicates?: boolean
+}
+
+export type ArcUpsertWithWhereUniqueWithoutSeriesInput = {
+  where: Prisma.ArcWhereUniqueInput
+  update: Prisma.XOR<Prisma.ArcUpdateWithoutSeriesInput, Prisma.ArcUncheckedUpdateWithoutSeriesInput>
+  create: Prisma.XOR<Prisma.ArcCreateWithoutSeriesInput, Prisma.ArcUncheckedCreateWithoutSeriesInput>
+}
+
+export type ArcUpdateWithWhereUniqueWithoutSeriesInput = {
+  where: Prisma.ArcWhereUniqueInput
+  data: Prisma.XOR<Prisma.ArcUpdateWithoutSeriesInput, Prisma.ArcUncheckedUpdateWithoutSeriesInput>
+}
+
+export type ArcUpdateManyWithWhereWithoutSeriesInput = {
+  where: Prisma.ArcScalarWhereInput
+  data: Prisma.XOR<Prisma.ArcUpdateManyMutationInput, Prisma.ArcUncheckedUpdateManyWithoutSeriesInput>
+}
+
+export type ArcScalarWhereInput = {
+  AND?: Prisma.ArcScalarWhereInput | Prisma.ArcScalarWhereInput[]
+  OR?: Prisma.ArcScalarWhereInput[]
+  NOT?: Prisma.ArcScalarWhereInput | Prisma.ArcScalarWhereInput[]
+  id?: Prisma.StringFilter<"Arc"> | string
+  seriesId?: Prisma.StringNullableFilter<"Arc"> | string | null
+  episodeNumber?: Prisma.IntNullableFilter<"Arc"> | number | null
+  daysSincePrev?: Prisma.IntNullableFilter<"Arc"> | number | null
+  episodeTitle?: Prisma.StringNullableFilter<"Arc"> | string | null
+  answers?: Prisma.JsonFilter<"Arc">
+  arcData?: Prisma.JsonFilter<"Arc">
+  ipAddress?: Prisma.StringFilter<"Arc"> | string
+  fingerprint?: Prisma.StringNullableFilter<"Arc"> | string | null
+  userId?: Prisma.StringNullableFilter<"Arc"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"Arc"> | Date | string
+}
+
+export type ArcCreateWithoutUserInput = {
+  id: string
+  episodeNumber?: number | null
+  daysSincePrev?: number | null
+  episodeTitle?: string | null
+  answers: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  arcData: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  ipAddress: string
+  fingerprint?: string | null
+  createdAt?: Date | string
+  series?: Prisma.ArcSeriesCreateNestedOneWithoutEpisodesInput
 }
 
 export type ArcUncheckedCreateWithoutUserInput = {
   id: string
+  seriesId?: string | null
+  episodeNumber?: number | null
+  daysSincePrev?: number | null
+  episodeTitle?: string | null
   answers: Prisma.JsonNullValueInput | runtime.InputJsonValue
   arcData: Prisma.JsonNullValueInput | runtime.InputJsonValue
   ipAddress: string
@@ -447,21 +712,64 @@ export type ArcUpdateManyWithWhereWithoutUserInput = {
   data: Prisma.XOR<Prisma.ArcUpdateManyMutationInput, Prisma.ArcUncheckedUpdateManyWithoutUserInput>
 }
 
-export type ArcScalarWhereInput = {
-  AND?: Prisma.ArcScalarWhereInput | Prisma.ArcScalarWhereInput[]
-  OR?: Prisma.ArcScalarWhereInput[]
-  NOT?: Prisma.ArcScalarWhereInput | Prisma.ArcScalarWhereInput[]
-  id?: Prisma.StringFilter<"Arc"> | string
-  answers?: Prisma.JsonFilter<"Arc">
-  arcData?: Prisma.JsonFilter<"Arc">
-  ipAddress?: Prisma.StringFilter<"Arc"> | string
-  fingerprint?: Prisma.StringNullableFilter<"Arc"> | string | null
-  userId?: Prisma.StringNullableFilter<"Arc"> | string | null
-  createdAt?: Prisma.DateTimeFilter<"Arc"> | Date | string
+export type ArcCreateManySeriesInput = {
+  id: string
+  episodeNumber?: number | null
+  daysSincePrev?: number | null
+  episodeTitle?: string | null
+  answers: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  arcData: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  ipAddress: string
+  fingerprint?: string | null
+  userId?: string | null
+  createdAt?: Date | string
+}
+
+export type ArcUpdateWithoutSeriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  episodeNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  daysSincePrev?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  episodeTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  arcData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  ipAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  fingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneWithoutArcsNestedInput
+}
+
+export type ArcUncheckedUpdateWithoutSeriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  episodeNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  daysSincePrev?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  episodeTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  arcData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  ipAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  fingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ArcUncheckedUpdateManyWithoutSeriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  episodeNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  daysSincePrev?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  episodeTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  arcData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  ipAddress?: Prisma.StringFieldUpdateOperationsInput | string
+  fingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ArcCreateManyUserInput = {
   id: string
+  seriesId?: string | null
+  episodeNumber?: number | null
+  daysSincePrev?: number | null
+  episodeTitle?: string | null
   answers: Prisma.JsonNullValueInput | runtime.InputJsonValue
   arcData: Prisma.JsonNullValueInput | runtime.InputJsonValue
   ipAddress: string
@@ -471,15 +779,23 @@ export type ArcCreateManyUserInput = {
 
 export type ArcUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  episodeNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  daysSincePrev?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  episodeTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   arcData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   ipAddress?: Prisma.StringFieldUpdateOperationsInput | string
   fingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  series?: Prisma.ArcSeriesUpdateOneWithoutEpisodesNestedInput
 }
 
 export type ArcUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  seriesId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  episodeNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  daysSincePrev?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  episodeTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   arcData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   ipAddress?: Prisma.StringFieldUpdateOperationsInput | string
@@ -489,6 +805,10 @@ export type ArcUncheckedUpdateWithoutUserInput = {
 
 export type ArcUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  seriesId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  episodeNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  daysSincePrev?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  episodeTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   arcData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   ipAddress?: Prisma.StringFieldUpdateOperationsInput | string
@@ -500,6 +820,10 @@ export type ArcUncheckedUpdateManyWithoutUserInput = {
 
 export type ArcSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  seriesId?: boolean
+  episodeNumber?: boolean
+  daysSincePrev?: boolean
+  episodeTitle?: boolean
   answers?: boolean
   arcData?: boolean
   ipAddress?: boolean
@@ -507,10 +831,15 @@ export type ArcSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   userId?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.Arc$userArgs<ExtArgs>
+  series?: boolean | Prisma.Arc$seriesArgs<ExtArgs>
 }, ExtArgs["result"]["arc"]>
 
 export type ArcSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  seriesId?: boolean
+  episodeNumber?: boolean
+  daysSincePrev?: boolean
+  episodeTitle?: boolean
   answers?: boolean
   arcData?: boolean
   ipAddress?: boolean
@@ -518,10 +847,15 @@ export type ArcSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extension
   userId?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.Arc$userArgs<ExtArgs>
+  series?: boolean | Prisma.Arc$seriesArgs<ExtArgs>
 }, ExtArgs["result"]["arc"]>
 
 export type ArcSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  seriesId?: boolean
+  episodeNumber?: boolean
+  daysSincePrev?: boolean
+  episodeTitle?: boolean
   answers?: boolean
   arcData?: boolean
   ipAddress?: boolean
@@ -529,10 +863,15 @@ export type ArcSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extension
   userId?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.Arc$userArgs<ExtArgs>
+  series?: boolean | Prisma.Arc$seriesArgs<ExtArgs>
 }, ExtArgs["result"]["arc"]>
 
 export type ArcSelectScalar = {
   id?: boolean
+  seriesId?: boolean
+  episodeNumber?: boolean
+  daysSincePrev?: boolean
+  episodeTitle?: boolean
   answers?: boolean
   arcData?: boolean
   ipAddress?: boolean
@@ -541,24 +880,32 @@ export type ArcSelectScalar = {
   createdAt?: boolean
 }
 
-export type ArcOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "answers" | "arcData" | "ipAddress" | "fingerprint" | "userId" | "createdAt", ExtArgs["result"]["arc"]>
+export type ArcOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "seriesId" | "episodeNumber" | "daysSincePrev" | "episodeTitle" | "answers" | "arcData" | "ipAddress" | "fingerprint" | "userId" | "createdAt", ExtArgs["result"]["arc"]>
 export type ArcInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.Arc$userArgs<ExtArgs>
+  series?: boolean | Prisma.Arc$seriesArgs<ExtArgs>
 }
 export type ArcIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.Arc$userArgs<ExtArgs>
+  series?: boolean | Prisma.Arc$seriesArgs<ExtArgs>
 }
 export type ArcIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.Arc$userArgs<ExtArgs>
+  series?: boolean | Prisma.Arc$seriesArgs<ExtArgs>
 }
 
 export type $ArcPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Arc"
   objects: {
     user: Prisma.$UserPayload<ExtArgs> | null
+    series: Prisma.$ArcSeriesPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    seriesId: string | null
+    episodeNumber: number | null
+    daysSincePrev: number | null
+    episodeTitle: string | null
     answers: runtime.JsonValue
     arcData: runtime.JsonValue
     ipAddress: string
@@ -960,6 +1307,7 @@ readonly fields: ArcFieldRefs;
 export interface Prisma__ArcClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.Arc$userArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Arc$userArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  series<T extends Prisma.Arc$seriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Arc$seriesArgs<ExtArgs>>): Prisma.Prisma__ArcSeriesClient<runtime.Types.Result.GetResult<Prisma.$ArcSeriesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -990,6 +1338,10 @@ export interface Prisma__ArcClient<T, Null = never, ExtArgs extends runtime.Type
  */
 export interface ArcFieldRefs {
   readonly id: Prisma.FieldRef<"Arc", 'String'>
+  readonly seriesId: Prisma.FieldRef<"Arc", 'String'>
+  readonly episodeNumber: Prisma.FieldRef<"Arc", 'Int'>
+  readonly daysSincePrev: Prisma.FieldRef<"Arc", 'Int'>
+  readonly episodeTitle: Prisma.FieldRef<"Arc", 'String'>
   readonly answers: Prisma.FieldRef<"Arc", 'Json'>
   readonly arcData: Prisma.FieldRef<"Arc", 'Json'>
   readonly ipAddress: Prisma.FieldRef<"Arc", 'String'>
@@ -1413,6 +1765,25 @@ export type Arc$userArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs =
    */
   include?: Prisma.UserInclude<ExtArgs> | null
   where?: Prisma.UserWhereInput
+}
+
+/**
+ * Arc.series
+ */
+export type Arc$seriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ArcSeries
+   */
+  select?: Prisma.ArcSeriesSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ArcSeries
+   */
+  omit?: Prisma.ArcSeriesOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ArcSeriesInclude<ExtArgs> | null
+  where?: Prisma.ArcSeriesWhereInput
 }
 
 /**

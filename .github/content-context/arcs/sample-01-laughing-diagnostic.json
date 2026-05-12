@@ -1,0 +1,42 @@
+{
+  "rarity": "Common",
+  "archetype": "The Laughing Diagnostic",
+  "character_name": "The Joke That Checks Out",
+  "signature_move": "Preemptive Self-Roast — names his own flaw before anyone else can, robbing the room of the right to criticize him.",
+  "if_they_were_a_genre": "Gintama meets The Tatami Galaxy — endless deflection layered over an observation engine that never stops running.",
+  "opening_episode_quote": "I made a joke about it. That's the same as dealing with it, right.",
+  "the_truth_they_avoid": "Every joke he makes about himself is a diagnosis. He is, in fact, extremely accurate about his own problems. He just keeps the diagnosis in the punchline where no one has to do anything with it.",
+  "character_flaw_that_is_also_their_strength": "Can't sit in sincerity for more than four seconds without bailing into a joke. Also: can defuse any room, read any tension, and is the person everyone wants at the party even when he can't remember why he keeps being invited.",
+  "core_stats": {
+    "impact": "I'm funny enough that people tell me I should 'do something with it' and I've been saying 'yeah maybe' for three years. The joke lands in rooms, evaporates in hallways. Net zero.",
+    "endurance": "I can carry a vibe for six hours. I cannot carry my own feelings for twenty minutes. The asymmetry is embarrassing and I've noticed it.",
+    "conviction": "Weak on paper. Strong in practice. I'll fold in an argument and then quietly do the right thing at 2am when no one's watching.",
+    "visibility": "Hyper-visible as the guy. Invisible as the person. Everyone's seen the bit. No one's seen the rest."
+  },
+  "character_arc": {
+    "the_wound": "Learned young that being funny kept the room from looking too closely. Has been running that play ever since. Has forgotten, at this point, whether he has a self underneath the bit or just a set of reliable reactions.",
+    "the_weapon": "Pattern recognition disguised as jokes. He sees exactly what's wrong with a situation — social, structural, emotional — and routes it through a laugh so no one has to feel attacked. Half his punchlines are load-bearing insights.",
+    "the_destiny": "The version of him that stops hiding the observations inside the punchlines becomes unreasonably valuable. Writers' room, therapist, strategist, any room where the job is seeing clearly and saying it without cruelty. He already has the skill. He just has to stop routing it through deflection."
+  },
+  "numeric_stats": { "chaos": 71, "focus": 41, "empathy": 78, "resolve": 44 },
+  "rivals_and_mentors": {
+    "the_rival": {
+      "name": "The Sincere One",
+      "description": "Says what he means, every time, with no irony safety net. Makes the protagonist deeply uncomfortable. The protagonist cannot decide if he wants to be this person or be rid of them."
+    },
+    "the_mentor": {
+      "name": "The Quiet Older Friend Who Stopped Laughing",
+      "description": "Used to be funnier than everyone. One day, just stopped performing. Didn't explain. The protagonist has been watching this for years trying to figure out what happened."
+    }
+  },
+  "episode_one_mission": {
+    "title": "Say The Thing Without The Joke",
+    "stakes": "If he does it: one real conversation becomes possible. If he doesn't: he continues being everyone's favorite person and no one's actual friend.",
+    "description": "Pick one observation he'd normally route through a joke. Say it straight. Once. See what the room does."
+  },
+  "episode_one_scenario": "The group chat is going. A joke is forming in his head about the thing that actually hurt him last week. It's a good one. His thumbs know the rhythm. He pauses. The cursor blinks. He has maybe four seconds before someone else posts and the window closes.",
+  "how_their_story_ends": {
+    "BAD_END": "Becomes the guy at the reunion who everyone's glad to see and no one actually knows. Gets funnier every year. Gets lonelier at the same rate. Dies beloved and uncatalogued.",
+    "GOOD_END": "Learns to put the observation in front of the joke instead of inside it. Becomes someone people listen to, not just laugh with. Keeps the humor. Stops using it as a shield."
+  }
+}

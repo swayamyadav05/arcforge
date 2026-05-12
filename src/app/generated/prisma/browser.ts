@@ -18,10 +18,30 @@ export { Prisma }
 export * as $Enums from './enums'
 export * from './enums';
 /**
+ * Model ArcSeries
+ * 
+ */
+export type ArcSeries = Prisma.ArcSeriesModel
+/**
  * Model Arc
  * 
  */
 export type Arc = Prisma.ArcModel
+/**
+ * Model Reflection
+ * 
+ */
+export type Reflection = Prisma.ReflectionModel
+/**
+ * Model StoryBible
+ * 
+ */
+export type StoryBible = Prisma.StoryBibleModel
+/**
+ * Model StoryEvent
+ * 
+ */
+export type StoryEvent = Prisma.StoryEventModel
 /**
  * Model RateLimit
  * 

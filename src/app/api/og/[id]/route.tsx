@@ -8,6 +8,7 @@ import { GeneratedArc } from "@/types/arc";
 import { NextRequest } from "next/server";
 import { readFile } from "fs/promises";
 import { join } from "path";
+import prisma from "@/lib/prisma";
 
 export const runtime = "nodejs";
 
@@ -26,26 +27,42 @@ function truncate(text: string, maxChars: number): string {
 }
 
 export async function GET(
-  req: NextRequest,
+  _req: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
 
-    // Resolve the base URL from the incoming request so OG rendering
-    // works in local dev, preview deployments, and production domains
-    // without relying on NEXT_PUBLIC_APP_URL configuration.
-    const arcApiUrl = new URL(`/api/arc/${id}`, req.nextUrl.origin);
-
-    const arcResponse = await fetch(arcApiUrl, {
-      cache: "force-cache",
+    const arc = await prisma.arc.findUnique({
+      where: { id },
+      select: {
+        episodeNumber: true,
+        arcData: true,
+        seriesId: true,
+      },
     });
 
-    if (!arcResponse.ok) {
+    if (!arc) {
       return new Response("Arc not found", { status: 404 });
     }
 
-    const arcData = (await arcResponse.json()) as GeneratedArc;
+    // For Episode N, the OG image always shows Episode 1's identity
+    // (the protagonist card is the series identity, not the episode).
+    let arcData: GeneratedArc;
+    if ((arc.episodeNumber ?? 1) === 1) {
+      arcData = arc.arcData as unknown as GeneratedArc;
+    } else if (arc.seriesId) {
+      const ep1 = await prisma.arc.findFirst({
+        where: { seriesId: arc.seriesId, episodeNumber: 1 },
+        select: { arcData: true },
+      });
+      if (!ep1) {
+        return new Response("Arc not found", { status: 404 });
+      }
+      arcData = ep1.arcData as unknown as GeneratedArc;
+    } else {
+      arcData = arc.arcData as unknown as GeneratedArc;
+    }
 
     const fontsDir = join(process.cwd(), "src", "fonts");
 
@@ -184,19 +201,6 @@ export async function GET(
             flexDirection: "column",
             gap: "8px",
           }}>
-          {/* Divider — visually separates the quote from the bottom section,
-              eliminating the dead space problem by giving the layout a clear
-              structural anchor rather than relying on marginTop: auto which
-              Satori handles inconsistently */}
-          {/* <div
-            style={{
-              width: "100%",
-              height: "1px",
-              background: "rgba(175,169,236,0.2)",
-              margin: "28px 0",
-            }}
-          /> */}
-
           <div
             style={{
               display: "flex",
@@ -221,7 +225,6 @@ export async function GET(
                 lineHeight: 1.5,
                 margin: 0,
                 fontFamily: "Inter, sans-serif",
-                // We limit to roughly 2 lines by constraining the width
                 maxWidth: "900px",
               }}>
               {truncate(arcData.character_arc.the_wound, 180)}
@@ -235,7 +238,6 @@ export async function GET(
             justifyContent: "space-between",
             alignItems: "flex-start",
           }}>
-          {/* Bottom row — signature move left, final form right */}
           <div
             style={{
               display: "flex",
@@ -314,11 +316,6 @@ export async function GET(
         headers: {
           "Cache-Control": "public, max-age=31536000, immutable",
         },
-        // 1200x630 is the universal Open Graph image standard.
-        // Every major platform — Twitter, Discord, LinkedIn,
-        // iMessage, Slack — uses this exact ratio for link previews.
-        // Deviating from it causes cropping or pillarboxing on
-        // some platforms, which makes the card look broken.
         fonts: [
           {
             name: "Inter",
@@ -337,6 +334,9 @@ export async function GET(
     );
   } catch (error) {
     console.error("[api/og] Error generating image:", error);
+    if (error instanceof Error) {
+      console.error("[api/og] Stack:", error.stack);
+    }
     return new Response("Failed to generate image", { status: 500 });
   }
 }

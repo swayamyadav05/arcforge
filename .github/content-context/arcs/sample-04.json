@@ -1,0 +1,22 @@
+{
+  "id": "sample-04",
+  "name": "Aya \"Afterburn\" Kapoor",
+  "archetype": "The Reformed Villain",
+  "power": {
+    "name": "Controlled Burn",
+    "description": "Can channel rage into precision. Used to channel precision into rage. The difference took six years."
+  },
+  "arc_title": "Episode 01 — The Person She Used to Be",
+  "tagline": "She hurt people when she was seventeen. She is now twenty-four. Both things are true.",
+  "backstory": "There was a girl, briefly, who lit up rooms in the worst way. Aya has apologized to most of them. Some of them did not accept it. Some of them were right not to. She has kept working anyway — quieter now, slower, harder to provoke. She still has the edges. She has learned when to show them.",
+  "rival": {
+    "name": "The Protégé Who Went the Other Way",
+    "description": "Took everything Aya taught her and kept going. Is now the kind of person Aya used to be. Aya cannot save her. Aya has tried."
+  },
+  "mentor": {
+    "name": "The Person She Hurt First",
+    "description": "Forgave her before she deserved it. Did not explain why. Lives a quiet life four hours north."
+  },
+  "final_form_locked": "Final Form: The Careful Flame — unlocks after Episode 8.",
+  "opening_line": "She stopped being the villain the day someone looked at her and said, 'you can be done now.'"
+}

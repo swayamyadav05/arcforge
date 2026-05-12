@@ -39,7 +39,13 @@ export default function ArcCardInteractive({
           transition: "transform 0.4s ease",
           cursor: "pointer",
         }}>
-        <ArcCard arc={arc} arcId={arcId} compact={compact} />
+        <ArcCard
+          arc={arc}
+          arcId={arcId}
+          episodeNumber={1}
+          bodyText={arc.episode_one_scenario}
+          compact={compact}
+        />
       </div>
     </div>
   );

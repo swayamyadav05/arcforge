@@ -31,8 +31,8 @@ export * from "./enums"
  * const prisma = new PrismaClient({
  *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
  * })
- * // Fetch zero or more Arcs
- * const arcs = await prisma.arc.findMany()
+ * // Fetch zero or more ArcSeries
+ * const arcSeries = await prisma.arcSeries.findMany()
  * ```
  * 
  * Read more in our [docs](https://pris.ly/d/client).
@@ -42,10 +42,30 @@ export type PrismaClient<LogOpts extends Prisma.LogLevel = never, OmitOpts exten
 export { Prisma }
 
 /**
+ * Model ArcSeries
+ * 
+ */
+export type ArcSeries = Prisma.ArcSeriesModel
+/**
  * Model Arc
  * 
  */
 export type Arc = Prisma.ArcModel
+/**
+ * Model Reflection
+ * 
+ */
+export type Reflection = Prisma.ReflectionModel
+/**
+ * Model StoryBible
+ * 
+ */
+export type StoryBible = Prisma.StoryBibleModel
+/**
+ * Model StoryEvent
+ * 
+ */
+export type StoryEvent = Prisma.StoryEventModel
 /**
  * Model RateLimit
  * 

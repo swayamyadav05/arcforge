@@ -1,0 +1,22 @@
+{
+  "id": "sample-06",
+  "name": "Ren \"Offgrid\" Tanaka",
+  "archetype": "The Quiet Architect",
+  "power": {
+    "name": "System Sight",
+    "description": "Sees the shape of a problem before the problem finishes forming. Builds in silence for months. Returns with something finished."
+  },
+  "arc_title": "Episode 01 — The Long Absence",
+  "tagline": "Went quiet in March. Came back in September with a working prototype.",
+  "backstory": "Ren does not post. Ren does not update. Ren disappears for months and people assume he has quit. He has not quit. He is ten thousand words deep in a document no one has seen and a repository no one has access to. When he surfaces, it works. It has always worked. He is deeply suspicious of anyone who needs to announce what they are doing.",
+  "rival": {
+    "name": "The Loud Announcer",
+    "description": "Posts daily. Ships monthly. Everything is a launch. Ren has watched him for three years with the patience of a glacier."
+  },
+  "mentor": {
+    "name": "The Absent Senior",
+    "description": "Taught Ren once, briefly, by email. Has not been heard from in four years. Ren is trying to reach the bar that email set."
+  },
+  "final_form_locked": "Final Form: The Finished Thing — unlocks after Episode 5.",
+  "opening_line": "He did not announce that he was building. He did not announce when he was done. He let the work do it."
+}

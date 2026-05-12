@@ -8,7 +8,11 @@
  *
  * 🟢 You can import this file directly.
  */
+export type * from './models/ArcSeries'
 export type * from './models/Arc'
+export type * from './models/Reflection'
+export type * from './models/StoryBible'
+export type * from './models/StoryEvent'
 export type * from './models/RateLimit'
 export type * from './models/ApiUsageLog'
 export type * from './models/User'

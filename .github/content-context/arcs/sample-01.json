@@ -1,0 +1,22 @@
+{
+  "id": "sample-01",
+  "name": "Kenji \"NightCode\" Verma",
+  "archetype": "The Fallen Prodigy",
+  "power": {
+    "name": "Recursive Insight",
+    "description": "Sees patterns others miss, but at the cost of solitude. Each pattern decoded pulls him further from the people who can't see it."
+  },
+  "arc_title": "Episode 01 — The Awakening",
+  "tagline": "He had built things people used but never known.",
+  "backstory": "Gifted child, labeled early, trained for excellence that nobody defined for him. At 12, he solved a problem his tutors couldn't. At 22, he watched someone half as sharp get promoted above him. He went quiet. He went underground. He's been building ever since — in silence, in rented rooms, under a handle his family wouldn't recognize.",
+  "rival": {
+    "name": "The Polished Clone",
+    "description": "Credentialed, well-spoken, produces half the insight in twice the words. Loved by everyone who doesn't look closely."
+  },
+  "mentor": {
+    "name": "The Tired Veteran",
+    "description": "Peaked fifteen years ago. Fell further. Shows up when Kenji is about to give up, says two sentences, disappears."
+  },
+  "final_form_locked": "Final Form: The Unseen Architect — unlocks after Episode 6.",
+  "opening_line": "In a city of noise, he coded in silence — waiting for the one problem that would force him to step into the light."
+}

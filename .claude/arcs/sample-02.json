@@ -1,0 +1,22 @@
+{
+  "id": "sample-02",
+  "name": "Mira \"Longmemory\" Okafor",
+  "archetype": "The Haunted Archivist",
+  "power": {
+    "name": "Perfect Recall",
+    "description": "Remembers every word spoken to her in twenty-three years. A blessing when debating. A curse at 3am."
+  },
+  "arc_title": "Episode 01 — The Weight of Knowing",
+  "tagline": "She forgot nothing. No one told her that was optional.",
+  "backstory": "She didn't realize other people forgot things until she was seventeen. She thought everyone remembered what their second-grade teacher wore on the first day of school. She thought everyone could quote conversations from eight years ago. When she learned they couldn't, she learned why she felt lonely in every room.",
+  "rival": {
+    "name": "The Convenient Revisionist",
+    "description": "Rewrites history in real time. Sincerely believes the new version. Cannot be defeated with facts — she has checked."
+  },
+  "mentor": {
+    "name": "The Woman Who Learned to Forget",
+    "description": "Older. Kinder. Once had Mira's gift. Chose, deliberately, to stop carrying it. Won't say how."
+  },
+  "final_form_locked": "Final Form: The Living Archive — unlocks after Episode 5.",
+  "opening_line": "Mira remembered what he said in November. He did not. That was the entire fight."
+}

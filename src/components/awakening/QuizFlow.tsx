@@ -193,6 +193,16 @@ const QuizFlow = () => {
 
   const [loadingMessageIndex, setLoadingMessageIndex] = useState(0);
 
+  const handleBack = (currentValue: string) => {
+    if (currentIndex > 0) {
+      setAnswers((prev) => ({
+        ...prev,
+        [QUESTIONS[currentIndex].id]: currentValue,
+      }));
+      setCurrentIndex(currentIndex - 1);
+    }
+  };
+
   const handleAnswer = async (answer: string) => {
     const question = QUESTIONS[currentIndex];
     const newAnswers = { ...answers, [question.id]: answer };
@@ -435,6 +445,8 @@ const QuizFlow = () => {
         questionNumber={currentIndex + 1}
         totalQuestions={QUESTIONS.length}
         onAnswer={handleAnswer}
+        onBack={handleBack}
+        initialValue={answers[QUESTIONS[currentIndex].id] ?? ""}
       />
     </div>
   );
